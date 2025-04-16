@@ -1,5 +1,7 @@
-# TQS_ChargeUnity
-Repository for TQS project ChargeUnity
+# ChargeUnity
+Repository for the TQS project ChargeUnity
+
+<img src="resources/ChargeUnityLogo.png" alt="ChargeUnityLogo" width="400"/>
 
 | Student         | Roles         | Nmec   | Effort |
 | --------------- | ------------- | ------ | ------ |
