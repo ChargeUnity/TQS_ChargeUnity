@@ -2,11 +2,10 @@
 <!--- Describe your changes in detail -->
 
 
-## Motivation and Context
+## Context
 <!--- If it fixes an open issue, please link to the issue here. -->
-Closes #
+Jira Issue: [Issue-key](link to issue)
 <!--- Why is this change required? What problem does it solve? -->
-I made this change because...
 
 ## How Has This Been Tested?
 <!--- Please describe in detail how you tested your changes. -->
