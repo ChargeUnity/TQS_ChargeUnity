@@ -1,12 +1,14 @@
-# TQS_ChargeUnity
-Repository for TQS project ChargeUnity
+# ChargeUnity
+Repository for the TQS project ChargeUnity
+
+<img src="resources/ChargeUnityLogo.png" alt="ChargeUnityLogo" width="400"/>
 
 | Student         | Roles         | Nmec   | Effort |
 | --------------- | ------------- | ------ | ------ |
 | Pedro Ponte     | Team Manager | 98059  | 25%    |
-|  | DevOps Master |  | 25%    |
-|        | Product Owner |  | 25%  |
-|  | QA Engineer     |  | 25%    |
+| Miguel Soares Francisco | DevOps Master | 108304 | 25%    |
+| Inês Ferreira | Product Owner | 104415 | 25%  |
+| Alexandre Regalado | QA Engineer     | 124572 | 25%    |
 
 # Abstract
 
