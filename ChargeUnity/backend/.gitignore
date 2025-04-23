@@ -31,15 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### React ###
-**/node_modules/
-.vite/
-
-### Sensitive Information ###
-.env
-**/application.properties
-
-**/data.sql
-
-**/allure-results
