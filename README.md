@@ -35,5 +35,4 @@ Repository for the TQS project ChargeUnity
 ```
 
 # Architecture
-**Inserir imagem da arquitetura quando estiver feita**
-![Architecture](reports/images/architecture.png)
+![Architecture](resources/arquitechture/ArchitectureChargeUnity.jpg)
