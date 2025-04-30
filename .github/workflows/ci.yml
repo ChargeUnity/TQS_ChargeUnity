@@ -1,0 +1,51 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ChargeUnity/backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('ChargeUnity/backend/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven
+
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+
+      - name: Run Unit Tests + Generate Coverage
+        run: mvn test jacoco:report
+
+      - name: Run Cucumber Tests (Selenium)
+        run: echo "placeholder for running Cucumber tests with Selenium"
+
+      - name: Upload JaCoCo Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: ChargeUnity/backend/target/site/jacoco/
+
+      - name: (Optional) Run OWASP ZAP Scan
+        run: echo "plcaceholder for running OWASP ZAP scan"
