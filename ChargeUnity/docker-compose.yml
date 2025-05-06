@@ -68,7 +68,13 @@ services:
       - CHOKIDAR_USEPOLLING=true    
     depends_on:
       - backend
-              
+            
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5173"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
     networks:
       - evalmed-network
 
