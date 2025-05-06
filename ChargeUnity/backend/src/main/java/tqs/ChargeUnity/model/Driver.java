@@ -60,5 +60,28 @@ public class Driver extends User{
         this.balance = balance;
     }
 
+    @Override
+    public String toString() {
+        return "Driver " + super.toString() + " - Balance: " + balance + ";";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Driver driver = (Driver) obj;
+        return super.equals(obj) && cars.equals(driver.cars) && bookings.equals(driver.bookings)
+                && trips.equals(driver.trips) && balance.equals(driver.balance);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + cars.hashCode();
+        result = 31 * result + bookings.hashCode();
+        result = 31 * result + trips.hashCode();
+        result = 31 * result + balance.hashCode();
+        return result;
+    }
 
 }
