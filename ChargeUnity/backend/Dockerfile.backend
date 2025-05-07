@@ -4,17 +4,18 @@
 # ENV JAVA_TOOL_OPTIONS="-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
 # CMD ["sh", "-c", "java -jar /app.jar 2>&1 | tee /proc/1/fd/1"]
 # Etapa 1: Build
-FROM maven:3.9.4-eclipse-temurin-21 AS build
-
-WORKDIR /app
-
-COPY . .
-RUN ./mvnw clean package -DskipTests
+#FROM maven:3.9.4-eclipse-temurin-21 AS build
+#
+#WORKDIR /app
+#
+#COPY . .
+#RUN ./mvnw clean package -DskipTests
 
 # Etapa 2: Execução
 FROM openjdk:21-jdk
 
-COPY --from=build /app/target/*.jar app.jar
+#COPY --from=build /app/target/*.jar app.jar
+COPY target/*.jar app.jar
 
 ENV JAVA_TOOL_OPTIONS="-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
 
