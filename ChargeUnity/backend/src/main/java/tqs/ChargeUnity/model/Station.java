@@ -9,7 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import lombok.Data;
 
+@Data
 @Entity
 public class Station {
 
@@ -31,73 +33,6 @@ public class Station {
     private List<Operator> operators = new ArrayList<>();
 
     public Station() {
-    }
-
-    public Station(int id, String name, String city, String address, String latitude, String longitude,
-            List<Charger> chargers, List<Operator> operators) {
-        this.id = id;
-        this.name = name;
-        this.city = city;
-        this.address = address;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.chargers = chargers;
-    }
-
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCity() {
-        return city;
-    }
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public List<Charger> getChargers() {
-        return chargers;
-    }
-    public void setChargers(List<Charger> chargers) {
-        this.chargers = chargers;
-    }
-
-    public List<Operator> getOperators() {
-        return operators;
-    }
-    public void setOperators(List<Operator> operators) {
-        this.operators = operators;
     }
 
     @Override
@@ -124,25 +59,5 @@ public class Station {
                 "\nOperators List:\n" + rOperators +
                 "\nChargers: " + chargers.size() + ";" +
                 "\nChargers List:\n" + rChargers;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Station station = (Station) obj;
-        return id == station.id && name.equals(station.name) && city.equals(station.city) && address.equals(station.address)
-                && latitude.equals(station.latitude) && longitude.equals(station.longitude);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Integer.hashCode(id);
-        result = 31 * result + name.hashCode();
-        result = 31 * result + city.hashCode();
-        result = 31 * result + address.hashCode();
-        result = 31 * result + latitude.hashCode();
-        result = 31 * result + longitude.hashCode();
-        return result;
     }
 }

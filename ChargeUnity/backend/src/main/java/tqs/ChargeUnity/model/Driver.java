@@ -5,7 +5,9 @@ import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import lombok.Data;
 
+@Data
 @Entity
 public class Driver extends User{
 
@@ -23,40 +25,12 @@ public class Driver extends User{
     public Driver() {
         super();
     }
-    public Driver(int id, String name, String email, boolean enabled, List<Car> cars, List<Booking> bookings,
+    public Driver(int id, String name, String email, List<Car> cars, List<Booking> bookings,
             List<Trip> trips, Double balance) {
-        super(id, name, enabled);
+        super(id, name);
         this.cars = cars;
         this.bookings = bookings;
         this.trips = trips;
-        this.balance = balance;
-    }
-
-    public List<Car> getCars() {
-        return cars;
-    }
-    public void setCars(List<Car> cars) {
-        this.cars = cars;
-    }
-
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
-
-    public List<Trip> getTrips() {
-        return trips;
-    }
-    public void setTrips(List<Trip> trips) {
-        this.trips = trips;
-    }
-
-    public Double getBalance() {
-        return balance;
-    }
-    public void setBalance(Double balance) {
         this.balance = balance;
     }
 
@@ -70,18 +44,12 @@ public class Driver extends User{
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Driver driver = (Driver) obj;
-        return super.equals(obj) && cars.equals(driver.cars) && bookings.equals(driver.bookings)
-                && trips.equals(driver.trips) && balance.equals(driver.balance);
+        return super.equals(obj) && balance.equals(driver.balance);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + cars.hashCode();
-        result = 31 * result + bookings.hashCode();
-        result = 31 * result + trips.hashCode();
-        result = 31 * result + balance.hashCode();
-        return result;
+        return super.hashCode() + 31 * balance.hashCode();
     }
 
 }

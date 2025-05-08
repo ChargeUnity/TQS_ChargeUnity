@@ -3,7 +3,9 @@ package tqs.ChargeUnity.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Data;
 
+@Data
 @Entity
 public class Operator extends User {
 
@@ -15,15 +17,8 @@ public class Operator extends User {
         super();
     }
 
-    public Operator(int id, String name, String email, boolean enabled, Station station) {
-        super(id, name, enabled);
-        this.station = station;
-    }
-
-    public Station getStation() {
-        return station;
-    }
-    public void setStation(Station station) {
+    public Operator(int id, String name, String email, Station station) {
+        super(id, name);
         this.station = station;
     }
 
