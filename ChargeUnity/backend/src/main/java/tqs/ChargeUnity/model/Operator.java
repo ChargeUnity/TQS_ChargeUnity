@@ -17,7 +17,7 @@ public class Operator extends User {
         super();
     }
 
-    public Operator(int id, String name, String email, Station station) {
+    public Operator(int id, String name, Station station) {
         super(id, name);
         this.station = station;
     }
