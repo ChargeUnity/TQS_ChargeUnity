@@ -47,5 +47,24 @@ jobs:
           name: jacoco-report
           path: ChargeUnity/backend/target/site/jacoco/
 
+      - name: xray-action
+        uses: mikepenz/xray-action@v3
+        with:
+          username: ${{ secrets.XRAY_CLIENT_ID }}
+          password: ${{ secrets.XRAY_CLIENT_SECRET }}
+          testFormat: "junit"
+          testPaths: "**/test/*.xml"
+          projectKey: "CH"
+          testExecKey: ""
+          testExecutionJson: |
+            {
+              "fields": {
+                "summary": "Automated Test Execution for CI Pipeline",
+                "project": {
+                  "key": "CH"
+                }
+              }
+            }
+
       - name: (Optional) Run OWASP ZAP Scan
         run: echo "plcaceholder for running OWASP ZAP scan"
