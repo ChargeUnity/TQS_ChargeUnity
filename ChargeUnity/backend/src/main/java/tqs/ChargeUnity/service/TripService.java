@@ -1,6 +1,4 @@
 package tqs.ChargeUnity.service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,21 +17,28 @@ public class TripService {
     }
 
     public List<Trip> findAll() {
-        return new ArrayList<>();
+        return tripRepository.findAll();
     }
 
     public Optional<Trip> findById(int id) {
-        return Optional.empty();
+        return tripRepository.findById(id);
     }
 
     public Optional<Trip> save(Trip trip) {
-        return Optional.empty();
+        Trip saved = tripRepository.save(trip);
+        return Optional.of(saved);
     }
 
     public Optional<Trip> update(Trip trip) {
-        return Optional.empty();
+        if (tripRepository.existsById(trip.getId())) {
+            Trip updated = tripRepository.save(trip);
+            return Optional.of(updated);
+        } else {
+            return Optional.empty();
+        }
     }
 
     public void deleteById(int id) {
+        tripRepository.deleteById(id);
     }
 }
