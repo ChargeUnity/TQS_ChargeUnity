@@ -97,6 +97,12 @@
         <project.encondig>UTF-8</project.encondig>
         <project.build.sourceEncoding>${project.encondig}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${project.encondig}</project.reporting.outputEncoding>
+
+        <!-- Sonar stuff -->
+        <sonar.projectKey>ChargeUnity_TQS_ChargeUnity</sonar.projectKey>
+        <sonar.organization>chargeunity</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
 	</properties>
 	<dependencies>
 		<dependency>
