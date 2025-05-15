@@ -7,6 +7,9 @@ import tqs.ChargeUnity.model.Booking;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
@@ -23,7 +26,8 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     // Optional: Retrieve all bookings for a charger between two dates (useful for operator dashboards)
     List<Booking> findByChargerIdAndStartTimeBetween(Integer chargerId, LocalDateTime start, LocalDateTime end);
 
-    List<Booking> findOverlappingBookings(int chargerId, LocalDateTime start, LocalDateTime end);
+    @Query("SELECT b FROM Booking b WHERE b.charger.id = :chargerId AND b.startTime < :end AND b.endTime > :start")
+    List<Booking> findOverlappingBookings(@Param("chargerId") int chargerId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
     List<Booking> findByChargerId(int chargerId);
 }
