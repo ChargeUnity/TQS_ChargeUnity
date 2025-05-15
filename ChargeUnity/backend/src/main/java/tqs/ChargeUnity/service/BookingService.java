@@ -39,7 +39,7 @@ public class BookingService {
             throw new RuntimeException("Time slot not available");
         }
 
-        double durationHours = (endTime.getMinute() - startTime.getMinute()) / 60.0;
+        double durationHours = java.time.Duration.between(startTime, endTime).toMinutes() / 60.0;
         double price = durationHours * charger.getPricePerKWh() * 10; // example pricing logic
 
         Booking booking = new Booking();
