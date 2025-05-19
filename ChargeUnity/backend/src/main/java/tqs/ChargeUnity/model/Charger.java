@@ -20,32 +20,40 @@ import lombok.Data;
 @Entity
 public class Charger {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "station_id")
-    private Station station;
+  @ManyToOne
+  @JoinColumn(name = "station_id")
+  private Station station;
 
-    @OneToMany(mappedBy = "charger")
-    private List<Booking> bookings = new ArrayList<>();
+  @OneToMany(mappedBy = "charger")
+  private List<Booking> bookings = new ArrayList<>();
 
-    private ChargerStatus status;
+  private ChargerStatus status;
 
-    private ChargerType type;
+  private ChargerType type;
 
-    private Double pricePerKWh;
+  private Double pricePerKWh;
 
-    public Charger() {
-    }
+  public Charger() {}
 
-    @Override
-    public String toString() {
-        return "Charger "+ id + " - Type: " + type + " - Status: " + status + 
-                //" - " + round(pricePerKWh, 2) + "€/kWh" + 
-                " - " + Utils.round(pricePerKWh, 2) + "€/kWh" +
-                " - Station: " + station.getName() + ";";
-    }
-
+  @Override
+  public String toString() {
+    return "Charger "
+        + id
+        + " - Type: "
+        + type
+        + " - Status: "
+        + status
+        +
+        // " - " + round(pricePerKWh, 2) + "€/kWh" +
+        " - "
+        + Utils.round(pricePerKWh, 2)
+        + "€/kWh"
+        + " - Station: "
+        + station.getName()
+        + ";";
+  }
 }
