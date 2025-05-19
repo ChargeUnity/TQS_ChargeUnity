@@ -27,6 +27,7 @@ public class ChargerService {
         return chargerRepository.findById(id);
     }
 
+
     public Charger saveCharger(Charger charger) {
         return chargerRepository.save(charger);
     }
