@@ -15,49 +15,62 @@ import lombok.Data;
 @Entity
 public class Station {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-    private String name;
+  private String name;
 
-    private String city;
-    private String address;
-    private String latitude;
-    private String longitude;
+  private String city;
+  private String address;
+  private String latitude;
+  private String longitude;
 
-    @OneToMany(mappedBy = "station", cascade = CascadeType.ALL)
-    private List<Charger> chargers = new ArrayList<>();
+  @OneToMany(mappedBy = "station", cascade = CascadeType.ALL)
+  private List<Charger> chargers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "station", cascade = CascadeType.ALL)
-    private List<Operator> operators = new ArrayList<>();
+  @OneToMany(mappedBy = "station", cascade = CascadeType.ALL)
+  private List<Operator> operators = new ArrayList<>();
 
-    public Station() {
+  public Station() {}
+
+  @Override
+  public String toString() {
+    String rOperators = "";
+    for (int i = 0; i < operators.size(); i++) {
+      rOperators += i + " - " + operators.get(i).toString();
+      if (i != operators.size() - 1) {
+        rOperators += "\n";
+      }
     }
 
-    @Override
-    public String toString() {
-        String rOperators = "";
-        for (int i = 0; i < operators.size(); i++) {
-            rOperators += i + " - " + operators.get(i).toString();
-            if (i != operators.size() - 1) {
-                rOperators += "\n";
-            }
-        }
-
-        String rChargers = "";
-        for (int i = 0; i < chargers.size(); i++) {
-            rChargers += i + " - " + chargers.get(i).toString();
-            if (i != chargers.size() - 1) {
-                rChargers += "\n";
-            }
-        }
-
-        return "Station " + id + ": " + name + ";" +
-                "\nAddress: " + address + ", " + city + ";" +
-                "\nOperators: " + operators.size() + ";" +
-                "\nOperators List:\n" + rOperators +
-                "\nChargers: " + chargers.size() + ";" +
-                "\nChargers List:\n" + rChargers;
+    String rChargers = "";
+    for (int i = 0; i < chargers.size(); i++) {
+      rChargers += i + " - " + chargers.get(i).toString();
+      if (i != chargers.size() - 1) {
+        rChargers += "\n";
+      }
     }
+
+    return "Station "
+        + id
+        + ": "
+        + name
+        + ";"
+        + "\nAddress: "
+        + address
+        + ", "
+        + city
+        + ";"
+        + "\nOperators: "
+        + operators.size()
+        + ";"
+        + "\nOperators List:\n"
+        + rOperators
+        + "\nChargers: "
+        + chargers.size()
+        + ";"
+        + "\nChargers List:\n"
+        + rChargers;
+  }
 }

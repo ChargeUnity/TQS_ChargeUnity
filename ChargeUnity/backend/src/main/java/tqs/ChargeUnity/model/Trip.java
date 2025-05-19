@@ -16,39 +16,46 @@ import lombok.Data;
 @Entity
 @Data
 public class Trip {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "driver_id")
-    private Driver driver;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-    @OneToMany(mappedBy = "trip")
-    private List<Booking> bookings = new ArrayList<>();
+  @ManyToOne
+  @JoinColumn(name = "driver_id")
+  private Driver driver;
 
-    private String startCoordinates;
-    private String endCoordinates;
+  @OneToMany(mappedBy = "trip")
+  private List<Booking> bookings = new ArrayList<>();
 
-    private LocalDateTime startTime;
-    private String durationSeconds;
+  private String startCoordinates;
+  private String endCoordinates;
 
-    private Double distance;
-    private Double price;
+  private LocalDateTime startTime;
+  private String durationSeconds;
 
+  private Double distance;
+  private Double price;
 
-    public Trip() {
-    }
+  public Trip() {}
 
-    @Override
-    public String toString() {
-        return "Trip " + id + " - Driver: " + driver.getName() +
-                "\nStart Coordinates: " + startCoordinates +
-                "\nEnd Coordinates: " + endCoordinates +
-                "\nStart Time: " + startTime +
-                "\nDuration: " + durationSeconds +
-                "\nDistance: " + distance +
-                "\nPrice: " + price;
-    }
+  @Override
+  public String toString() {
+    return "Trip "
+        + id
+        + " - Driver: "
+        + driver.getName()
+        + "\nStart Coordinates: "
+        + startCoordinates
+        + "\nEnd Coordinates: "
+        + endCoordinates
+        + "\nStart Time: "
+        + startTime
+        + "\nDuration: "
+        + durationSeconds
+        + "\nDistance: "
+        + distance
+        + "\nPrice: "
+        + price;
+  }
 }

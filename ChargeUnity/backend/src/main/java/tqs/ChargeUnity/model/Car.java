@@ -11,33 +11,48 @@ import lombok.Data;
 @Data
 @Entity
 public class Car {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "driver_id")
-    private Driver driver;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-    private String brand;
-    private String model;
+  @ManyToOne
+  @JoinColumn(name = "driver_id")
+  private Driver driver;
 
-    // in kWh
-    private Double batteryCapacity;
-    private Double batteryPercentage;
-    
-    private Double consumptionPerKm;
+  private String brand;
+  private String model;
 
-    private Long kilometers;
+  // in kWh
+  private Double batteryCapacity;
+  private Double batteryPercentage;
 
-    public Car() {
-    }
+  private Double consumptionPerKm;
 
-    @Override
-    public String toString() {
-        return "Car " + id + " - Driver: " + driver.getName() + "(" + driver.getId() + ");"
-                + brand + " " + model + "; Battery Capacity: " + batteryCapacity + "kWh; Battery Level: "
-                + batteryPercentage + "kWh; Consumption per Km: " + consumptionPerKm + "kWh/Km; Kilometers: " + kilometers + "km;";
-    }
+  private Long kilometers;
+
+  public Car() {}
+
+  @Override
+  public String toString() {
+    return "Car "
+        + id
+        + " - Driver: "
+        + driver.getName()
+        + "("
+        + driver.getId()
+        + ");"
+        + brand
+        + " "
+        + model
+        + "; Battery Capacity: "
+        + batteryCapacity
+        + "kWh; Battery Level: "
+        + batteryPercentage
+        + "kWh; Consumption per Km: "
+        + consumptionPerKm
+        + "kWh/Km; Kilometers: "
+        + kilometers
+        + "km;";
+  }
 }

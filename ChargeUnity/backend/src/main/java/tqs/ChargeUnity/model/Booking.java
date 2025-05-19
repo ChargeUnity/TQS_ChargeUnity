@@ -15,41 +15,48 @@ import lombok.Data;
 @Data
 @Entity
 public class Booking {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "trip_id")
-    private Trip trip;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "driver_id")
-    private Driver driver;
+  @ManyToOne
+  @JoinColumn(name = "trip_id")
+  private Trip trip;
 
-    @ManyToOne
-    @JoinColumn(name = "charger_id")
-    private Charger charger;
+  @ManyToOne
+  @JoinColumn(name = "driver_id")
+  private Driver driver;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+  @ManyToOne
+  @JoinColumn(name = "charger_id")
+  private Charger charger;
 
-    private Double price;
-    private BookingStatus status;
+  private LocalDateTime startTime;
+  private LocalDateTime endTime;
 
-    public Booking() {
-    }
+  private Double price;
+  private BookingStatus status;
 
-    @Override
-    public String toString() {
-        return "Booking " + id + " - Trip: " + trip.getId() +
-                "\nDriver: " + driver.getName() +
-                "\nCharger: " + charger.getId() +
-                "\nStart Time: " + startTime +
-                "\nEnd Time: " + endTime +
-                "\nPrice: " + price +
-                "\nStatus: " + status;
-    }
+  public Booking() {}
 
+  @Override
+  public String toString() {
+    return "Booking "
+        + id
+        + " - Trip: "
+        + trip.getId()
+        + "\nDriver: "
+        + driver.getName()
+        + "\nCharger: "
+        + charger.getId()
+        + "\nStart Time: "
+        + startTime
+        + "\nEnd Time: "
+        + endTime
+        + "\nPrice: "
+        + price
+        + "\nStatus: "
+        + status;
+  }
 }
