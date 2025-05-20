@@ -10,7 +10,7 @@ function Operator() {
   useEffect(() => {
     const fetchOperators = async () => {
       try {
-        const response = await fetch(`${config.baseURL}/operator`);
+        const response = await fetch(`${config.API_URL}/operator`);
         if (!response.ok) {
           throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
