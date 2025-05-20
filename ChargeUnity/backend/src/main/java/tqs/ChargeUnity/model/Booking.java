@@ -40,6 +40,20 @@ public class Booking {
 
   public Booking() {}
 
+  public void setStartTime(LocalDateTime startTime) {
+    if (endTime != null && startTime.isAfter(endTime)) {
+      throw new IllegalArgumentException("Start time must be before end time");
+    }
+    this.startTime = startTime;
+  }
+
+  public void setEndTime(LocalDateTime endTime) {
+    if (startTime != null && endTime.isBefore(startTime)) {
+      throw new IllegalArgumentException("End time must be after start time");
+    }
+    this.endTime = endTime;
+  }
+
   @Override
   public String toString() {
     return "Booking "

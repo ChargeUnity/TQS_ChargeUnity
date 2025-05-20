@@ -39,6 +39,13 @@ public class Charger {
 
   public Charger() {}
 
+  public void setPricePerKWh(double pricePerKWh) {
+    if (pricePerKWh <= 0) {
+      throw new IllegalArgumentException("Price per kWh must be positive.");
+    }
+    this.pricePerKWh = pricePerKWh;
+  }
+
   @Override
   public String toString() {
     return "Charger "
