@@ -33,6 +33,34 @@ public class Car {
 
   public Car() {}
 
+  public void setBatteryCapacity(Double batteryCapacity) {
+    if (batteryCapacity == null || batteryCapacity <= 0.0) {
+      throw new IllegalArgumentException("Battery capacity must be positive.");
+    }
+    this.batteryCapacity = batteryCapacity;
+  }
+
+  public void setBatteryPercentage(Double batteryPercentage) {
+    if (batteryPercentage == null || batteryPercentage < 0.0 || batteryPercentage > 100.0) {
+      throw new IllegalArgumentException("Battery percentage must be between 0 and 100.");
+    }
+    this.batteryPercentage = batteryPercentage;
+  }
+
+  public void setConsumptionPerKm(Double consumptionPerKm) {
+    if (consumptionPerKm == null || consumptionPerKm <= 0.0) {
+      throw new IllegalArgumentException("Consumption per Km must be positive.");
+    }
+    this.consumptionPerKm = consumptionPerKm;
+  }
+
+  public void setKilometers(Long kilometers) {
+    if (kilometers == null || kilometers <= 0L) {
+      throw new IllegalArgumentException("Kilometers must be positive.");
+    }
+    this.kilometers = kilometers;
+  }
+
   @Override
   public String toString() {
     return "Car "
