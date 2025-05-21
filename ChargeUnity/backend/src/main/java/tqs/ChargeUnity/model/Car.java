@@ -40,56 +40,5 @@ public class Car {
                 + brand + " " + model + "; Battery Capacity: " + batteryCapacity + "kWh; Battery Level: "
                 + batteryPercentage + "kWh; Consumption per Km: " + consumptionPerKm + "kWh/Km; Kilometers: " + kilometers + "km;";
     }
-    //getters and setters
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
-    public Driver getDriver() {
-        return driver;
-    }
-    public void setDriver(Driver driver) {
-        this.driver = driver;
-    }
-    public String getBrand() {
-        return brand;
-    }
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-    public Double getBatteryCapacity() {
-        return batteryCapacity;
-    }
-
-    public void setBatteryCapacity(Double batteryCapacity) {
-        this.batteryCapacity = batteryCapacity;
-    }
-    public Double getBatteryPercentage() {
-        return batteryPercentage;
-    }
-    public void setBatteryPercentage(Double batteryPercentage) {
-        this.batteryPercentage = batteryPercentage;
-    }
-    public Double getConsumptionPerKm() {
-        return consumptionPerKm;
-    }
-    public void setConsumptionPerKm(Double consumptionPerKm) {
-        this.consumptionPerKm = consumptionPerKm;
-    }
-    public Long getKilometers() {
-        return kilometers;
-    }
-    public void setKilometers(Long kilometers) {
-        this.kilometers = kilometers;
-    }
-
+    
 }
