@@ -54,4 +54,9 @@ public class ChargerService {
       throw new RuntimeException("Charger not found with id: " + id);
     }
   }
+
+  public Object getChargersByStation(int stationId) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getChargersByStation'");
+  }
 }

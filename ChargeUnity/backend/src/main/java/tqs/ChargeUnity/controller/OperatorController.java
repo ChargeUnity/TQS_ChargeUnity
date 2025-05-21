@@ -1,13 +1,13 @@
 package tqs.ChargeUnity.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import tqs.ChargeUnity.model.Operator;
+import tqs.ChargeUnity.model.Station;
 import tqs.ChargeUnity.repository.OperatorRepository;
-import tqs.ChargeUnity.repository.StationRepository;
+import tqs.ChargeUnity.service.StationService;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,13 +17,12 @@ import java.util.Optional;
 public class OperatorController {
 
   private final OperatorRepository operatorRepository;
-  private final StationRepository stationRepository;
 
-  @Autowired
-  public OperatorController(
-      OperatorRepository operatorRepository, StationRepository stationRepository) {
+  private final StationService stationService;
+
+  public OperatorController(OperatorRepository operatorRepository, StationService stationService) {
     this.operatorRepository = operatorRepository;
-    this.stationRepository = stationRepository;
+    this.stationService = stationService;
   }
 
   @PostMapping
@@ -44,5 +43,10 @@ public class OperatorController {
     } else {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Operator not found");
     }
+  }
+
+  @GetMapping("/station")
+  public List<Station> getStationsByOperator(@RequestParam int operator_id) {
+    return stationService.getStationsByOperator(operator_id);
   }
 }

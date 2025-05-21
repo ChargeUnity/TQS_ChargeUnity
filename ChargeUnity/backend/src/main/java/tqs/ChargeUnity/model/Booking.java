@@ -32,6 +32,10 @@ public class Booking {
   @JoinColumn(name = "charger_id")
   private Charger charger;
 
+  @ManyToOne
+  @JoinColumn(name = "car_id")
+  private Car car;
+
   private LocalDateTime startTime;
   private LocalDateTime endTime;
 

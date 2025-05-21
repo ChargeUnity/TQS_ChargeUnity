@@ -6,7 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import lombok.Getter;
 
+@Getter
 @Data
 @Entity
 public class Operator extends User {
