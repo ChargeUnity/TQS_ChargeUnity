@@ -95,4 +95,51 @@ public class BookingService {
     booking.setStatus(BookingStatus.CANCELLED);
     bookingRepository.save(booking);
   }
+    public Booking startCharging(int bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (booking.getStatus() != BookingStatus.WAITING) {
+            throw new RuntimeException("Booking is not ready to start.");
+        }
+
+        booking.setStatus(BookingStatus.CHARGING);
+        return bookingRepository.save(booking);
+    }
+
+    public BookingStatus getChargingStatus(int bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        return booking.getStatus();
+
+    }
+
+    public Booking stopCharging(int bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (booking.getStatus() != BookingStatus.CHARGING) {
+            throw new RuntimeException("Booking is not currently charging.");
+        }
+
+        booking.setStatus(BookingStatus.COMPLETED);
+        return bookingRepository.save(booking);
+    }
+    public List<Booking> getBookingsByCharger(int chargerId) {
+        return bookingRepository.findByChargerId(chargerId);
+    }
+    public List<Booking> getBookingsByChargerAndDate(int chargerId, LocalDateTime start, LocalDateTime end) {
+        return bookingRepository.findByChargerIdAndStartTimeBetween(chargerId, start, end);
+    }
+    public List<Booking> getOverlappingBookings(int chargerId, LocalDateTime start, LocalDateTime end) {
+        return bookingRepository.findOverlappingBookings(chargerId, start, end);
+    }
+    public Booking cancelBooking(int bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        booking.setStatus(BookingStatus.CANCELLED);
+        return bookingRepository.save(booking);
+    }
+
 }

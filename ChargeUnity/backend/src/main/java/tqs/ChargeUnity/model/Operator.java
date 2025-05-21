@@ -1,16 +1,21 @@
 package tqs.ChargeUnity.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import lombok.Getter;
 
+@Getter
 @Data
 @Entity
 public class Operator extends User {
 
   @ManyToOne
   @JoinColumn(name = "station_id")
+  @JsonBackReference
   private Station station;
 
   public Operator() {

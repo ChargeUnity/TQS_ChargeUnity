@@ -1,6 +1,5 @@
 package tqs.ChargeUnity.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tqs.ChargeUnity.model.Car;
 import tqs.ChargeUnity.model.Driver;
@@ -16,7 +15,6 @@ public class CarService {
   private final CarRepository carRepository;
   private final DriverRepository driverRepository;
 
-  @Autowired
   public CarService(CarRepository carRepository, DriverRepository driverRepository) {
     this.carRepository = carRepository;
     this.driverRepository = driverRepository;
