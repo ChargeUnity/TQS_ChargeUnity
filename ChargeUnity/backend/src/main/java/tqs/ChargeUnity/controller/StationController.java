@@ -1,6 +1,5 @@
 package tqs.ChargeUnity.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +18,11 @@ import java.util.Optional;
 public class StationController {
 
   private final StationService stationService;
+  private OperatorService operatorService;
 
-  @Autowired private OperatorService operatorService;
-
-  @Autowired
-  public StationController(StationService stationService) {
+  public StationController(StationService stationService, OperatorService operatorService) {
     this.stationService = stationService;
+    this.operatorService = operatorService;
   }
 
   @PostMapping
@@ -44,12 +42,9 @@ public class StationController {
     station.setLongitude(String.valueOf(payload.get("longitude")));
 
     Operator operator = operatorOpt.get();
-    station.getOperators().add(operator);
+    station.setOperator(operator);
 
     Station createdStation = stationService.addStation(station);
-
-    operator.setStation(createdStation);
-    operatorService.save(operator);
 
     return new ResponseEntity<>(createdStation, HttpStatus.CREATED);
   }

@@ -1,6 +1,5 @@
 package tqs.ChargeUnity.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tqs.ChargeUnity.model.Station;
 import tqs.ChargeUnity.repository.StationRepository;
@@ -11,7 +10,18 @@ import java.util.Optional;
 @Service
 public class StationService {
 
-  @Autowired private StationRepository stationRepository;
+  private final StationRepository stationRepository;
+  private final ChargerService chargerService;
+  private final OperatorService operatorService;
+
+  public StationService(
+      StationRepository stationRepository,
+      ChargerService chargerService,
+      OperatorService operatorService) {
+    this.stationRepository = stationRepository;
+    this.chargerService = chargerService;
+    this.operatorService = operatorService;
+  }
 
   public List<Station> getAllStations() {
     return stationRepository.findAll();
@@ -41,11 +51,16 @@ public class StationService {
     station.setCity(updated.getCity());
     station.setLatitude(updated.getLatitude());
     station.setLongitude(updated.getLongitude());
+    station.setOperator(updated.getOperator());
 
     return stationRepository.save(station);
   }
 
   public List<Station> getStationsByCity(String city) {
     return stationRepository.findByCityIgnoreCase(city);
+  }
+
+  public List<Station> getStationsByOperator(int operatorId) {
+    return stationRepository.findByOperators_Id(operatorId);
   }
 }

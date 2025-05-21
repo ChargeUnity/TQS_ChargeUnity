@@ -1,4 +1,4 @@
-package tqs.ChargeUnity;
+package tqs.ChargeUnity.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import tqs.ChargeUnity.model.Trip;
 import tqs.ChargeUnity.repository.TripRepository;
-import tqs.ChargeUnity.service.TripService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class TripServiceTest {
+class TripServiceTests {
 
   @Mock private TripRepository tripRepository;
 

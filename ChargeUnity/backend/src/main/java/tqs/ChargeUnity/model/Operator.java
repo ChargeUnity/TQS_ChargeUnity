@@ -1,33 +1,44 @@
 package tqs.ChargeUnity.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
+import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
 @Data
 @Entity
 public class Operator extends User {
 
-  @ManyToOne
-  @JoinColumn(name = "station_id")
-  @JsonBackReference
-  private Station station;
+  @OneToMany(mappedBy = "operator", cascade = CascadeType.ALL)
+  @JsonManagedReference
+  private List<Station> stations = new ArrayList<>();
 
   public Operator() {
     super();
   }
 
-  public Operator(int id, String name, Station station) {
+  public Operator(int id, String name, List<Station> stations) {
     super(id, name);
-    this.station = station;
+    this.stations = stations;
   }
 
   @Override
   public String toString() {
-    return "Operator " + super.toString() + " - Station: " + station.getName() + ";";
+    String rStations = "";
+    for (int i = 0; i < stations.size(); i++) {
+      rStations += i + " - " + stations.get(i).getName();
+      if (i != stations.size() - 1) {
+        rStations += ", ";
+      }
+    }
+    return "Operator " + super.toString() + " - Stations: [" + rStations + "];";
   }
 
   @Override
@@ -35,11 +46,11 @@ public class Operator extends User {
     if (this == obj) return true;
     if (obj == null || getClass() != obj.getClass()) return false;
     Operator operator = (Operator) obj;
-    return super.equals(obj) && station.equals(operator.station);
+    return super.equals(obj) && stations.equals(operator.stations);
   }
 
   @Override
   public int hashCode() {
-    return super.hashCode() + 31 * station.hashCode();
+    return super.hashCode() + 31 * stations.hashCode();
   }
 }
