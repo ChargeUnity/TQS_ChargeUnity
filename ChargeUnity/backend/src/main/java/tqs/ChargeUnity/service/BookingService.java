@@ -45,7 +45,8 @@ public class BookingService {
       throw new RuntimeException("Time slot not available");
     }
 
-    List<Booking> driverBookings = bookingRepository.findOverlapingBookingsOfUser(driverId, startTime, endTime);
+    List<Booking> driverBookings =
+        bookingRepository.findOverlapingBookingsOfUser(driverId, startTime, endTime);
     if (!driverBookings.isEmpty()) {
       throw new RuntimeException("Duplicate booking: Driver already has a booking at this time");
     }
@@ -67,7 +68,8 @@ public class BookingService {
 
   public boolean isTimeSlotAvailable(
       int chargerId, LocalDateTime startTime, LocalDateTime endTime) {
-    List<Booking> bookings = bookingRepository.findOverlappingBookings(chargerId, startTime, endTime);
+    List<Booking> bookings =
+        bookingRepository.findOverlappingBookings(chargerId, startTime, endTime);
 
     return bookings.isEmpty();
   }

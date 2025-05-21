@@ -20,116 +20,118 @@ import static org.mockito.Mockito.*;
 
 class ChargerServiceTest {
 
-    @Mock
-    private ChargerRepository chargerRepository;
+  @Mock private ChargerRepository chargerRepository;
 
-    @InjectMocks
-    private ChargerService chargerService;
+  @InjectMocks private ChargerService chargerService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+  }
 
-    @Test
-    void testGetChargerById() {
-        Charger charger = new Charger();
-        charger.setId(1);
-        when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
+  @Test
+  void testGetChargerById() {
+    Charger charger = new Charger();
+    charger.setId(1);
+    when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
 
-        Optional<Charger> result = chargerService.getChargerById(1);
+    Optional<Charger> result = chargerService.getChargerById(1);
 
-        assertTrue(result.isPresent());
-        assertEquals(1, result.get().getId());
-    }
+    assertTrue(result.isPresent());
+    assertEquals(1, result.get().getId());
+  }
 
-    @Test
-    void testSaveCharger() {
-        Charger charger = new Charger();
-        when(chargerRepository.save(charger)).thenReturn(charger);
+  @Test
+  void testSaveCharger() {
+    Charger charger = new Charger();
+    when(chargerRepository.save(charger)).thenReturn(charger);
 
-        Charger result = chargerService.saveCharger(charger);
+    Charger result = chargerService.saveCharger(charger);
 
-        assertNotNull(result);
-        verify(chargerRepository, times(1)).save(charger);
-    }
+    assertNotNull(result);
+    verify(chargerRepository, times(1)).save(charger);
+  }
 
-    @Test
-    void testGetAllChargers() {
-        List<Charger> chargers = List.of(new Charger(), new Charger());
-        when(chargerRepository.findAll()).thenReturn(chargers);
+  @Test
+  void testGetAllChargers() {
+    List<Charger> chargers = List.of(new Charger(), new Charger());
+    when(chargerRepository.findAll()).thenReturn(chargers);
 
-        List<Charger> result = chargerService.getAllChargers();
+    List<Charger> result = chargerService.getAllChargers();
 
-        assertEquals(2, result.size());
-        verify(chargerRepository, times(1)).findAll();
-    }
+    assertEquals(2, result.size());
+    verify(chargerRepository, times(1)).findAll();
+  }
 
-    @Test
-    void testDeleteCharger() {
-        int chargerId = 5;
+  @Test
+  void testDeleteCharger() {
+    int chargerId = 5;
 
-        chargerService.deleteCharger(chargerId);
+    chargerService.deleteCharger(chargerId);
 
-        verify(chargerRepository, times(1)).deleteById(chargerId);
-    }
+    verify(chargerRepository, times(1)).deleteById(chargerId);
+  }
 
-    @Test
-    void testGetChargersBySearch() {
-        Station station = new Station();
-        List<Charger> chargers = List.of(new Charger());
-        when(chargerRepository.findByStation(station)).thenReturn(chargers);
+  @Test
+  void testGetChargersBySearch() {
+    Station station = new Station();
+    List<Charger> chargers = List.of(new Charger());
+    when(chargerRepository.findByStation(station)).thenReturn(chargers);
 
-        List<Charger> result = chargerService.getChargersBySearch(station);
+    List<Charger> result = chargerService.getChargersBySearch(station);
 
-        assertEquals(1, result.size());
-        verify(chargerRepository, times(1)).findByStation(station);
-    }
+    assertEquals(1, result.size());
+    verify(chargerRepository, times(1)).findByStation(station);
+  }
 
-    // tests related to charger status
-    @Test
-    void testGetChargersByStatus() {
-        ChargerStatus status = ChargerStatus.AVAILABLE;
-        List<Charger> chargers = List.of(new Charger());
-        when(chargerRepository.findByStatus(status)).thenReturn(chargers);
+  // tests related to charger status
+  @Test
+  void testGetChargersByStatus() {
+    ChargerStatus status = ChargerStatus.AVAILABLE;
+    List<Charger> chargers = List.of(new Charger());
+    when(chargerRepository.findByStatus(status)).thenReturn(chargers);
 
-        List<Charger> result = chargerService.getChargersByStatus(status);
+    List<Charger> result = chargerService.getChargersByStatus(status);
 
-        assertEquals(1, result.size());
-        verify(chargerRepository, times(1)).findByStatus(status);
-    }
+    assertEquals(1, result.size());
+    verify(chargerRepository, times(1)).findByStatus(status);
+  }
 
-    @Test
-    void testUpdateChargerStatus_Success() {
-        int chargerId = 10;
-        ChargerStatus newStatus = ChargerStatus.UNAVAILABLE;
-        Charger charger = new Charger();
-        charger.setId(chargerId);
-        charger.setStatus(ChargerStatus.AVAILABLE);
+  @Test
+  void testUpdateChargerStatus_Success() {
+    int chargerId = 10;
+    ChargerStatus newStatus = ChargerStatus.UNAVAILABLE;
+    Charger charger = new Charger();
+    charger.setId(chargerId);
+    charger.setStatus(ChargerStatus.AVAILABLE);
 
-        when(chargerRepository.findById(chargerId)).thenReturn(Optional.of(charger));
-        when(chargerRepository.save(any(Charger.class))).thenAnswer(invocation -> invocation.getArgument(0));
+    when(chargerRepository.findById(chargerId)).thenReturn(Optional.of(charger));
+    when(chargerRepository.save(any(Charger.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Charger updated = chargerService.updateChargerStatus(chargerId, newStatus);
+    Charger updated = chargerService.updateChargerStatus(chargerId, newStatus);
 
-        assertEquals(newStatus, updated.getStatus());
-        verify(chargerRepository, times(1)).findById(chargerId);
-        verify(chargerRepository, times(1)).save(charger);
-    }
+    assertEquals(newStatus, updated.getStatus());
+    verify(chargerRepository, times(1)).findById(chargerId);
+    verify(chargerRepository, times(1)).save(charger);
+  }
 
-    @Test
-    void testUpdateChargerStatus_ChargerNotFound() {
-        int chargerId = 99;
-        ChargerStatus newStatus = ChargerStatus.AVAILABLE;
+  @Test
+  void testUpdateChargerStatus_ChargerNotFound() {
+    int chargerId = 99;
+    ChargerStatus newStatus = ChargerStatus.AVAILABLE;
 
-        when(chargerRepository.findById(chargerId)).thenReturn(Optional.empty());
+    when(chargerRepository.findById(chargerId)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            chargerService.updateChargerStatus(chargerId, newStatus);
-        });
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+              chargerService.updateChargerStatus(chargerId, newStatus);
+            });
 
-        assertTrue(exception.getMessage().contains("Charger not found with id: " + chargerId));
-        verify(chargerRepository, times(1)).findById(chargerId);
-        verify(chargerRepository, never()).save(any());
-    }
+    assertTrue(exception.getMessage().contains("Charger not found with id: " + chargerId));
+    verify(chargerRepository, times(1)).findById(chargerId);
+    verify(chargerRepository, never()).save(any());
+  }
 }
