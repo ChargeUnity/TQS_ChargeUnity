@@ -9,4 +9,8 @@ import java.util.List;
 
 public interface StationRepository extends JpaRepository<Station, Integer> {
     List<Station> findByCityIgnoreCase(String city);
+
+    List<Station> findByLatitudeAndLongitude(String latitude, String longitude);
+
+    List<Station> findByOperatorId(int operatorId);
 }

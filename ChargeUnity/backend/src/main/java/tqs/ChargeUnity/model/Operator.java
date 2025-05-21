@@ -4,7 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import lombok.Getter;
 
+@Getter
 @Data
 @Entity
 public class Operator extends User {
@@ -40,5 +42,20 @@ public class Operator extends User {
         return super.hashCode() + 31 * station.hashCode();
     }
 
+    public void setStation(Station station) {
+        this.station = station;
+    }
+    public int getId() {
+        return super.getId();
+    }
+    public void setId(int id) {
+        super.setId(id);
+    }
+    public String getName() {
+        return super.getName();
+    }
+    public void setName(String name) {
+        super.setName(name);
+    }
 
 }

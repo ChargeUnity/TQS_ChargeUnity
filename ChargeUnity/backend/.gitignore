@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+##only for ines cause lombok isnt working##
+/backend/src/main/java/tqs/ChargeUnity/model/

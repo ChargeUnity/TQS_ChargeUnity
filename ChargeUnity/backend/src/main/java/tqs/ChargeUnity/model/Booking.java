@@ -32,6 +32,11 @@ public class Booking {
     @JoinColumn(name = "charger_id")
     private Charger charger;
 
+    //car_id
+    @ManyToOne
+    @JoinColumn(name = "car_id")
+    private Car car;
+
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
@@ -50,6 +55,56 @@ public class Booking {
                 "\nEnd Time: " + endTime +
                 "\nPrice: " + price +
                 "\nStatus: " + status;
+    }
+    //getters and setters
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public Trip getTrip() {
+        return trip;
+    }
+
+    public void setTrip(Trip trip) {
+        this.trip = trip;
+    }
+    public Driver getDriver() {
+        return driver;
+    }
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+    public Charger getCharger() {
+        return charger;
+    }
+    public void setCharger(Charger charger) {
+        this.charger = charger;
+    }
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+    public Double getPrice() {
+        return price;
+    }
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+    public BookingStatus getStatus() {
+        return status;
+    }
+    public void setStatus(BookingStatus status) {
+        this.status = status;
     }
 
 }

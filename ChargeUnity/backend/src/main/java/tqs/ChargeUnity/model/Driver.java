@@ -6,6 +6,9 @@ import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 
 @Data
 @Entity
@@ -50,6 +53,43 @@ public class Driver extends User{
     @Override
     public int hashCode() {
         return super.hashCode() + 31 * balance.hashCode();
+    }
+    //getter
+    public List<Car> getCars() {
+        return cars;
+    }
+    public void setCars(List<Car> cars) {
+        this.cars = cars;
+    }
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
+    public List<Trip> getTrips() {
+        return trips;
+    }
+    public void setTrips(List<Trip> trips) {
+        this.trips = trips;
+    }
+    public Double getBalance() {
+        return balance;
+    }
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
+    public int getId() {
+        return super.getId();
+    }
+    public void setId(int id) {
+        super.setId(id);
+    }
+    public String getName() {
+        return super.getName();
+    }
+    public void setName(String name) {
+        super.setName(name);
     }
 
 }

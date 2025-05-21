@@ -27,4 +27,18 @@ public abstract class User implements Serializable {
     public String toString() {
         return id + " - Name: " + name;
     }
+    //getters and setters
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    
 }

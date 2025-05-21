@@ -1,5 +1,6 @@
 package tqs.ChargeUnity.service;
 
+import org.springframework.aop.framework.AopConfigException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tqs.ChargeUnity.model.Station;
@@ -13,6 +14,10 @@ public class StationService {
 
     @Autowired
     private StationRepository stationRepository;
+    @Autowired
+    private ChargerService chargerService;
+    @Autowired
+    private OperatorService operatorService;
 
     public List<Station> getAllStations() {
         return stationRepository.findAll();
@@ -21,7 +26,6 @@ public class StationService {
     public Optional<Station> getStationById(int id) {
         return stationRepository.findById(id);
     }
-
     public Station addStation(Station station) {
         return stationRepository.save(station);
     }
@@ -48,6 +52,10 @@ public class StationService {
 
     public List<Station> getStationsByCity(String city) {
         return stationRepository.findByCityIgnoreCase(city);
+    }
+    //get stations by operator
+    public List<Station> getStationsByOperator(int operatorId) {
+        return stationRepository.findByOperatorId(operatorId);
     }
 
 }

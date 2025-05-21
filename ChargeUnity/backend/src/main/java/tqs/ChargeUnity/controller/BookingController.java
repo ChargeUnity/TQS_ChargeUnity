@@ -15,16 +15,16 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
-    @GetMapping("/{driverId}")
-    public ResponseEntity<?> getBookingsByDriver(@PathVariable int driverId) {
+    @GetMapping("/driver/{driverId}")
+    public ResponseEntity<?> getBookingsByDriver(int driverId) {
         try {
             return ResponseEntity.ok(bookingService.getBookingsByDriver(driverId));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("/{chargerId}")
-    public ResponseEntity<?> getBookingsByCharger(@PathVariable int chargerId) {
+    @GetMapping("/charger/{chargerId}")
+    public ResponseEntity<?> getBookingsByCharger(int chargerId) {
         try {
             return ResponseEntity.ok(bookingService.getBookingsByCharger(chargerId));
         } catch (RuntimeException e) {
@@ -49,7 +49,7 @@ public class BookingController {
 
 
     @PostMapping("/{id}/start")
-    public ResponseEntity<?> startCharging(@PathVariable int id) {
+    public ResponseEntity<?> startCharging(int id) {
         try {
             Booking updated = bookingService.startCharging(id);
             return ResponseEntity.ok(updated);
@@ -59,7 +59,7 @@ public class BookingController {
     }
 
     @GetMapping("/{id}/status")
-    public ResponseEntity<?> getStatus(@PathVariable int id) {
+    public ResponseEntity<?> getStatus(int id) {
         try {
             BookingStatus status = bookingService.getChargingStatus(id);
             return ResponseEntity.ok(status);
@@ -70,7 +70,7 @@ public class BookingController {
 
 
     @PostMapping("/{id}/stop")
-    public ResponseEntity<?> stopCharging(@PathVariable int id) {
+    public ResponseEntity<?> stopCharging(int id) {
         try {
             Booking updated = bookingService.stopCharging(id);
             return ResponseEntity.ok(updated);
@@ -80,7 +80,7 @@ public class BookingController {
     }
 
     @PostMapping("/{id}/cancel")
-    public ResponseEntity<?> cancelBooking(@PathVariable int id) {
+    public ResponseEntity<?> cancelBooking(int id) {
         try {
             Booking updated = bookingService.cancelBooking(id);
             return ResponseEntity.ok(updated);

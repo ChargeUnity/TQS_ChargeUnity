@@ -1,6 +1,7 @@
 package tqs.ChargeUnity.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tqs.ChargeUnity.enums.ChargerType;
 import tqs.ChargeUnity.model.Charger;
 import tqs.ChargeUnity.model.Station;
 import tqs.ChargeUnity.enums.ChargerStatus;
@@ -55,4 +56,8 @@ public class ChargerService {
         }
     }
 
+    public Object getChargersByStation(int stationId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getChargersByStation'");
+    }
 }

@@ -1,5 +1,7 @@
 package tqs.ChargeUnity.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import tqs.ChargeUnity.enums.ChargerType;
 import tqs.ChargeUnity.enums.ChargerStatus;
 import tqs.ChargeUnity.config.Utils;
@@ -17,6 +19,8 @@ import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Data
+@Getter
+@Setter
 @Entity
 public class Charger {
 
@@ -47,5 +51,45 @@ public class Charger {
                 " - " + Utils.round(pricePerKWh, 2) + "€/kWh" +
                 " - Station: " + station.getName() + ";";
     }
+
+    //getters and setters
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public Station getStation() {
+        return station;
+    }
+    public void setStation(Station station) {
+        this.station = station;
+    }
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
+    public ChargerStatus getStatus() {
+        return status;
+    }
+    public void setStatus(ChargerStatus status) {
+        this.status = status;
+    }
+    public ChargerType getType() {
+        return type;
+    }
+    public void setType(ChargerType type) {
+        this.type = type;
+    }
+    public Double getPricePerKWh() {
+        return pricePerKWh;
+    }
+    public void setPricePerKWh(Double pricePerKWh) {
+        this.pricePerKWh = pricePerKWh;
+    }
+
+
 
 }

@@ -30,8 +30,7 @@ class BookingServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        booking = new Booking();
-        booking.setId(1);
+        booking = new Booking();booking.setId(1);
         booking.setStatus(BookingStatus.WAITING);
     }
 
