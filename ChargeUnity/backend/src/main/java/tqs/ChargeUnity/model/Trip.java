@@ -54,61 +54,6 @@ public class Trip {
                     "\nPrice: " + price;
         }
 
-        //getters and setters
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public Driver getDriver() {
-        return driver;
-    }
-    public void setDriver(Driver driver) {
-        this.driver = driver;
-    }
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
-    public String getStartCoordinates() {
-        return startCoordinates;
-    }
-    public void setStartCoordinates(String startCoordinates) {
-        this.startCoordinates = startCoordinates;
-    }
-    public String getEndCoordinates() {
-        return endCoordinates;
-    }
-    public void setEndCoordinates(String endCoordinates) {
-        this.endCoordinates = endCoordinates;
-    }
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-    public String getDurationSeconds() {
-        return durationSeconds;
-    }
-    public void setDurationSeconds(String durationSeconds) {
-        this.durationSeconds = durationSeconds;
-    }
-    public Double getDistance() {
-        return distance;
-    }
-    public void setDistance(Double distance) {
-        this.distance = distance;
-    }
-    public Double getPrice() {
-        return price;
-    }
-    public void setPrice(Double price) {
-        this.price = price;
-    }
 
 }
