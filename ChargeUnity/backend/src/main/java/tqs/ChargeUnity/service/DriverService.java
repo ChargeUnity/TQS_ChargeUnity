@@ -1,6 +1,5 @@
 package tqs.ChargeUnity.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,24 +18,26 @@ public class DriverService {
   }
 
   public List<Driver> findAll() {
-    return new ArrayList<>();
+    return driverRepository.findAll();
   }
 
   public Optional<Driver> findById(int id) {
-    return Optional.empty();
+    return driverRepository.findById(id);
   }
 
   public Optional<Driver> findByName(String name) {
     return Optional.empty();
   }
 
-  public Optional<Driver> save(Driver driver) {
-    return Optional.empty();
+  public Driver save(Driver driver) {
+    return driverRepository.save(driver);
   }
 
   public Optional<Driver> update(Driver driver) {
     return Optional.empty();
   }
 
-  public void deleteById(int id) {}
+  public void deleteById(int id) {
+    driverRepository.deleteById(id);
+  }
 }
