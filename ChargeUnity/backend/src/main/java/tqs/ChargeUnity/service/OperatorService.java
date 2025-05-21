@@ -24,27 +24,27 @@ public class OperatorService {
     return operatorRepository.findById(id);
   }
 
-  public Optional<Operator> findByName(String name) {
-    return operatorRepository.findAll().stream()
-        .filter(op -> op.getName().equalsIgnoreCase(name))
-        .findFirst();
-  }
-
-  public Operator save(Operator operator) {
-    return operatorRepository.save(operator);
-  }
-
-  public Operator update(Operator operator) {
-    if (!operatorRepository.existsById(operator.getId())) {
-      throw new RuntimeException("Operator with ID " + operator.getId() + " not found.");
+    public Optional<Operator> findByName(String name) {
+        return operatorRepository.findByName(name);
     }
-    return operatorRepository.save(operator);
-  }
 
-  public void deleteById(int id) {
-    if (!operatorRepository.existsById(id)) {
-      throw new RuntimeException("Operator with ID " + id + " not found.");
+    public Operator save(Operator operator) {
+        return operatorRepository.save(operator);
     }
-    operatorRepository.deleteById(id);
-  }
+
+    public Optional<Operator> update(Operator operator) {
+        return operatorRepository.findById(operator.getId())
+                .map(existingOperator -> {
+                    existingOperator.setName(operator.getName());
+                    return operatorRepository.save(existingOperator);
+                });
+    }
+
+    public void deleteById(int id) {
+        if (!operatorRepository.existsById(id)) {
+            throw new RuntimeException("Operator with ID " + id + " not found.");
+        }
+        operatorRepository.deleteById(id);
+    }
+
 }

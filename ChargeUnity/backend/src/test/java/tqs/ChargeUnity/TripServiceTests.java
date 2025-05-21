@@ -16,7 +16,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class TripServiceTest {
+class TripServiceTests {
 
   @Mock private TripRepository tripRepository;
 
