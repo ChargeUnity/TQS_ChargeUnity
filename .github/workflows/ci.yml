@@ -7,6 +7,9 @@ on:
 
 jobs:
   build:
+    if: |
+      !(github.event.pull_request.draft == true &&
+        contains(join(github.event.pull_request.labels.*.name, ','), 'ci:skip'))
     name: Build
     runs-on: ubuntu-latest
     defaults:
@@ -45,6 +48,9 @@ jobs:
             ChargeUnity/backend/target/*.jar
 
   test:
+    if: |
+      !(github.event.pull_request.draft == true &&
+        contains(join(github.event.pull_request.labels.*.name, ','), 'ci:skip'))
     name: Test and Coverage
     runs-on: ubuntu-latest
     needs: build
@@ -77,6 +83,9 @@ jobs:
           path: ChargeUnity/backend/target/site/jacoco/
 
   sonar:
+    if: |
+      !(github.event.pull_request.draft == true &&
+        contains(join(github.event.pull_request.labels.*.name, ','), 'ci:skip'))
     name: SonarQube Analysis
     runs-on: ubuntu-latest
     needs: test
