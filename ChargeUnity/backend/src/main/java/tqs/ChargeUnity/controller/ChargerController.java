@@ -12,7 +12,7 @@ import tqs.ChargeUnity.repository.ChargerRepository;
 import tqs.ChargeUnity.repository.StationRepository;
 
 @RestController
-@RequestMapping("/api/v1/station/{stationId}/charger")
+@RequestMapping("/api/v1/charger")
 public class ChargerController {
 
   private final StationRepository stationRepository;
@@ -40,7 +40,7 @@ public class ChargerController {
     return ResponseEntity.status(HttpStatus.CREATED).body(chargerRepository.save(charger));
   }
 
-  @GetMapping
+  @GetMapping("/station/{stationId}")
   public ResponseEntity<?> getChargersByStation(@PathVariable int stationId) {
     Station station =
         stationRepository
@@ -50,7 +50,7 @@ public class ChargerController {
     return ResponseEntity.ok(chargerRepository.findByStation(station));
   }
 
-  @PutMapping("/{chargerId}/status")
+  @PatchMapping("/{chargerId}/status")
     public ResponseEntity<?> updateChargerStatus(@PathVariable int chargerId, @RequestParam String status) {
         try {
             Charger updatedCharger = chargerService.updateChargerStatus(chargerId, ChargerStatus.valueOf(status));

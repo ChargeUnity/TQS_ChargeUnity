@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Service;
 
 import tqs.ChargeUnity.model.Driver;
@@ -31,7 +30,9 @@ public class DriverService {
 
 
   public List<Driver> findAll() {
-    return new ArrayList<>();
+        List<Driver> drivers = new ArrayList<>();
+        driverRepository.findAll().forEach(drivers::add);
+        return drivers;
   }
 
     public Optional<Driver> findById(int id) {
@@ -70,5 +71,11 @@ public class DriverService {
         });
   }
 
-  public void deleteById(int id) {}
+  public void deleteById(int id) {
+    if (driverRepository.existsById(id)) {
+      driverRepository.deleteById(id);
+    } else {
+      throw new IllegalArgumentException("Driver with ID " + id + " does not exist.");
+    }
+  }
 }
