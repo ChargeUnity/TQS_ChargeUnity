@@ -1,5 +1,7 @@
 package tqs.ChargeUnity.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -11,6 +13,7 @@ public class Operator extends User {
 
   @ManyToOne
   @JoinColumn(name = "station_id")
+  @JsonBackReference
   private Station station;
 
   public Operator() {
