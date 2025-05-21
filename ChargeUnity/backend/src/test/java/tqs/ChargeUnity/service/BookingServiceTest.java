@@ -24,229 +24,247 @@ import static org.mockito.Mockito.*;
 
 class BookingServiceTest {
 
-    @Mock
-    private BookingRepository bookingRepository;
+  @Mock private BookingRepository bookingRepository;
 
-    @Mock
-    private DriverRepository driverRepository;
+  @Mock private DriverRepository driverRepository;
 
-    @Mock
-    private ChargerRepository chargerRepository;
+  @Mock private ChargerRepository chargerRepository;
 
-    @InjectMocks
-    private BookingService bookingService;
+  @InjectMocks private BookingService bookingService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+  }
 
-    // tests related to booking creation
-    @Test
-    void testCreateBooking() {
-        Driver driver = new Driver();
-        driver.setId(1);
-        Charger charger = new Charger();
-        charger.setId(1);
-        charger.setPricePerKWh(0.5);
+  // tests related to booking creation
+  @Test
+  void testCreateBooking() {
+    Driver driver = new Driver();
+    driver.setId(1);
+    Charger charger = new Charger();
+    charger.setId(1);
+    charger.setPricePerKWh(0.5);
 
-        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-        LocalDateTime endTime = startTime.plusHours(2);
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+    LocalDateTime endTime = startTime.plusHours(2);
 
-        when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
-        when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
-        when(bookingRepository.findByChargerId(1)).thenReturn(new ArrayList<>());
-        when(bookingRepository.findByDriverId(1)).thenReturn(new ArrayList<>());
+    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
+    when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
+    when(bookingRepository.findByChargerId(1)).thenReturn(new ArrayList<>());
+    when(bookingRepository.findByDriverId(1)).thenReturn(new ArrayList<>());
 
-        Booking booking = bookingService.createBooking(1, 1, startTime, endTime);
+    Booking booking = bookingService.createBooking(1, 1, startTime, endTime);
 
-        assertNotNull(booking);
-        assertEquals(BookingStatus.WAITING, booking.getStatus());
-        verify(bookingRepository, times(1)).save(booking);
-    }
+    assertNotNull(booking);
+    assertEquals(BookingStatus.WAITING, booking.getStatus());
+    verify(bookingRepository, times(1)).save(booking);
+  }
 
-    @Test
-    void testCreateBookingDuplicate() {
-        Driver driver = new Driver();
-        driver.setId(1);
-        Charger charger = new Charger();
-        charger.setId(1);
-        charger.setPricePerKWh(0.5);
+  @Test
+  void testCreateBookingDuplicate() {
+    Driver driver = new Driver();
+    driver.setId(1);
+    Charger charger = new Charger();
+    charger.setId(1);
+    charger.setPricePerKWh(0.5);
 
-        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-        LocalDateTime endTime = startTime.plusHours(2);
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+    LocalDateTime endTime = startTime.plusHours(2);
 
-        Booking existingBooking = new Booking();
-        existingBooking.setStartTime(startTime.minusMinutes(30));
-        existingBooking.setEndTime(endTime.plusMinutes(30));
+    Booking existingBooking = new Booking();
+    existingBooking.setStartTime(startTime.minusMinutes(30));
+    existingBooking.setEndTime(endTime.plusMinutes(30));
 
-        when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
-        when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
-        when(bookingRepository.findByChargerId(1)).thenReturn(new ArrayList<>());
-        when(bookingRepository.findByDriverId(1)).thenReturn(List.of(existingBooking));
-        when(bookingRepository.findOverlapingBookingsOfUser(1, startTime, endTime)).thenReturn(List.of(existingBooking));
+    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
+    when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
+    when(bookingRepository.findByChargerId(1)).thenReturn(new ArrayList<>());
+    when(bookingRepository.findByDriverId(1)).thenReturn(List.of(existingBooking));
+    when(bookingRepository.findOverlapingBookingsOfUser(1, startTime, endTime))
+        .thenReturn(List.of(existingBooking));
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            bookingService.createBooking(1, 1, startTime, endTime);
-        });
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+              bookingService.createBooking(1, 1, startTime, endTime);
+            });
 
-        assertEquals("Duplicate booking: Driver already has a booking at this time", exception.getMessage());
-    }
+    assertEquals(
+        "Duplicate booking: Driver already has a booking at this time", exception.getMessage());
+  }
 
-    @Test
-    void testCreateBookingTimeSlotNotAvailable() {
-        Driver driver = new Driver();
-        driver.setId(1);
-        Charger charger = new Charger();
-        charger.setId(1);
+  @Test
+  void testCreateBookingTimeSlotNotAvailable() {
+    Driver driver = new Driver();
+    driver.setId(1);
+    Charger charger = new Charger();
+    charger.setId(1);
 
-        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-        LocalDateTime endTime = startTime.plusHours(2);
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+    LocalDateTime endTime = startTime.plusHours(2);
 
-        // Simulate an existing booking that overlaps with the requested time slot
-        Booking existingBooking = new Booking();
-        existingBooking.setStartTime(startTime.minusMinutes(30));
-        existingBooking.setEndTime(endTime.plusMinutes(30));
-        
-        when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
-        when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
-        when(bookingRepository.findOverlappingBookings(1, startTime, endTime)).thenReturn(List.of(existingBooking));
+    // Simulate an existing booking that overlaps with the requested time slot
+    Booking existingBooking = new Booking();
+    existingBooking.setStartTime(startTime.minusMinutes(30));
+    existingBooking.setEndTime(endTime.plusMinutes(30));
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            bookingService.createBooking(1, 1, startTime, endTime);
-        });
+    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
+    when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
+    when(bookingRepository.findOverlappingBookings(1, startTime, endTime))
+        .thenReturn(List.of(existingBooking));
 
-        assertEquals("Time slot not available", exception.getMessage());
-    }
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+              bookingService.createBooking(1, 1, startTime, endTime);
+            });
 
-    @Test
-    void testCreateBookingDriverNotFound() {
-        when(driverRepository.findById(1)).thenReturn(Optional.empty());
+    assertEquals("Time slot not available", exception.getMessage());
+  }
 
-        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-        LocalDateTime endTime = startTime.plusHours(2);
+  @Test
+  void testCreateBookingDriverNotFound() {
+    when(driverRepository.findById(1)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            bookingService.createBooking(1, 1, startTime, endTime);
-        });
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+    LocalDateTime endTime = startTime.plusHours(2);
 
-        assertEquals("Driver not found", exception.getMessage());
-    }
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+              bookingService.createBooking(1, 1, startTime, endTime);
+            });
 
-    @Test
-    void testCreateBookingChargerNotFound() {
-        Driver driver = new Driver();
-        driver.setId(1);
+    assertEquals("Driver not found", exception.getMessage());
+  }
 
-        when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
-        when(chargerRepository.findById(1)).thenReturn(Optional.empty());
+  @Test
+  void testCreateBookingChargerNotFound() {
+    Driver driver = new Driver();
+    driver.setId(1);
 
-        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-        LocalDateTime endTime = startTime.plusHours(2);
+    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
+    when(chargerRepository.findById(1)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            bookingService.createBooking(1, 1, startTime, endTime);
-        });
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+    LocalDateTime endTime = startTime.plusHours(2);
 
-        assertEquals("Charger not found", exception.getMessage());
-    }
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+              bookingService.createBooking(1, 1, startTime, endTime);
+            });
 
-    // tests related to time slot availability
-    @Test
-    void testIsTimeSlotAvailableTrue() {
-        when(bookingRepository.findByChargerId(1)).thenReturn(new ArrayList<>());
-        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-        LocalDateTime endTime = startTime.plusHours(2);
+    assertEquals("Charger not found", exception.getMessage());
+  }
 
-        boolean available = bookingService.isTimeSlotAvailable(1, startTime, endTime);
-        assertTrue(available);
-    }
+  // tests related to time slot availability
+  @Test
+  void testIsTimeSlotAvailableTrue() {
+    when(bookingRepository.findByChargerId(1)).thenReturn(new ArrayList<>());
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+    LocalDateTime endTime = startTime.plusHours(2);
 
-    @Test
-    void testIsTimeSlotAvailableFalse() {
-        Booking booking = new Booking();
-        LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-        LocalDateTime endTime = startTime.plusHours(2);
-        booking.setStartTime(startTime.minusMinutes(30));
-        booking.setEndTime(endTime.plusMinutes(30));
+    boolean available = bookingService.isTimeSlotAvailable(1, startTime, endTime);
+    assertTrue(available);
+  }
 
-        when(bookingRepository.findOverlappingBookings(1, startTime, endTime)).thenReturn(List.of(booking));
+  @Test
+  void testIsTimeSlotAvailableFalse() {
+    Booking booking = new Booking();
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+    LocalDateTime endTime = startTime.plusHours(2);
+    booking.setStartTime(startTime.minusMinutes(30));
+    booking.setEndTime(endTime.plusMinutes(30));
 
-        boolean available = bookingService.isTimeSlotAvailable(1, startTime, endTime);
-        assertFalse(available);
-    }
+    when(bookingRepository.findOverlappingBookings(1, startTime, endTime))
+        .thenReturn(List.of(booking));
 
-    // tests related to booking retrieval
-    @Test
-    void testGetBookingsByDriver() {
-        Booking booking = new Booking();
-        when(bookingRepository.findByDriverId(1)).thenReturn(List.of(booking));
+    boolean available = bookingService.isTimeSlotAvailable(1, startTime, endTime);
+    assertFalse(available);
+  }
 
-        List<Booking> bookings = bookingService.getBookingsByDriver(1);
-        assertEquals(1, bookings.size());
-        assertSame(booking, bookings.get(0));
-    }
+  // tests related to booking retrieval
+  @Test
+  void testGetBookingsByDriver() {
+    Booking booking = new Booking();
+    when(bookingRepository.findByDriverId(1)).thenReturn(List.of(booking));
 
-    @Test
-    void testGetBookingByIdFound() {
-        Booking booking = new Booking();
-        when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    List<Booking> bookings = bookingService.getBookingsByDriver(1);
+    assertEquals(1, bookings.size());
+    assertSame(booking, bookings.get(0));
+  }
 
-        Optional<Booking> result = bookingService.getBookingById(1);
-        assertTrue(result.isPresent());
-        assertSame(booking, result.get());
-    }
+  @Test
+  void testGetBookingByIdFound() {
+    Booking booking = new Booking();
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
 
-    @Test
-    void testGetBookingByIdNotFound() {
-        when(bookingRepository.findById(1)).thenReturn(Optional.empty());
+    Optional<Booking> result = bookingService.getBookingById(1);
+    assertTrue(result.isPresent());
+    assertSame(booking, result.get());
+  }
 
-        Optional<Booking> result = bookingService.getBookingById(1);
-        assertFalse(result.isPresent());
-    }
+  @Test
+  void testGetBookingByIdNotFound() {
+    when(bookingRepository.findById(1)).thenReturn(Optional.empty());
 
-    // tests related to booking cancellation
-    @Test
-    void testCancelBookingSuccess() {
-        Driver driver = new Driver();
-        driver.setId(1);
-        Booking booking = new Booking();
-        booking.setDriver(driver);
-        booking.setStatus(BookingStatus.WAITING);
+    Optional<Booking> result = bookingService.getBookingById(1);
+    assertFalse(result.isPresent());
+  }
 
-        when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
-        when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
+  // tests related to booking cancellation
+  @Test
+  void testCancelBookingSuccess() {
+    Driver driver = new Driver();
+    driver.setId(1);
+    Booking booking = new Booking();
+    booking.setDriver(driver);
+    booking.setStatus(BookingStatus.WAITING);
 
-        bookingService.cancelBooking(1, 1);
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
 
-        assertEquals(BookingStatus.CANCELLED, booking.getStatus());
-        verify(bookingRepository).save(booking);
-    }
+    bookingService.cancelBooking(1, 1);
 
-    @Test
-    void testCancelBookingNotFound() {
-        when(bookingRepository.findById(1)).thenReturn(Optional.empty());
+    assertEquals(BookingStatus.CANCELLED, booking.getStatus());
+    verify(bookingRepository).save(booking);
+  }
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            bookingService.cancelBooking(1, 1);
-        });
+  @Test
+  void testCancelBookingNotFound() {
+    when(bookingRepository.findById(1)).thenReturn(Optional.empty());
 
-        assertEquals("Booking not found", exception.getMessage());
-    }
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+              bookingService.cancelBooking(1, 1);
+            });
 
-    @Test
-    void testCancelBookingUnauthorized() {
-        Driver driver = new Driver();
-        driver.setId(2);
-        Booking booking = new Booking();
-        booking.setDriver(driver);
+    assertEquals("Booking not found", exception.getMessage());
+  }
 
-        when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+  @Test
+  void testCancelBookingUnauthorized() {
+    Driver driver = new Driver();
+    driver.setId(2);
+    Booking booking = new Booking();
+    booking.setDriver(driver);
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            bookingService.cancelBooking(1, 1);
-        });
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
 
-        assertTrue(exception.getMessage().contains("Unauthorized"));
-    }
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+              bookingService.cancelBooking(1, 1);
+            });
+
+    assertTrue(exception.getMessage().contains("Unauthorized"));
+  }
 }
