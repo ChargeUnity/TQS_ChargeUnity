@@ -25,20 +25,22 @@ public class OperatorService {
   }
 
   public Optional<Operator> findByName(String name) {
-    return operatorRepository.findAll().stream()
-        .filter(op -> op.getName().equalsIgnoreCase(name))
-        .findFirst();
+    return operatorRepository.findByName(name);
   }
 
   public Operator save(Operator operator) {
     return operatorRepository.save(operator);
   }
 
-  public Operator update(Operator operator) {
-    if (!operatorRepository.existsById(operator.getId())) {
-      throw new RuntimeException("Operator with ID " + operator.getId() + " not found.");
-    }
-    return operatorRepository.save(operator);
+  public Optional<Operator> update(Operator operator) {
+    return operatorRepository
+        .findById(operator.getId())
+        .map(
+            existingOperator -> {
+              existingOperator.setName(operator.getName());
+              existingOperator.setStations(operator.getStations());
+              return operatorRepository.save(existingOperator);
+            });
   }
 
   public void deleteById(int id) {

@@ -1,27 +1,32 @@
 package tqs.ChargeUnity.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import tqs.ChargeUnity.model.Charger;
 import tqs.ChargeUnity.model.Station;
+import tqs.ChargeUnity.enums.ChargerStatus;
+import tqs.ChargeUnity.service.ChargerService;
 import tqs.ChargeUnity.repository.ChargerRepository;
 import tqs.ChargeUnity.repository.StationRepository;
 
 @RestController
-@RequestMapping("/api/v1/station/{stationId}/charger")
+@RequestMapping("/api/v1/charger")
 public class ChargerController {
 
   private final StationRepository stationRepository;
   private final ChargerRepository chargerRepository;
 
-  @Autowired
+  private final ChargerService chargerService;
+
   public ChargerController(
-      StationRepository stationRepository, ChargerRepository chargerRepository) {
+      StationRepository stationRepository,
+      ChargerRepository chargerRepository,
+      ChargerService chargerService) {
     this.stationRepository = stationRepository;
     this.chargerRepository = chargerRepository;
+    this.chargerService = chargerService;
   }
 
   @PostMapping
@@ -37,7 +42,7 @@ public class ChargerController {
     return ResponseEntity.status(HttpStatus.CREATED).body(chargerRepository.save(charger));
   }
 
-  @GetMapping
+  @GetMapping("/station/{stationId}")
   public ResponseEntity<?> getChargersByStation(@PathVariable int stationId) {
     Station station =
         stationRepository
@@ -45,5 +50,17 @@ public class ChargerController {
             .orElseThrow(() -> new RuntimeException("Station not found"));
 
     return ResponseEntity.ok(chargerRepository.findByStation(station));
+  }
+
+  @PatchMapping("/{chargerId}/status")
+  public ResponseEntity<?> updateChargerStatus(
+      @PathVariable int chargerId, @RequestParam String status) {
+    try {
+      Charger updatedCharger =
+          chargerService.updateChargerStatus(chargerId, ChargerStatus.valueOf(status));
+      return ResponseEntity.ok(updatedCharger);
+    } catch (RuntimeException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 }

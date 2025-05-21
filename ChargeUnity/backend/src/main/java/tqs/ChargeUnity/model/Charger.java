@@ -1,5 +1,7 @@
 package tqs.ChargeUnity.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import tqs.ChargeUnity.enums.ChargerType;
 import tqs.ChargeUnity.enums.ChargerStatus;
 import tqs.ChargeUnity.config.Utils;
@@ -19,6 +21,8 @@ import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Data
+@Getter
+@Setter
 @Entity
 public class Charger {
 
