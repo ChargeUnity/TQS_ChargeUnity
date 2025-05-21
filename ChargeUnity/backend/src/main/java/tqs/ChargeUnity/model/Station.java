@@ -3,6 +3,8 @@ package tqs.ChargeUnity.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,9 +29,11 @@ public class Station {
   private String longitude;
 
   @OneToMany(mappedBy = "station", cascade = CascadeType.ALL)
+  @JsonManagedReference
   private List<Charger> chargers = new ArrayList<>();
 
   @OneToMany(mappedBy = "station", cascade = CascadeType.ALL)
+  @JsonManagedReference
   private List<Operator> operators = new ArrayList<>();
 
   public Station() {}

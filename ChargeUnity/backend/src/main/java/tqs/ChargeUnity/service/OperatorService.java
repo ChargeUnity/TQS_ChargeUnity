@@ -1,11 +1,9 @@
 package tqs.ChargeUnity.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-
 import tqs.ChargeUnity.model.Operator;
 import tqs.ChargeUnity.repository.OperatorRepository;
 
@@ -19,24 +17,34 @@ public class OperatorService {
   }
 
   public List<Operator> findAll() {
-    return new ArrayList<>();
+    return operatorRepository.findAll();
   }
 
   public Optional<Operator> findById(int id) {
-    return Optional.empty();
+    return operatorRepository.findById(id);
   }
 
   public Optional<Operator> findByName(String name) {
-    return Optional.empty();
+    return operatorRepository.findAll().stream()
+        .filter(op -> op.getName().equalsIgnoreCase(name))
+        .findFirst();
   }
 
-  public Optional<Operator> save(Operator operator) {
-    return Optional.empty();
+  public Operator save(Operator operator) {
+    return operatorRepository.save(operator);
   }
 
-  public Optional<Operator> update(Operator operator) {
-    return Optional.empty();
+  public Operator update(Operator operator) {
+    if (!operatorRepository.existsById(operator.getId())) {
+      throw new RuntimeException("Operator with ID " + operator.getId() + " not found.");
+    }
+    return operatorRepository.save(operator);
   }
 
-  public void deleteById(int id) {}
+  public void deleteById(int id) {
+    if (!operatorRepository.existsById(id)) {
+      throw new RuntimeException("Operator with ID " + id + " not found.");
+    }
+    operatorRepository.deleteById(id);
+  }
 }

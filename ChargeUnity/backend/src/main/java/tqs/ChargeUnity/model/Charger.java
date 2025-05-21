@@ -7,6 +7,8 @@ import tqs.ChargeUnity.config.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +28,7 @@ public class Charger {
 
   @ManyToOne
   @JoinColumn(name = "station_id")
+  @JsonBackReference
   private Station station;
 
   @OneToMany(mappedBy = "charger")
