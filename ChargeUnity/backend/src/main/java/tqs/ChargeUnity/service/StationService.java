@@ -1,7 +1,5 @@
 package tqs.ChargeUnity.service;
 
-import org.springframework.aop.framework.AopConfigException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tqs.ChargeUnity.model.Station;
 import tqs.ChargeUnity.repository.StationRepository;
@@ -13,8 +11,8 @@ import java.util.Optional;
 public class StationService {
 
   private final StationRepository stationRepository;
-    private final ChargerService chargerService;
-    private final OperatorService operatorService;
+  private final ChargerService chargerService;
+  private final OperatorService operatorService;
 
   public StationService(
       StationRepository stationRepository,
@@ -32,6 +30,7 @@ public class StationService {
   public Optional<Station> getStationById(int id) {
     return stationRepository.findById(id);
   }
+
   public Station addStation(Station station) {
     return stationRepository.save(station);
   }
@@ -59,8 +58,9 @@ public class StationService {
   public List<Station> getStationsByCity(String city) {
     return stationRepository.findByCityIgnoreCase(city);
   }
-    //get stations by operator
-    public List<Station> getStationsByOperator(int operatorId) {
-        return stationRepository.findByOperators_Id(operatorId);
-    }
+
+  // get stations by operator
+  public List<Station> getStationsByOperator(int operatorId) {
+    return stationRepository.findByOperators_Id(operatorId);
+  }
 }

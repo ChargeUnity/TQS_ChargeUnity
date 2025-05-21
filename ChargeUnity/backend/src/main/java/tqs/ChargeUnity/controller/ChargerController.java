@@ -21,7 +21,9 @@ public class ChargerController {
   private final ChargerService chargerService;
 
   public ChargerController(
-      StationRepository stationRepository, ChargerRepository chargerRepository, ChargerService chargerService) {
+      StationRepository stationRepository,
+      ChargerRepository chargerRepository,
+      ChargerService chargerService) {
     this.stationRepository = stationRepository;
     this.chargerRepository = chargerRepository;
     this.chargerService = chargerService;
@@ -51,12 +53,14 @@ public class ChargerController {
   }
 
   @PutMapping("/{chargerId}/status")
-    public ResponseEntity<?> updateChargerStatus(@PathVariable int chargerId, @RequestParam String status) {
-        try {
-            Charger updatedCharger = chargerService.updateChargerStatus(chargerId, ChargerStatus.valueOf(status));
-            return ResponseEntity.ok(updatedCharger);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+  public ResponseEntity<?> updateChargerStatus(
+      @PathVariable int chargerId, @RequestParam String status) {
+    try {
+      Charger updatedCharger =
+          chargerService.updateChargerStatus(chargerId, ChargerStatus.valueOf(status));
+      return ResponseEntity.ok(updatedCharger);
+    } catch (RuntimeException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
     }
+  }
 }

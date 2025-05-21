@@ -20,8 +20,7 @@ public class OperatorController {
 
   private final StationService stationService;
 
-  public OperatorController(
-      OperatorRepository operatorRepository, StationService stationService) {
+  public OperatorController(OperatorRepository operatorRepository, StationService stationService) {
     this.operatorRepository = operatorRepository;
     this.stationService = stationService;
   }
@@ -48,6 +47,6 @@ public class OperatorController {
 
   @GetMapping("/station")
   public List<Station> getStationsByOperator(@RequestParam int operator_id) {
-      return stationService.getStationsByOperator(operator_id);
+    return stationService.getStationsByOperator(operator_id);
   }
 }
