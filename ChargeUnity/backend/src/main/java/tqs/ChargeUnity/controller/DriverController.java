@@ -25,54 +25,56 @@ import tqs.ChargeUnity.service.DriverService;
 @RequestMapping("/api/v1/driver")
 public class DriverController {
 
-    private final DriverService driverService;
-    private final BookingService bookingService;
+  private final DriverService driverService;
+  private final BookingService bookingService;
 
-    public DriverController(DriverService driverService, BookingService bookingService) {
-        this.bookingService = bookingService;
-        this.driverService = driverService;
+  public DriverController(DriverService driverService, BookingService bookingService) {
+    this.bookingService = bookingService;
+    this.driverService = driverService;
+  }
+
+  @GetMapping
+  public ResponseEntity<?> getAllDrivers() {
+    return ResponseEntity.ok(driverService.getAllDrivers());
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<Driver> getDriverById(@PathVariable int id) {
+    return driverService
+        .getDriverById(id)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+  }
+
+  @PostMapping
+  public ResponseEntity<?> createDriver(@RequestBody Driver driver) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(driverService.createDriver(driver));
+  }
+
+  @PatchMapping("/{id}")
+  public ResponseEntity<Driver> updateDriver(@PathVariable int id, @RequestBody Driver driver) {
+    return driverService
+        .updateDriver(id, driver)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> deleteDriver(@PathVariable int id) {
+    if (driverService.deleteDriver(id)) {
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver not found");
     }
+  }
 
-    @GetMapping
-    public ResponseEntity<?> getAllDrivers() {
-        return ResponseEntity.ok(driverService.getAllDrivers());
-    }
+  @GetMapping("/bookings")
+  public ResponseEntity<List<Booking>> getBookingsByDriver(@RequestParam int driverId) {
+    List<Booking> bookings = bookingService.getBookingsByDriver(driverId);
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Driver> getDriverById(@PathVariable int id) {
-        return driverService.getDriverById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
-
-    @PostMapping
-    public ResponseEntity<?> createDriver(@RequestBody Driver driver) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(driverService.createDriver(driver));
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<Driver> updateDriver(@PathVariable int id, @RequestBody Driver driver) {
-        return driverService.updateDriver(id, driver)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteDriver(@PathVariable int id) {
-        if (driverService.deleteDriver(id)) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver not found");
-        }
-    }
-
-    @GetMapping("/bookings")
-    public ResponseEntity<List<Booking>> getBookingsByDriver(@RequestParam int driverId) {
-        List<Booking> bookings = bookingService.getBookingsByDriver(driverId);
-
-        return Optional.ofNullable(bookings)
-                .filter(list -> !list.isEmpty())
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList()));
-    }
+    return Optional.ofNullable(bookings)
+        .filter(list -> !list.isEmpty())
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList()));
+  }
 }

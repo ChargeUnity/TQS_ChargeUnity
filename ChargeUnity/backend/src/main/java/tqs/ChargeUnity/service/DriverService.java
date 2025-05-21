@@ -29,9 +29,9 @@ public class DriverService {
   }
 
   public List<Driver> findAll() {
-        List<Driver> drivers = new ArrayList<>();
-        driverRepository.findAll().forEach(drivers::add);
-        return drivers;
+    List<Driver> drivers = new ArrayList<>();
+    driverRepository.findAll().forEach(drivers::add);
+    return drivers;
   }
 
   public Optional<Driver> findById(int id) {
@@ -70,32 +70,35 @@ public class DriverService {
   }
 
   public Object getAllDrivers() {
-        List<Driver> drivers = new ArrayList<>();
-        driverRepository.findAll().forEach(drivers::add);
-        return drivers;
-    }
+    List<Driver> drivers = new ArrayList<>();
+    driverRepository.findAll().forEach(drivers::add);
+    return drivers;
+  }
 
-    public Optional<Driver> getDriverById(int id) {
-        return driverRepository.findById(id);
-    }
+  public Optional<Driver> getDriverById(int id) {
+    return driverRepository.findById(id);
+  }
 
-    public Driver createDriver(Driver driver) {
-        return driverRepository.save(driver);
-    }
+  public Driver createDriver(Driver driver) {
+    return driverRepository.save(driver);
+  }
 
-    public Optional<Driver> updateDriver(int id, Driver driver) {
-        return driverRepository.findById(id).map(existingDriver -> {
-            existingDriver.setName(driver.getName());
-            existingDriver.setBalance(driver.getBalance());
-            return driverRepository.save(existingDriver);
-        });
-    }
+  public Optional<Driver> updateDriver(int id, Driver driver) {
+    return driverRepository
+        .findById(id)
+        .map(
+            existingDriver -> {
+              existingDriver.setName(driver.getName());
+              existingDriver.setBalance(driver.getBalance());
+              return driverRepository.save(existingDriver);
+            });
+  }
 
-    public boolean deleteDriver(int id) {
-        if (driverRepository.existsById(id)) {
-            driverRepository.deleteById(id);
-            return true;
-        }
-        return false;
+  public boolean deleteDriver(int id) {
+    if (driverRepository.existsById(id)) {
+      driverRepository.deleteById(id);
+      return true;
+    }
+    return false;
   }
 }

@@ -24,16 +24,22 @@ public class Station {
   private String latitude;
   private String longitude;
 
-  @ManyToOne
-  @JsonBackReference
-  private Operator operator;
+  @ManyToOne @JsonBackReference private Operator operator;
 
   public Station() {}
 
   @Override
   public String toString() {
-    return "Station " + id + ": " + name + 
-    ";\nOperator: " + operator.getName() + 
-    ";\nAddress: " + address + ", " + city + ";";
+    return "Station "
+        + id
+        + ": "
+        + name
+        + ";\nOperator: "
+        + operator.getName()
+        + ";\nAddress: "
+        + address
+        + ", "
+        + city
+        + ";";
   }
 }

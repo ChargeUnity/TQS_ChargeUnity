@@ -53,12 +53,14 @@ public class ChargerController {
   }
 
   @PatchMapping("/{chargerId}/status")
-    public ResponseEntity<?> updateChargerStatus(@PathVariable int chargerId, @RequestParam String status) {
-        try {
-            Charger updatedCharger = chargerService.updateChargerStatus(chargerId, ChargerStatus.valueOf(status));
-            return ResponseEntity.ok(updatedCharger);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+  public ResponseEntity<?> updateChargerStatus(
+      @PathVariable int chargerId, @RequestParam String status) {
+    try {
+      Charger updatedCharger =
+          chargerService.updateChargerStatus(chargerId, ChargerStatus.valueOf(status));
+      return ResponseEntity.ok(updatedCharger);
+    } catch (RuntimeException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
     }
+  }
 }

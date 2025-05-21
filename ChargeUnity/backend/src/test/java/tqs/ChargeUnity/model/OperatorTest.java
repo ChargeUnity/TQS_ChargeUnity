@@ -28,7 +28,8 @@ class OperatorTest {
     operator.setName("Alice");
     operator.setStations(stations);
 
-    String expected = "Operator 1 - Name: Alice - Stations: [0 - Main Station, 1 - Secondary Station];";
+    String expected =
+        "Operator 1 - Name: Alice - Stations: [0 - Main Station, 1 - Secondary Station];";
     assertEquals(expected, operator.toString());
   }
 
