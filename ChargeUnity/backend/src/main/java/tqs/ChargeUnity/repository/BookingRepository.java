@@ -32,6 +32,15 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
       @Param("chargerId") int chargerId,
       @Param("start") LocalDateTime start,
       @Param("end") LocalDateTime end);
+    
+  @Query(
+      "SELECT b FROM Booking b WHERE b.driver.id = :driverId AND b.startTime < :end AND b.endTime"
+          + " > :start")
+
+  List<Booking> findOverlapingBookingsOfUser(
+      @Param("driverId") int driverId,
+      @Param("start") LocalDateTime start,
+      @Param("end") LocalDateTime end);
 
   List<Booking> findByChargerId(int chargerId);
 }
