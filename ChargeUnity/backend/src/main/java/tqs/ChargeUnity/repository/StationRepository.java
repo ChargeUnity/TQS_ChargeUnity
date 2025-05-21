@@ -10,5 +10,5 @@ public interface StationRepository extends JpaRepository<Station, Integer> {
 
   List<Station> findByLatitudeAndLongitude(String latitude, String longitude);
 
-  List<Station> findByOperators_Id(int operatorId);
+  List<Station> findByOperator_Id(int operatorId);
 }

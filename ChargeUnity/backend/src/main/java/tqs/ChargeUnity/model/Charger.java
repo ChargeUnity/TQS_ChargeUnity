@@ -36,6 +36,7 @@ public class Charger {
   private Station station;
 
   @OneToMany(mappedBy = "charger")
+  @JsonBackReference
   private List<Booking> bookings = new ArrayList<>();
 
   private ChargerStatus status;

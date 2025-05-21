@@ -4,6 +4,8 @@ import tqs.ChargeUnity.enums.BookingStatus;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +28,7 @@ public class Booking {
 
   @ManyToOne
   @JoinColumn(name = "driver_id")
+  @JsonBackReference
   private Driver driver;
 
   @ManyToOne

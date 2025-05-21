@@ -152,6 +152,14 @@ public class BookingService {
             .findById(bookingId)
             .orElseThrow(() -> new RuntimeException("Booking not found"));
 
+	if (booking.getStatus() == BookingStatus.CANCELLED) {
+	  throw new RuntimeException("Booking is already cancelled.");
+	}
+
+	if (booking.getStatus() == BookingStatus.COMPLETED) {
+	  throw new RuntimeException("Booking is already completed.");
+	}
+
     booking.setStatus(BookingStatus.CANCELLED);
     return bookingRepository.save(booking);
   }
