@@ -1,6 +1,8 @@
 package tqs.ChargeUnity.service;
 
 import org.springframework.stereotype.Service;
+
+import tqs.ChargeUnity.config.Utils;
 import tqs.ChargeUnity.model.Station;
 import tqs.ChargeUnity.repository.StationRepository;
 
@@ -62,5 +64,18 @@ public class StationService {
 
   public List<Station> getStationsByOperator(int operatorId) {
     return stationRepository.findByOperator_Id(operatorId);
+  }
+
+  public List<Station> getStationsByLocation(
+      double latitude, double longitude, double radius) {
+
+    List<Station> stations = stationRepository.findAll();
+
+    return stations.stream()
+        .filter(
+            station ->
+                Utils.isWithinRadius(
+                    station.getLatitude(), station.getLongitude(), latitude, longitude, radius))
+        .toList();
   }
 }

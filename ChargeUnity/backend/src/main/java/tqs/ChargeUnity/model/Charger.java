@@ -12,6 +12,8 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,8 +41,10 @@ public class Charger {
   @JsonBackReference
   private List<Booking> bookings = new ArrayList<>();
 
+  @Enumerated(EnumType.STRING)
   private ChargerStatus status;
 
+  @Enumerated(EnumType.STRING)
   private ChargerType type;
 
   private Double pricePerKWh;

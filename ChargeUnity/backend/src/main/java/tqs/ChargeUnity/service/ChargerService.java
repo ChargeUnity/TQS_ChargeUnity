@@ -1,6 +1,5 @@
 package tqs.ChargeUnity.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tqs.ChargeUnity.model.Charger;
 import tqs.ChargeUnity.model.Station;
@@ -15,7 +14,6 @@ public class ChargerService {
 
   private final ChargerRepository chargerRepository;
 
-  @Autowired
   public ChargerService(ChargerRepository chargerRepository) {
     this.chargerRepository = chargerRepository;
   }
