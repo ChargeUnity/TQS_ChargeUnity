@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.List;
 @Entity
 public class Operator extends User {
 
-  @OneToMany(mappedBy = "operator", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "operator", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JsonManagedReference
   private List<Station> stations = new ArrayList<>();
 

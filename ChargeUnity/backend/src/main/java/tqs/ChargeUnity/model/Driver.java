@@ -3,24 +3,28 @@ package tqs.ChargeUnity.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 
 @Data
 @Entity
 public class Driver extends User {
 
-  @OneToMany(mappedBy = "driver")
+  @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @JsonManagedReference
   private List<Car> cars = new ArrayList<>();
 
-  @OneToMany(mappedBy = "driver")
+  @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @JsonManagedReference
   private List<Booking> bookings = new ArrayList<>();
 
-  @OneToMany(mappedBy = "driver")
+  @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @JsonManagedReference
   private List<Trip> trips = new ArrayList<>();
 
   private Double balance;

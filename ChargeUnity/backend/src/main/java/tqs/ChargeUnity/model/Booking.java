@@ -4,7 +4,11 @@ import tqs.ChargeUnity.enums.BookingStatus;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,24 +26,29 @@ public class Booking {
 
   @ManyToOne
   @JoinColumn(name = "trip_id")
+  @JsonBackReference
   private Trip trip;
 
   @ManyToOne
   @JoinColumn(name = "driver_id")
+  @JsonBackReference
   private Driver driver;
 
-    @ManyToOne
-    @JoinColumn(name = "charger_id")
-    private Charger charger;
+  @ManyToOne
+  @JoinColumn(name = "charger_id")
+  @JsonBackReference
+  private Charger charger;
 
-    @ManyToOne
-    @JoinColumn(name = "car_id")
-    private Car car;
+  @ManyToOne
+  @JoinColumn(name = "car_id")
+  @JsonBackReference
+  private Car car;
 
   private LocalDateTime startTime;
   private LocalDateTime endTime;
 
   private Double price;
+  @Enumerated(EnumType.STRING)
   private BookingStatus status;
 
   public Booking() {}
