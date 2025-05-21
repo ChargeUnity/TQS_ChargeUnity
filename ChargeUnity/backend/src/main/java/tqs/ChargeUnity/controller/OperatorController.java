@@ -20,8 +20,7 @@ public class OperatorController {
 
   private final StationService stationService;
 
-  public OperatorController(
-      OperatorRepository operatorRepository, StationService stationService) {
+  public OperatorController(OperatorRepository operatorRepository, StationService stationService) {
     this.operatorRepository = operatorRepository;
     this.stationService = stationService;
   }

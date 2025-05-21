@@ -22,9 +22,7 @@ class StationTest {
     station.setOperator(operator);
 
     String expected =
-        "Station 1: Main Station;" +
-        "\nOperator: Alice;" +
-        "\nAddress: 123 Main St, New York;";
+        "Station 1: Main Station;" + "\nOperator: Alice;" + "\nAddress: 123 Main St, New York;";
     assertEquals(expected, station.toString());
   }
 }
