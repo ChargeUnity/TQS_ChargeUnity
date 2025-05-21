@@ -1,5 +1,9 @@
 package tqs.ChargeUnity.controller;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import tqs.ChargeUnity.model.Booking;
 import tqs.ChargeUnity.model.Driver;
 import tqs.ChargeUnity.service.BookingService;
 import tqs.ChargeUnity.service.DriverService;
@@ -34,10 +39,10 @@ public class DriverController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getDriverById(@PathVariable int id) {
+    public ResponseEntity<Driver> getDriverById(@PathVariable int id) {
         return driverService.getDriverById(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver not found"));
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
@@ -46,10 +51,10 @@ public class DriverController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateDriver(@PathVariable int id, @RequestBody Driver driver) {
+    public ResponseEntity<Driver> updateDriver(@PathVariable int id, @RequestBody Driver driver) {
         return driverService.updateDriver(id, driver)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Driver not found"));
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @DeleteMapping("/{id}")
@@ -62,9 +67,12 @@ public class DriverController {
     }
 
     @GetMapping("/bookings")
-    public ResponseEntity<?> getBookingsByDriver(@RequestParam int driverId) {
-        return bookingService.getBookingsByDriver(driverId)
+    public ResponseEntity<List<Booking>> getBookingsByDriver(@RequestParam int driverId) {
+        List<Booking> bookings = bookingService.getBookingsByDriver(driverId);
+
+        return Optional.ofNullable(bookings)
+                .filter(list -> !list.isEmpty())
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("No bookings found for this driver"));
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList()));
     }
 }

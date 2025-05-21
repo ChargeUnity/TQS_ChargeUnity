@@ -78,4 +78,34 @@ public class DriverService {
       throw new IllegalArgumentException("Driver with ID " + id + " does not exist.");
     }
   }
+
+  public Object getAllDrivers() {
+        List<Driver> drivers = new ArrayList<>();
+        driverRepository.findAll().forEach(drivers::add);
+        return drivers;
+    }
+
+    public Optional<Driver> getDriverById(int id) {
+        return driverRepository.findById(id);
+    }
+
+    public Driver createDriver(Driver driver) {
+        return driverRepository.save(driver);
+    }
+
+    public Optional<Driver> updateDriver(int id, Driver driver) {
+        return driverRepository.findById(id).map(existingDriver -> {
+            existingDriver.setName(driver.getName());
+            existingDriver.setBalance(driver.getBalance());
+            return driverRepository.save(existingDriver);
+        });
+    }
+
+    public boolean deleteDriver(int id) {
+        if (driverRepository.existsById(id)) {
+            driverRepository.deleteById(id);
+            return true;
+        }
+        return false;
+  }
 }

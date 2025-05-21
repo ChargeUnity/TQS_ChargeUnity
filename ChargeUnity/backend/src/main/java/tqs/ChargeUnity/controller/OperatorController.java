@@ -46,8 +46,14 @@ public class OperatorController {
     }
   }
 
-  @GetMapping("/station")
-  public List<Station> getStationsByOperator(@RequestParam int operator_id) {
-      return stationService.getStationsByOperator(operator_id);
+  @GetMapping("{id}/station")
+  public ResponseEntity<?> getOperatorStations(@PathVariable int id) {
+    Optional<Operator> optionalOperator = operatorRepository.findById(id);
+    if (optionalOperator.isPresent()) {
+      List<Station> stations = stationService.getStationsByOperator(id);
+      return ResponseEntity.ok(stations);
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Operator not found");
+    }
   }
 }

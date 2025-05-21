@@ -5,17 +5,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 import tqs.ChargeUnity.model.Operator;
-
+import tqs.ChargeUnity.model.Station;
 import tqs.ChargeUnity.repository.OperatorRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.*;
-
 
 public class OperatorServiceTest {
 
@@ -27,12 +26,22 @@ public class OperatorServiceTest {
 
     private Operator sampleOperator;
 
+    private Station sampleStation;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         sampleOperator = new Operator();
         sampleOperator.setId(1);
         sampleOperator.setName("Galp");
+
+        sampleStation = new Station();
+        sampleStation.setId(1);
+        sampleStation.setName("Main Station");
+
+        List<Station> stations = new ArrayList<>();
+        stations.add(sampleStation);
+        sampleOperator.setStations(stations);
     }
 
     @Test
@@ -72,14 +81,23 @@ public class OperatorServiceTest {
         updated.setId(1);
         updated.setName("EDP");
 
+        Station newStation = new Station();
+        newStation.setId(2);
+        newStation.setName("New Station");
+
+        List<Station> updatedStations = new ArrayList<>();
+        updatedStations.add(newStation);
+        updated.setStations(updatedStations);
+
         when(operatorRepository.findById(1)).thenReturn(Optional.of(sampleOperator));
         when(operatorRepository.save(any(Operator.class))).thenReturn(updated);
 
         Optional<Operator> result = operatorService.update(updated);
         assertTrue(result.isPresent());
         assertEquals("EDP", result.get().getName());
+        assertEquals(1, result.get().getStations().size());
+        assertEquals("New Station", result.get().getStations().get(0).getName());
     }
-
 
     @Test
     public void testDeleteById() {
@@ -91,6 +109,5 @@ public class OperatorServiceTest {
         verify(operatorRepository, times(1)).existsById(1);
         verify(operatorRepository, times(1)).deleteById(1);
     }
-
 
 }

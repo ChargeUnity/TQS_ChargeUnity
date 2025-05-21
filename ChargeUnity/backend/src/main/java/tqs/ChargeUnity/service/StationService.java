@@ -13,8 +13,8 @@ import java.util.Optional;
 public class StationService {
 
   private final StationRepository stationRepository;
-    private final ChargerService chargerService;
-    private final OperatorService operatorService;
+  private final ChargerService chargerService;
+  private final OperatorService operatorService;
 
   public StationService(
       StationRepository stationRepository,
@@ -32,6 +32,7 @@ public class StationService {
   public Optional<Station> getStationById(int id) {
     return stationRepository.findById(id);
   }
+
   public Station addStation(Station station) {
     return stationRepository.save(station);
   }
@@ -52,6 +53,7 @@ public class StationService {
     station.setCity(updated.getCity());
     station.setLatitude(updated.getLatitude());
     station.setLongitude(updated.getLongitude());
+    station.setOperator(updated.getOperator());
 
     return stationRepository.save(station);
   }
@@ -59,8 +61,8 @@ public class StationService {
   public List<Station> getStationsByCity(String city) {
     return stationRepository.findByCityIgnoreCase(city);
   }
-    //get stations by operator
-    public List<Station> getStationsByOperator(int operatorId) {
-        return stationRepository.findByOperatorId(operatorId);
-    }
+
+  public List<Station> getStationsByOperator(int operatorId) {
+    return stationRepository.findByOperatorId(operatorId);
+  }
 }
