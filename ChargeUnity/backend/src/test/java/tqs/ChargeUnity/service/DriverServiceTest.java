@@ -42,7 +42,7 @@ class DriverServiceTest {
     Driver driver = new Driver();
     when(driverRepository.save(driver)).thenReturn(driver);
 
-    Driver result = driverService.save(driver);
+    Driver result = driverService.save(driver).get();
 
     assertNotNull(result);
     verify(driverRepository, times(1)).save(driver);

@@ -2,6 +2,7 @@ package tqs.ChargeUnity;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 
@@ -17,7 +18,7 @@ import org.mockito.*;
 import tqs.ChargeUnity.service.OperatorService;
 
 
-public class OperatorServiceTest {
+class OperatorServiceTest {
 
     @Mock
     private OperatorRepository operatorRepository;
@@ -28,7 +29,7 @@ public class OperatorServiceTest {
     private Operator sampleOperator;
 
     @BeforeEach
-    public void setUp() {
+	void setUp() {
         MockitoAnnotations.openMocks(this);
         sampleOperator = new Operator();
         sampleOperator.setId(1);
@@ -36,7 +37,7 @@ public class OperatorServiceTest {
     }
 
     @Test
-    public void testFindAll() {
+	void testFindAll() {
         when(operatorRepository.findAll()).thenReturn(List.of(sampleOperator));
         List<Operator> result = operatorService.findAll();
         assertEquals(1, result.size());
@@ -44,7 +45,7 @@ public class OperatorServiceTest {
     }
 
     @Test
-    public void testFindById() {
+	void testFindById() {
         when(operatorRepository.findById(1)).thenReturn(Optional.of(sampleOperator));
         Optional<Operator> result = operatorService.findById(1);
         assertTrue(result.isPresent());
@@ -52,14 +53,14 @@ public class OperatorServiceTest {
     }
 
     @Test
-    public void testFindByName() {
+	void testFindByName() {
         when(operatorRepository.findByName("Galp")).thenReturn(Optional.of(sampleOperator));
         Optional<Operator> result = operatorService.findByName("Galp");
         assertTrue(result.isPresent());
     }
 
     @Test
-    public void testSave() {
+	void testSave() {
         when(operatorRepository.save(any(Operator.class))).thenReturn(sampleOperator);
         Optional<Operator> result = Optional.ofNullable(operatorService.save(sampleOperator));
         assertTrue(result.isPresent());
@@ -67,7 +68,7 @@ public class OperatorServiceTest {
     }
 
     @Test
-    public void testUpdate() {
+	void testUpdate() {
         Operator updated = new Operator();
         updated.setId(1);
         updated.setName("EDP");
@@ -82,11 +83,13 @@ public class OperatorServiceTest {
 
 
     @Test
-    public void testDeleteById() {
-        doNothing().when(operatorRepository).deleteById(1);
-        operatorService.deleteById(1);
-        verify(operatorRepository, times(1)).deleteById(1);
-    }
+	void testDeleteById() {
+		doNothing().when(operatorRepository).deleteById(1);
 
+		when(operatorRepository.existsById(1)).thenReturn(true);
+		
+		operatorService.deleteById(1);
+		verify(operatorRepository, times(1)).deleteById(1);
+    }
 
 }

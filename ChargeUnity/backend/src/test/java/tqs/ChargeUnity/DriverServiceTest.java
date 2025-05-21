@@ -100,8 +100,12 @@ class DriverServiceTest {
         Driver driver = new Driver();
         driver.setId(1);
         driver.setName("Updated Name");
-        when(driverRepository.save(driver)).thenReturn(driver);
 
+		when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
+
+		// This will fail until you implement update correctly
+		driver.setName("Updated Name");
+		when(driverRepository.save(driver)).thenReturn(driver);
 
         Optional<Driver> result = driverService.update(driver);
 

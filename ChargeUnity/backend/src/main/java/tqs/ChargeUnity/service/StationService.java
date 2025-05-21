@@ -61,6 +61,6 @@ public class StationService {
   }
     //get stations by operator
     public List<Station> getStationsByOperator(int operatorId) {
-        return stationRepository.findByOperatorId(operatorId);
+        return stationRepository.findByOperators_Id(operatorId);
     }
 }
