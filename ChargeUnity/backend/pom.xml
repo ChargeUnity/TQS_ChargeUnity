@@ -89,6 +89,8 @@
         <spring-docs.version>2.8.6</spring-docs.version>
         <jackson.version>2.15.3</jackson.version>
         <flyway.version>11.8.0</flyway.version>
+        <mysql-connector-java.version>8.0.33</mysql-connector-java.version>
+        <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
 
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
 
@@ -190,11 +192,6 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-mysql</artifactId>
-            <version>${flyway.version}</version>
 		</dependency>
 		
 		<!-- Selenium -->
@@ -426,10 +423,14 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
+            <version>${mysql-connector-java.version}</version>
             <scope>runtime</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
 
 	</dependencies>
 
