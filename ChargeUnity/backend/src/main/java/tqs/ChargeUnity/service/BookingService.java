@@ -45,6 +45,11 @@ public class BookingService {
       throw new RuntimeException("Time slot not available");
     }
 
+    List<Booking> driverBookings = bookingRepository.findOverlapingBookingsOfUser(driverId, startTime, endTime);
+    if (!driverBookings.isEmpty()) {
+      throw new RuntimeException("Duplicate booking: Driver already has a booking at this time");
+    }
+
     double durationHours = java.time.Duration.between(startTime, endTime).toMinutes() / 60.0;
     double price = durationHours * charger.getPricePerKWh() * 10; // example pricing logic
 
@@ -56,18 +61,15 @@ public class BookingService {
     booking.setStatus(BookingStatus.WAITING);
     booking.setPrice(price);
 
-    return bookingRepository.save(booking);
+    bookingRepository.save(booking);
+    return booking;
   }
 
   public boolean isTimeSlotAvailable(
       int chargerId, LocalDateTime startTime, LocalDateTime endTime) {
-    List<Booking> bookings = bookingRepository.findByChargerId(chargerId);
-    for (Booking booking : bookings) {
-      if (booking.getStartTime().isBefore(endTime) && booking.getEndTime().isAfter(startTime)) {
-        return false;
-      }
-    }
-    return true;
+    List<Booking> bookings = bookingRepository.findOverlappingBookings(chargerId, startTime, endTime);
+
+    return bookings.isEmpty();
   }
 
   public List<Booking> getBookingsByDriver(int driverId) {
