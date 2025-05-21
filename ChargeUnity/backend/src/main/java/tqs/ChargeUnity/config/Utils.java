@@ -31,8 +31,10 @@ public class Utils {
    * @return true if the point is within the radius, false otherwise
    */
   public static boolean isWithinRadius(
-      String stationLatitude, String stationLongitude, 
-      double targetLatitude, double targetLongitude, 
+      String stationLatitude,
+      String stationLongitude,
+      double targetLatitude,
+      double targetLongitude,
       double radius) {
 
     double stationLat = Double.parseDouble(stationLatitude);
@@ -43,14 +45,16 @@ public class Utils {
     double latDistance = Math.toRadians(targetLatitude - stationLat);
     double lonDistance = Math.toRadians(targetLongitude - stationLon);
 
-    double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-               + Math.cos(Math.toRadians(stationLat)) * Math.cos(Math.toRadians(targetLatitude))
-               * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+    double a =
+        Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+            + Math.cos(Math.toRadians(stationLat))
+                * Math.cos(Math.toRadians(targetLatitude))
+                * Math.sin(lonDistance / 2)
+                * Math.sin(lonDistance / 2);
 
     double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     double distance = EARTH_RADIUS_KM * c;
 
     return distance <= radius;
   }
-
 }

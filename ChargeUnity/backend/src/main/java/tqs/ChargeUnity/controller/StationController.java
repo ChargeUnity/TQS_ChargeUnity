@@ -86,9 +86,7 @@ public class StationController {
 
   @GetMapping("/{latitude}/{longitude}/{radius}")
   public ResponseEntity<?> getStationsByLocation(
-      @PathVariable double latitude,
-      @PathVariable double longitude,
-      @PathVariable double radius) {
+      @PathVariable double latitude, @PathVariable double longitude, @PathVariable double radius) {
     List<Station> stations = stationService.getStationsByLocation(latitude, longitude, radius);
     return ResponseEntity.ok(stations);
   }

@@ -66,8 +66,7 @@ public class StationService {
     return stationRepository.findByOperator_Id(operatorId);
   }
 
-  public List<Station> getStationsByLocation(
-      double latitude, double longitude, double radius) {
+  public List<Station> getStationsByLocation(double latitude, double longitude, double radius) {
 
     List<Station> stations = stationRepository.findAll();
 

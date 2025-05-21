@@ -49,10 +49,10 @@ public class ChargerController {
 
   @GetMapping("/{id}")
   public ResponseEntity<Charger> getChargerById(@PathVariable int id) {
-      return chargerRepository
-          .findById(id)
-          .map(ResponseEntity::ok)
-          .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    return chargerRepository
+        .findById(id)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
   }
 
   @GetMapping("/station/{stationId}")

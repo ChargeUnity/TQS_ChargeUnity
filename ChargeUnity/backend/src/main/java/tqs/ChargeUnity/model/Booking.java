@@ -48,6 +48,7 @@ public class Booking {
   private LocalDateTime endTime;
 
   private Double price;
+
   @Enumerated(EnumType.STRING)
   private BookingStatus status;
 
