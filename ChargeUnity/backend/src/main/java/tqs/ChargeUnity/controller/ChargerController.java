@@ -40,6 +40,19 @@ public class ChargerController {
     return ResponseEntity.status(HttpStatus.CREATED).body(chargerRepository.save(charger));
   }
 
+  @GetMapping
+  public ResponseEntity<?> getAllChargers() {
+    return ResponseEntity.ok(chargerRepository.findAll());
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<Charger> getChargerById(@PathVariable int id) {
+      return chargerRepository
+          .findById(id)
+          .map(ResponseEntity::ok)
+          .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+  }
+
   @GetMapping("/station/{stationId}")
   public ResponseEntity<?> getChargersByStation(@PathVariable int stationId) {
     Station station =
