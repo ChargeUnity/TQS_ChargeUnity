@@ -33,13 +33,12 @@ public class OperatorService {
   }
 
   public Optional<Operator> update(Operator operator) {
-    return operatorRepository
-        .findById(operator.getId())
-        .map(
-            existingOperator -> {
-              existingOperator.setName(operator.getName());
-              return operatorRepository.save(existingOperator);
-            });
+    return operatorRepository.findById(operator.getId())
+        .map(existingOperator -> {
+          existingOperator.setName(operator.getName());
+          existingOperator.setStations(operator.getStations());
+          return operatorRepository.save(existingOperator);
+        });
   }
 
   public void deleteById(int id) {

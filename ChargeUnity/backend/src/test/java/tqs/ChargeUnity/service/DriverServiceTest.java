@@ -1,13 +1,13 @@
 package tqs.ChargeUnity.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import tqs.ChargeUnity.model.Driver;
 import tqs.ChargeUnity.repository.DriverRepository;
+import tqs.ChargeUnity.service.DriverService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,68 +16,100 @@ import static org.mockito.Mockito.*;
 
 class DriverServiceTest {
 
-  @Mock private DriverRepository driverRepository;
+	private DriverRepository driverRepository;
+	private DriverService driverService;
 
-  @InjectMocks private DriverService driverService;
+	@BeforeEach
+	void setUp() {
+		driverRepository = mock(DriverRepository.class);
+		driverService = new DriverService(driverRepository);
+	}
 
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
-  }
+	@Test
+	@DisplayName("Should return driver by ID if found")
+	void testFindById_Found() {
+		Driver driver = new Driver();
+		driver.setId(1);
+		when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
 
-  @Test
-  void testGetDriverById() {
-    Driver driver = new Driver();
-    driver.setId(1);
-    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
+		// This will fail until you implement findById correctly
+		Optional<Driver> result = driverService.findById(1);
 
-    Optional<Driver> result = driverService.findById(1);
+		assertTrue(result.isPresent());
+		assertEquals(1, result.get().getId());
+	}
 
-    assertTrue(result.isPresent());
-    assertEquals(1, result.get().getId());
-  }
+	@Test
+	void testFindAllDrivers() {
+		List<Driver> drivers = List.of(new Driver(), new Driver());
+		when(driverRepository.findAll()).thenReturn(drivers);
 
-  @Test
-  void testSaveDriver() {
-    Driver driver = new Driver();
-    when(driverRepository.save(driver)).thenReturn(driver);
+		List<Driver> result = driverService.findAll();
 
-    Driver result = driverService.save(driver).get();
+		assertEquals(2, result.size());
+		verify(driverRepository, times(1)).findAll();
+	}
 
-    assertNotNull(result);
-    verify(driverRepository, times(1)).save(driver);
-  }
+	@Test
+	void testFindByNameReturnsEmpty() {
+		Optional<Driver> result = driverService.findByName("John Doe");
+		assertTrue(result.isEmpty());
+	}
 
-  @Test
-  void testFindAllDrivers() {
-    List<Driver> drivers = List.of(new Driver(), new Driver());
-    when(driverRepository.findAll()).thenReturn(drivers);
+	@Test
+	void testUpdateReturnsEmpty() {
+		Driver driver = new Driver();
+		Optional<Driver> result = driverService.update(driver);
+		assertTrue(result.isEmpty());
+	}
 
-    List<Driver> result = driverService.findAll();
+	@Test
+	void testDeleteById() {
+		doNothing().when(driverRepository).deleteById(1);
+		when(driverRepository.existsById(1)).thenReturn(true);
+		
+		driverService.deleteById(1);
 
-    assertEquals(2, result.size());
-    verify(driverRepository, times(1)).findAll();
-  }
+		verify(driverRepository, times(1)).deleteById(1);
+	}
 
-  @Test
-  void testFindByNameReturnsEmpty() {
-    Optional<Driver> result = driverService.findByName("John Doe");
-    assertTrue(result.isEmpty());
-  }
+	@Test
+	@DisplayName("Should return empty if driver by ID not found")
+	void testFindById_NotFound() {
+		when(driverRepository.findById(99)).thenReturn(Optional.empty());
 
-  @Test
-  void testUpdateReturnsEmpty() {
-    Driver driver = new Driver();
-    Optional<Driver> result = driverService.update(driver);
-    assertTrue(result.isEmpty());
-  }
+		Optional<Driver> result = driverService.findById(99);
 
-  @Test
-  void testDeleteById() {
-    doNothing().when(driverRepository).deleteById(1);
+		assertFalse(result.isPresent());
+		verify(driverRepository).findById(99);
+	}
 
-    driverService.deleteById(1);
+	@Test
+	@DisplayName("Should return driver by name")
+	void testFindByName() {
+		Driver driver = new Driver();
+		driver.setName("Alice");
+		when(driverRepository.findByName("Alice")).thenReturn(Optional.of(driver));
 
-    verify(driverRepository, times(1)).deleteById(1);
-  }
+		Optional<Driver> result = driverService.findByName("Alice");
+
+		assertTrue(result.isPresent());
+		assertEquals("Alice", result.get().getName());
+		verify(driverRepository).findByName("Alice");
+	}
+
+	@Test
+	@DisplayName("Should save a driver")
+	void testSaveDriver() {
+		Driver driver = new Driver();
+		driver.setName("Bob");
+		when(driverRepository.save(driver)).thenReturn(driver);
+
+		// This will fail until you implement save correctly
+		Optional<Driver> result = driverService.save(driver);
+
+		assertTrue(result.isPresent());
+		assertEquals("Bob", result.get().getName());
+		verify(driverRepository).save(driver);
+	}
 }

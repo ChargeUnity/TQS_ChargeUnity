@@ -1,5 +1,6 @@
 package tqs.ChargeUnity.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,9 @@ public class DriverService {
   }
 
   public List<Driver> findAll() {
-    return driverRepository.findAll();
+        List<Driver> drivers = new ArrayList<>();
+        driverRepository.findAll().forEach(drivers::add);
+        return drivers;
   }
 
   public Optional<Driver> findById(int id) {
@@ -59,6 +62,40 @@ public class DriverService {
   }
 
   public void deleteById(int id) {
-    driverRepository.deleteById(id);
+    if (driverRepository.existsById(id)) {
+      driverRepository.deleteById(id);
+    } else {
+      throw new IllegalArgumentException("Driver with ID " + id + " does not exist.");
+    }
+  }
+
+  public Object getAllDrivers() {
+        List<Driver> drivers = new ArrayList<>();
+        driverRepository.findAll().forEach(drivers::add);
+        return drivers;
+    }
+
+    public Optional<Driver> getDriverById(int id) {
+        return driverRepository.findById(id);
+    }
+
+    public Driver createDriver(Driver driver) {
+        return driverRepository.save(driver);
+    }
+
+    public Optional<Driver> updateDriver(int id, Driver driver) {
+        return driverRepository.findById(id).map(existingDriver -> {
+            existingDriver.setName(driver.getName());
+            existingDriver.setBalance(driver.getBalance());
+            return driverRepository.save(existingDriver);
+        });
+    }
+
+    public boolean deleteDriver(int id) {
+        if (driverRepository.existsById(id)) {
+            driverRepository.deleteById(id);
+            return true;
+        }
+        return false;
   }
 }

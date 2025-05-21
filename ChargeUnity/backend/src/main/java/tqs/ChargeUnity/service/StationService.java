@@ -51,6 +51,7 @@ public class StationService {
     station.setCity(updated.getCity());
     station.setLatitude(updated.getLatitude());
     station.setLongitude(updated.getLongitude());
+    station.setOperator(updated.getOperator());
 
     return stationRepository.save(station);
   }
@@ -59,7 +60,6 @@ public class StationService {
     return stationRepository.findByCityIgnoreCase(city);
   }
 
-  // get stations by operator
   public List<Station> getStationsByOperator(int operatorId) {
     return stationRepository.findByOperators_Id(operatorId);
   }

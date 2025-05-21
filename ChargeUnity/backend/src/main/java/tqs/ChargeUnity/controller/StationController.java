@@ -42,12 +42,9 @@ public class StationController {
     station.setLongitude(String.valueOf(payload.get("longitude")));
 
     Operator operator = operatorOpt.get();
-    station.getOperators().add(operator);
+    station.setOperator(operator);
 
     Station createdStation = stationService.addStation(station);
-
-    operator.setStation(createdStation);
-    operatorService.save(operator);
 
     return new ResponseEntity<>(createdStation, HttpStatus.CREATED);
   }

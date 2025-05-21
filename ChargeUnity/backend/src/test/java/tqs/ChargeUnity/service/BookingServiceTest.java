@@ -1,9 +1,10 @@
 package tqs.ChargeUnity.service;
 
+import org.mockito.Mock;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import tqs.ChargeUnity.enums.BookingStatus;
 import tqs.ChargeUnity.model.Booking;
@@ -12,6 +13,7 @@ import tqs.ChargeUnity.model.Driver;
 import tqs.ChargeUnity.repository.BookingRepository;
 import tqs.ChargeUnity.repository.ChargerRepository;
 import tqs.ChargeUnity.repository.DriverRepository;
+import tqs.ChargeUnity.service.BookingService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
