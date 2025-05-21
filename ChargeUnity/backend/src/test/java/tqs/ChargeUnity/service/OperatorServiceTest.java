@@ -1,7 +1,8 @@
-package tqs.ChargeUnity;
+package tqs.ChargeUnity.service;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 
@@ -14,7 +15,6 @@ import tqs.ChargeUnity.repository.OperatorRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.*;
-import tqs.ChargeUnity.service.OperatorService;
 
 
 public class OperatorServiceTest {
@@ -83,8 +83,12 @@ public class OperatorServiceTest {
 
     @Test
     public void testDeleteById() {
+        when(operatorRepository.existsById(1)).thenReturn(true);
         doNothing().when(operatorRepository).deleteById(1);
+
         operatorService.deleteById(1);
+
+        verify(operatorRepository, times(1)).existsById(1);
         verify(operatorRepository, times(1)).deleteById(1);
     }
 

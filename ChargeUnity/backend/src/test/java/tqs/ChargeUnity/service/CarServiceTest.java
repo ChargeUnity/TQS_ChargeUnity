@@ -1,4 +1,4 @@
-package tqs.ChargeUnity;
+package tqs.ChargeUnity.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,7 +7,6 @@ import tqs.ChargeUnity.model.Car;
 import tqs.ChargeUnity.model.Driver;
 import tqs.ChargeUnity.repository.CarRepository;
 import tqs.ChargeUnity.repository.DriverRepository;
-import tqs.ChargeUnity.service.CarService;
 
 import java.util.Arrays;
 import java.util.List;

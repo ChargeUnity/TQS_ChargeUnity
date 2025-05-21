@@ -1,4 +1,4 @@
-package tqs.ChargeUnity;
+package tqs.ChargeUnity.service;
 
 import org.mockito.Mock;
 

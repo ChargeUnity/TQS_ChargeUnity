@@ -1,4 +1,4 @@
-package tqs.ChargeUnity;
+package tqs.ChargeUnity.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -97,26 +97,37 @@ class DriverServiceTest {
     @Test
     @DisplayName("Should update a driver")
     void testUpdateDriver() {
-        Driver driver = new Driver();
-        driver.setId(1);
-        driver.setName("Updated Name");
-        when(driverRepository.save(driver)).thenReturn(driver);
+        Driver existingDriver = new Driver();
+        existingDriver.setId(1);
+        existingDriver.setName("Original Name");
+        existingDriver.setBalance(100.0);
 
+        Driver updatedDriver = new Driver();
+        updatedDriver.setId(1);
+        updatedDriver.setName("Updated Name");
+        updatedDriver.setBalance(200.0);
 
-        Optional<Driver> result = driverService.update(driver);
+        when(driverRepository.findById(1)).thenReturn(Optional.of(existingDriver));
+        when(driverRepository.save(existingDriver)).thenReturn(existingDriver);
+
+        Optional<Driver> result = driverService.update(updatedDriver);
 
         assertTrue(result.isPresent());
         assertEquals("Updated Name", result.get().getName());
-        verify(driverRepository).save(driver);
+        assertEquals(200.0, result.get().getBalance());
+        verify(driverRepository).findById(1);
+        verify(driverRepository).save(existingDriver);
     }
 
     @Test
     @DisplayName("Should delete driver by ID")
     void testDeleteById() {
+        when(driverRepository.existsById(1)).thenReturn(true);
         doNothing().when(driverRepository).deleteById(1);
 
         driverService.deleteById(1);
 
+        verify(driverRepository).existsById(1);
         verify(driverRepository).deleteById(1);
     }
 }
