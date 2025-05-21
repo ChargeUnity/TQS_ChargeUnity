@@ -56,4 +56,5 @@ public class Booking {
                 "\nPrice: " + price +
                 "\nStatus: " + status;
     }
+}
     
