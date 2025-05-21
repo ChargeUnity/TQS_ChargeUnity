@@ -60,7 +60,9 @@ services:
     ports:
       - ${FRONTEND_PORT_VITE}
     volumes:
-      - ./frontend:/app                
+      - ./frontend:/app
+      - /app/node_modules
+              
     environment:
       - VITE_APP_API_URL=${VITE_APP_API_URL}
       - NODE_ENV=development
