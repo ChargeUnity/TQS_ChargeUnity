@@ -31,7 +31,7 @@ services:
     
     ports:
       - ${APP_PORT}
-      - "5005:5005"  
+      - "8080:8080"  
     environment:
       SPRING_APPLICATION_JSON: >
         {

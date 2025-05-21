@@ -40,6 +40,4 @@ build/
 .env
 **/application.properties
 
-**/data.sql
-
 **/allure-results

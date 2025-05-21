@@ -1,5 +1,7 @@
 package tqs.ChargeUnity.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +20,7 @@ public class Car {
 
   @ManyToOne
   @JoinColumn(name = "driver_id")
+  @JsonBackReference
   private Driver driver;
 
   private String brand;

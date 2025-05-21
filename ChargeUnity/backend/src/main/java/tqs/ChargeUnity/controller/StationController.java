@@ -83,4 +83,11 @@ public class StationController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
   }
+
+  @GetMapping("/{latitude}/{longitude}/{radius}")
+  public ResponseEntity<?> getStationsByLocation(
+      @PathVariable double latitude, @PathVariable double longitude, @PathVariable double radius) {
+    List<Station> stations = stationService.getStationsByLocation(latitude, longitude, radius);
+    return ResponseEntity.ok(stations);
+  }
 }
