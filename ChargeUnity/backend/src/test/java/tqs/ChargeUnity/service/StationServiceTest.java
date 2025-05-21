@@ -134,10 +134,24 @@ public class StationServiceTest {
 
     @Test
     public void testGetStationsByLocation() {
-        when(stationRepository.findAll()).thenReturn(List.of(sampleStation));
+        Station stationWithinRadius = new Station();
+        stationWithinRadius.setId(1);
+        stationWithinRadius.setName("Station Within Radius");
+        stationWithinRadius.setLatitude("40.7128");
+        stationWithinRadius.setLongitude("-74.0060");
+
+        Station stationOutsideRadius = new Station();
+        stationOutsideRadius.setId(2);
+        stationOutsideRadius.setName("Station Outside Radius");
+        stationOutsideRadius.setLatitude("34.0522");
+        stationOutsideRadius.setLongitude("-118.2437");
+
+        when(stationRepository.findAll()).thenReturn(List.of(stationWithinRadius, stationOutsideRadius));
 
         List<Station> result = stationService.getStationsByLocation(40.7128, -74.0060, 10);
+
         assertEquals(1, result.size());
-        assertEquals("Main Station", result.get(0).getName());
+        assertEquals("Station Within Radius", result.get(0).getName());
+        assertEquals(1, result.get(0).getId());
     }
 }
