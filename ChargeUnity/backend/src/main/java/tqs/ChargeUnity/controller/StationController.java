@@ -14,83 +14,78 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-
 @RestController
 @RequestMapping("/api/v1/station")
 public class StationController {
 
-    private final StationService stationService;
+  private final StationService stationService;
 
-    @Autowired
-    private OperatorService operatorService;
+  @Autowired private OperatorService operatorService;
 
-    @Autowired
-    public StationController(StationService stationService) {
-        this.stationService = stationService;
+  @Autowired
+  public StationController(StationService stationService) {
+    this.stationService = stationService;
+  }
+
+  @PostMapping
+  public ResponseEntity<?> createStation(@RequestBody Map<String, Object> payload) {
+    int operatorId = (int) payload.get("operatorId");
+    Optional<Operator> operatorOpt = operatorService.findById(operatorId);
+
+    if (operatorOpt.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Operator not found");
     }
 
-    @PostMapping
-    public ResponseEntity<?> createStation(@RequestBody Map<String, Object> payload) {
-        int operatorId = (int) payload.get("operatorId");
-        Optional<Operator> operatorOpt = operatorService.findById(operatorId);
+    Station station = new Station();
+    station.setName((String) payload.get("name"));
+    station.setCity((String) payload.get("city"));
+    station.setAddress((String) payload.get("address"));
+    station.setLatitude(String.valueOf(payload.get("latitude")));
+    station.setLongitude(String.valueOf(payload.get("longitude")));
 
-        if (operatorOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Operator not found");
-        }
+    Operator operator = operatorOpt.get();
+    station.getOperators().add(operator);
 
-        Station station = new Station();
-        station.setName((String) payload.get("name"));
-        station.setCity((String) payload.get("city"));
-        station.setAddress((String) payload.get("address"));
-        station.setLatitude(String.valueOf(payload.get("latitude")));
-        station.setLongitude(String.valueOf(payload.get("longitude")));
+    Station createdStation = stationService.addStation(station);
 
-        Operator operator = operatorOpt.get();
-        station.getOperators().add(operator);
+    operator.setStation(createdStation);
+    operatorService.save(operator);
 
-        Station createdStation = stationService.addStation(station);
+    return new ResponseEntity<>(createdStation, HttpStatus.CREATED);
+  }
 
-        operator.setStation(createdStation);
-        operatorService.save(operator);
+  @GetMapping
+  public List<Station> getAllStations() {
+    return stationService.getAllStations();
+  }
 
-        return new ResponseEntity<>(createdStation, HttpStatus.CREATED);
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getStationById(@PathVariable int id) {
+    Optional<Station> optionalStation = stationService.getStationById(id);
+    if (optionalStation.isPresent()) {
+      return ResponseEntity.ok(optionalStation.get());
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Station not found");
     }
+  }
 
-
-
-    @GetMapping
-    public List<Station> getAllStations() {
-        return stationService.getAllStations();
+  @PutMapping("/{id}")
+  public ResponseEntity<?> updateStation(@PathVariable int id, @RequestBody Station updated) {
+    try {
+      Station station = stationService.updateStation(id, updated);
+      return ResponseEntity.ok(station);
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getStationById(@PathVariable int id) {
-        Optional<Station> optionalStation = stationService.getStationById(id);
-        if (optionalStation.isPresent()) {
-            return ResponseEntity.ok(optionalStation.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Station not found");
-        }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> deleteStation(@PathVariable int id) {
+    try {
+      stationService.deleteStation(id);
+      return ResponseEntity.ok("Station deleted successfully");
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
-
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateStation(@PathVariable int id, @RequestBody Station updated) {
-        try {
-            Station station = stationService.updateStation(id, updated);
-            return ResponseEntity.ok(station);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteStation(@PathVariable int id) {
-        try {
-            stationService.deleteStation(id);
-            return ResponseEntity.ok("Station deleted successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
+  }
 }

@@ -10,37 +10,40 @@ import tqs.ChargeUnity.model.Station;
 import tqs.ChargeUnity.repository.ChargerRepository;
 import tqs.ChargeUnity.repository.StationRepository;
 
-
 @RestController
 @RequestMapping("/api/v1/station/{stationId}/charger")
 public class ChargerController {
 
-    private final StationRepository stationRepository;
-    private final ChargerRepository chargerRepository;
+  private final StationRepository stationRepository;
+  private final ChargerRepository chargerRepository;
 
-    @Autowired
-    public ChargerController(StationRepository stationRepository, ChargerRepository chargerRepository) {
-        this.stationRepository = stationRepository;
-        this.chargerRepository = chargerRepository;
-    }
+  @Autowired
+  public ChargerController(
+      StationRepository stationRepository, ChargerRepository chargerRepository) {
+    this.stationRepository = stationRepository;
+    this.chargerRepository = chargerRepository;
+  }
 
-    @PostMapping
-    public ResponseEntity<?> createCharger(
-            @PathVariable int stationId,
-            @RequestBody Charger charger) {
+  @PostMapping
+  public ResponseEntity<?> createCharger(
+      @PathVariable int stationId, @RequestBody Charger charger) {
 
-        Station station = stationRepository.findById(stationId)
-                .orElseThrow(() -> new RuntimeException("Station not found"));
+    Station station =
+        stationRepository
+            .findById(stationId)
+            .orElseThrow(() -> new RuntimeException("Station not found"));
 
-        charger.setStation(station);
-        return ResponseEntity.status(HttpStatus.CREATED).body(chargerRepository.save(charger));
-    }
+    charger.setStation(station);
+    return ResponseEntity.status(HttpStatus.CREATED).body(chargerRepository.save(charger));
+  }
 
-    @GetMapping
-    public ResponseEntity<?> getChargersByStation(@PathVariable int stationId) {
-        Station station = stationRepository.findById(stationId)
-                .orElseThrow(() -> new RuntimeException("Station not found"));
+  @GetMapping
+  public ResponseEntity<?> getChargersByStation(@PathVariable int stationId) {
+    Station station =
+        stationRepository
+            .findById(stationId)
+            .orElseThrow(() -> new RuntimeException("Station not found"));
 
-        return ResponseEntity.ok(chargerRepository.findByStation(station));
-    }
+    return ResponseEntity.ok(chargerRepository.findByStation(station));
+  }
 }
