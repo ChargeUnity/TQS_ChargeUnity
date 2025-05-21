@@ -1,30 +1,56 @@
 package tqs.ChargeUnity.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import tqs.ChargeUnity.enums.ChargerStatus;
 import tqs.ChargeUnity.model.Charger;
-
+import tqs.ChargeUnity.model.Station;
+import tqs.ChargeUnity.enums.ChargerStatus;
 import tqs.ChargeUnity.service.ChargerService;
-
-
-
+import tqs.ChargeUnity.repository.ChargerRepository;
+import tqs.ChargeUnity.repository.StationRepository;
 
 @RestController
-@RequestMapping("/api/{charger_Id}")
+@RequestMapping("/api/v1/station/{stationId}/charger")
 public class ChargerController {
 
-    @Autowired
-    private ChargerService chargerService;
+  private final StationRepository stationRepository;
+  private final ChargerRepository chargerRepository;
 
+  private final ChargerService chargerService;
 
-    //get chargers by city
+  public ChargerController(
+      StationRepository stationRepository, ChargerRepository chargerRepository, ChargerService chargerService) {
+    this.stationRepository = stationRepository;
+    this.chargerRepository = chargerRepository;
+    this.chargerService = chargerService;
+  }
 
-    @GetMapping
-    //update charger status
-    @PutMapping("/{chargerId}/status")
+  @PostMapping
+  public ResponseEntity<?> createCharger(
+      @PathVariable int stationId, @RequestBody Charger charger) {
+
+    Station station =
+        stationRepository
+            .findById(stationId)
+            .orElseThrow(() -> new RuntimeException("Station not found"));
+
+    charger.setStation(station);
+    return ResponseEntity.status(HttpStatus.CREATED).body(chargerRepository.save(charger));
+  }
+
+  @GetMapping
+  public ResponseEntity<?> getChargersByStation(@PathVariable int stationId) {
+    Station station =
+        stationRepository
+            .findById(stationId)
+            .orElseThrow(() -> new RuntimeException("Station not found"));
+
+    return ResponseEntity.ok(chargerRepository.findByStation(station));
+  }
+
+  @PutMapping("/{chargerId}/status")
     public ResponseEntity<?> updateChargerStatus(@PathVariable int chargerId, @RequestParam String status) {
         try {
             Charger updatedCharger = chargerService.updateChargerStatus(chargerId, ChargerStatus.valueOf(status));
@@ -33,8 +59,4 @@ public class ChargerController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-
-
-
 }

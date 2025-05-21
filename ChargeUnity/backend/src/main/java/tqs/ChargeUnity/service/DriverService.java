@@ -13,7 +13,7 @@ import tqs.ChargeUnity.repository.DriverRepository;
 @Service
 public class DriverService {
 
-    private final DriverRepository driverRepository;
+  private final DriverRepository driverRepository;
 
     public DriverService(DriverRepository driverRepository) {
         this.driverRepository = driverRepository;
@@ -30,9 +30,9 @@ public class DriverService {
     }
 
 
-    public List<Driver> findAll() {
-        return new ArrayList<>();
-    }
+  public List<Driver> findAll() {
+    return new ArrayList<>();
+  }
 
     public Optional<Driver> findById(int id) {
         //make it work
@@ -50,11 +50,11 @@ public class DriverService {
 
     //has to be implemented
     //tem mesmo que melhorar, ainda nao sei como fazer isto
-    public Optional<Driver> update(Driver driver) {
+  public Optional<Driver> update(Driver driver) {
         int id = driver.getId();
         // Garante que um ID válido foi fornecido
         if (id <= 0) {
-            return Optional.empty();
+        return Optional.empty();
         }
 
         // Verifica se o driver com o ID fornecido existe
@@ -68,8 +68,7 @@ public class DriverService {
             }
             return driverRepository.save(existingDriver);
         });
-    }
+  }
 
-    public void deleteById(int id) {
-    }
+  public void deleteById(int id) {}
 }

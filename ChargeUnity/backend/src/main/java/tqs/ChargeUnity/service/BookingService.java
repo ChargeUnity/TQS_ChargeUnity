@@ -17,71 +17,80 @@ import java.util.Optional;
 @Service
 public class BookingService {
 
-    private final BookingRepository bookingRepository;
-    private final DriverRepository driverRepository;
-    private final ChargerRepository chargerRepository;
+  private final BookingRepository bookingRepository;
+  private final DriverRepository driverRepository;
+  private final ChargerRepository chargerRepository;
 
-    public BookingService(BookingRepository bookingRepository,
-                          DriverRepository driverRepository,
-                          ChargerRepository chargerRepository) {
-        this.bookingRepository = bookingRepository;
-        this.driverRepository = driverRepository;
-        this.chargerRepository = chargerRepository;
+  public BookingService(
+      BookingRepository bookingRepository,
+      DriverRepository driverRepository,
+      ChargerRepository chargerRepository) {
+    this.bookingRepository = bookingRepository;
+    this.driverRepository = driverRepository;
+    this.chargerRepository = chargerRepository;
+  }
+
+  public Booking createBooking(
+      int driverId, int chargerId, LocalDateTime startTime, LocalDateTime endTime) {
+    Driver driver =
+        driverRepository
+            .findById(driverId)
+            .orElseThrow(() -> new RuntimeException("Driver not found"));
+    Charger charger =
+        chargerRepository
+            .findById(chargerId)
+            .orElseThrow(() -> new RuntimeException("Charger not found"));
+
+    if (!isTimeSlotAvailable(chargerId, startTime, endTime)) {
+      throw new RuntimeException("Time slot not available");
     }
 
-    public Booking createBooking(int driverId, int chargerId, LocalDateTime startTime, LocalDateTime endTime) {
-        Driver driver = driverRepository.findById(driverId)
-                .orElseThrow(() -> new RuntimeException("Driver not found"));
-        Charger charger = chargerRepository.findById(chargerId)
-                .orElseThrow(() -> new RuntimeException("Charger not found"));
+    double durationHours = java.time.Duration.between(startTime, endTime).toMinutes() / 60.0;
+    double price = durationHours * charger.getPricePerKWh() * 10; // example pricing logic
 
-        if (!isTimeSlotAvailable(chargerId, startTime, endTime)) {
-            throw new RuntimeException("Time slot not available");
-        }
+    Booking booking = new Booking();
+    booking.setDriver(driver);
+    booking.setCharger(charger);
+    booking.setStartTime(startTime);
+    booking.setEndTime(endTime);
+    booking.setStatus(BookingStatus.WAITING);
+    booking.setPrice(price);
 
-        double durationHours = java.time.Duration.between(startTime, endTime).toMinutes() / 60.0;
-        double price = durationHours * charger.getPricePerKWh() * 10; // example pricing logic
+    return bookingRepository.save(booking);
+  }
 
-        Booking booking = new Booking();
-        booking.setDriver(driver);
-        booking.setCharger(charger);
-        booking.setStartTime(startTime);
-        booking.setEndTime(endTime);
-        booking.setStatus(BookingStatus.WAITING);
-        booking.setPrice(price);
+  public boolean isTimeSlotAvailable(
+      int chargerId, LocalDateTime startTime, LocalDateTime endTime) {
+    List<Booking> bookings = bookingRepository.findByChargerId(chargerId);
+    for (Booking booking : bookings) {
+      if (booking.getStartTime().isBefore(endTime) && booking.getEndTime().isAfter(startTime)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-        return bookingRepository.save(booking);
+  public List<Booking> getBookingsByDriver(int driverId) {
+    return bookingRepository.findByDriverId(driverId);
+  }
+
+  public Optional<Booking> getBookingById(int id) {
+    return bookingRepository.findById(id);
+  }
+
+  public void cancelBooking(int bookingId, int driverId) {
+    Booking booking =
+        bookingRepository
+            .findById(bookingId)
+            .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+    if (booking.getDriver().getId() != driverId) {
+      throw new RuntimeException("Unauthorized: Booking doesn't belong to driver ID " + driverId);
     }
 
-    public boolean isTimeSlotAvailable(int chargerId, LocalDateTime startTime, LocalDateTime endTime) {
-        List<Booking> bookings = bookingRepository.findByChargerId(chargerId);
-        for (Booking booking : bookings) {
-            if (booking.getStartTime().isBefore(endTime) && booking.getEndTime().isAfter(startTime)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public List<Booking> getBookingsByDriver(int driverId) {
-        return bookingRepository.findByDriverId(driverId);
-    }
-
-    public Optional<Booking> getBookingById(int id) {
-        return bookingRepository.findById(id);
-    }
-
-    public void cancelBooking(int bookingId, int driverId) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
-
-        if (booking.getDriver().getId() != driverId) {
-            throw new RuntimeException("Unauthorized: Booking doesn't belong to driver ID " + driverId);
-        }
-
-        booking.setStatus(BookingStatus.CANCELLED);
-        bookingRepository.save(booking);
-    }
+    booking.setStatus(BookingStatus.CANCELLED);
+    bookingRepository.save(booking);
+  }
     public Booking startCharging(int bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));

@@ -1,7 +1,5 @@
 package tqs.ChargeUnity.repository;
 
-
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import tqs.ChargeUnity.model.Station;
 

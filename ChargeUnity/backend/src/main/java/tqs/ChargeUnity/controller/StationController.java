@@ -1,35 +1,89 @@
 package tqs.ChargeUnity.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import tqs.ChargeUnity.model.Operator;
+import tqs.ChargeUnity.model.Station;
+import tqs.ChargeUnity.service.OperatorService;
+import tqs.ChargeUnity.service.StationService;
+
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import tqs.ChargeUnity.model.Station;
-import tqs.ChargeUnity.service.ChargerService;
-import tqs.ChargeUnity.service.StationService;
 @RestController
-@RequestMapping("/api/stations")
+@RequestMapping("/api/v1/station")
 public class StationController {
 
-    @Autowired
-    private ChargerService chargerService;
+  private final StationService stationService;
+  private OperatorService operatorService;
 
-    @Autowired
-    private StationService stationService;
+  public StationController(StationService stationService, OperatorService operatorService) {
+    this.stationService = stationService;
+    this.operatorService = operatorService;
+  }
 
+  @PostMapping
+  public ResponseEntity<?> createStation(@RequestBody Map<String, Object> payload) {
+    int operatorId = (int) payload.get("operatorId");
+    Optional<Operator> operatorOpt = operatorService.findById(operatorId);
 
-    @GetMapping("/{stationId}")
-    public ResponseEntity<?> getStationInfo(@PathVariable int stationId) {
-        Optional<Station> stationOpt = stationService.getStationById(stationId);
-        if (stationOpt.isPresent()) {
-            return ResponseEntity.ok(stationOpt.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                 .body("Station with ID " + stationId + " not found.");
-        }
+    if (operatorOpt.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Operator not found");
     }
+
+    Station station = new Station();
+    station.setName((String) payload.get("name"));
+    station.setCity((String) payload.get("city"));
+    station.setAddress((String) payload.get("address"));
+    station.setLatitude(String.valueOf(payload.get("latitude")));
+    station.setLongitude(String.valueOf(payload.get("longitude")));
+
+    Operator operator = operatorOpt.get();
+    station.getOperators().add(operator);
+
+    Station createdStation = stationService.addStation(station);
+
+    operator.setStation(createdStation);
+    operatorService.save(operator);
+
+    return new ResponseEntity<>(createdStation, HttpStatus.CREATED);
+  }
+
+  @GetMapping
+  public List<Station> getAllStations() {
+    return stationService.getAllStations();
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getStationById(@PathVariable int id) {
+    Optional<Station> optionalStation = stationService.getStationById(id);
+    if (optionalStation.isPresent()) {
+      return ResponseEntity.ok(optionalStation.get());
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Station not found");
+    }
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<?> updateStation(@PathVariable int id, @RequestBody Station updated) {
+    try {
+      Station station = stationService.updateStation(id, updated);
+      return ResponseEntity.ok(station);
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> deleteStation(@PathVariable int id) {
+    try {
+      stationService.deleteStation(id);
+      return ResponseEntity.ok("Station deleted successfully");
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+  }
 }
-    

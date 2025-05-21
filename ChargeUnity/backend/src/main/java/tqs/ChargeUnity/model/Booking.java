@@ -15,46 +15,67 @@ import lombok.Data;
 @Data
 @Entity
 public class Booking {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "trip_id")
-    private Trip trip;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "driver_id")
-    private Driver driver;
+  @ManyToOne
+  @JoinColumn(name = "trip_id")
+  private Trip trip;
+
+  @ManyToOne
+  @JoinColumn(name = "driver_id")
+  private Driver driver;
 
     @ManyToOne
     @JoinColumn(name = "charger_id")
     private Charger charger;
 
-    //car_id
     @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+  private LocalDateTime startTime;
+  private LocalDateTime endTime;
 
-    private Double price;
-    private BookingStatus status;
+  private Double price;
+  private BookingStatus status;
 
-    public Booking() {
+  public Booking() {}
+
+  public void setStartTime(LocalDateTime startTime) {
+    if (endTime != null && startTime.isAfter(endTime)) {
+      throw new IllegalArgumentException("Start time must be before end time");
     }
+    this.startTime = startTime;
+  }
 
-    @Override
-    public String toString() {
-        return "Booking " + id + " - Trip: " + trip.getId() +
-                "\nDriver: " + driver.getName() +
-                "\nCharger: " + charger.getId() +
-                "\nStart Time: " + startTime +
-                "\nEnd Time: " + endTime +
-                "\nPrice: " + price +
-                "\nStatus: " + status;
+  public void setEndTime(LocalDateTime endTime) {
+    if (startTime != null && endTime.isBefore(startTime)) {
+      throw new IllegalArgumentException("End time must be after start time");
     }
+    this.endTime = endTime;
+  }
+
+  @Override
+  public String toString() {
+    return "Booking "
+        + id
+        + " - Trip: "
+        + trip.getId()
+        + "\nDriver: "
+        + driver.getName()
+        + "\nCharger: "
+        + charger.getId()
+        + "\nStart Time: "
+        + startTime
+        + "\nEnd Time: "
+        + endTime
+        + "\nPrice: "
+        + price
+        + "\nStatus: "
+        + status;
+  }
 }
     

@@ -12,48 +12,53 @@ import lombok.Setter;
 
 @Data
 @Entity
-public class Driver extends User{
+public class Driver extends User {
 
-    @OneToMany(mappedBy = "driver")
-    private List<Car> cars = new ArrayList<>();
+  @OneToMany(mappedBy = "driver")
+  private List<Car> cars = new ArrayList<>();
 
-    @OneToMany(mappedBy = "driver")
-    private List<Booking> bookings = new ArrayList<>();
+  @OneToMany(mappedBy = "driver")
+  private List<Booking> bookings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "driver")
-    private List<Trip> trips = new ArrayList<>();
+  @OneToMany(mappedBy = "driver")
+  private List<Trip> trips = new ArrayList<>();
 
-    private Double balance;
+  private Double balance;
 
-    public Driver() {
-        super();
-    }
-    public Driver(int id, String name, String email, List<Car> cars, List<Booking> bookings,
-            List<Trip> trips, Double balance) {
-        super(id, name);
-        this.cars = cars;
-        this.bookings = bookings;
-        this.trips = trips;
-        this.balance = balance;
-    }
+  public Driver() {
+    super();
+  }
 
-    @Override
-    public String toString() {
-        return "Driver " + super.toString() + " - Balance: " + balance + ";";
-    }
+  public Driver(
+      int id,
+      String name,
+      String email,
+      List<Car> cars,
+      List<Booking> bookings,
+      List<Trip> trips,
+      Double balance) {
+    super(id, name);
+    this.cars = cars;
+    this.bookings = bookings;
+    this.trips = trips;
+    this.balance = balance;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Driver driver = (Driver) obj;
-        return super.equals(obj) && balance.equals(driver.balance);
-    }
+  @Override
+  public String toString() {
+    return "Driver " + super.toString() + " - Balance: " + balance + ";";
+  }
 
-    @Override
-    public int hashCode() {
-        return super.hashCode() + 31 * balance.hashCode();
-    }
-    
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+    Driver driver = (Driver) obj;
+    return super.equals(obj) && balance.equals(driver.balance);
+  }
 
+  @Override
+  public int hashCode() {
+    return super.hashCode() + 31 * balance.hashCode();
+  }
 }
