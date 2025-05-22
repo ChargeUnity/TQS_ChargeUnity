@@ -18,27 +18,30 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v4
 
-      
+      - name: Criar ficheiro .env com secrets
+        run: |
+          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+          echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
+          echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
+          echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
+          echo "MYSQL_PORT=3307:3306" >> .env
+          echo "APP_PORT=8080:8080" >> .env
+          echo "FRONTEND_PORT_VITE=5173:5173" >> .env
+          echo "VITE_APP_API_URL=http://localhost:8080" >> .env
+          echo "DB_EMAIL=${{ secrets.DB_EMAIL }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+
+      - name: Verificar diretório atual (debug)
+        run: pwd && ls -l
 
       - name: Parar containers anteriores
-        run: docker compose -f ChargeUnity/docker-compose.yml --env-file ChargeUnity/.env down
+        run: docker compose --env-file .env -f ChargeUnity/docker-compose.yml down
 
       - name: Limpar cache de imagens antigas
         run: docker builder prune -a -f
 
       - name: Subir serviços com Docker Compose
-        run: docker compose -f ChargeUnity/docker-compose.yml --env-file ChargeUnity/.env up -d --build
-
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          APP_PORT: "8080:8080"
-          FRONTEND_PORT_VITE: "5173:5173"
-          VITE_APP_API_URL: "http://localhost:8080"
-          DB_EMAIL: ${{ secrets.DB_EMAIL }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: docker compose --env-file .env -f ChargeUnity/docker-compose.yml up -d --build
 
       - name: Verificar healthcheck do backend
         run: curl --fail http://localhost:8080/actuator/health
