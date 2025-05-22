@@ -123,7 +123,7 @@ public class StationServiceTest {
 
   @Test
   public void testGetStationsByOperator() {
-    when(stationRepository.findByOperatorId(1)).thenReturn(List.of(sampleStation));
+    when(stationRepository.findByOperator_Id(1)).thenReturn(List.of(sampleStation));
     List<Station> result = stationService.getStationsByOperator(1);
     assertEquals(1, result.size());
     assertEquals("Main Station", result.get(0).getName());
