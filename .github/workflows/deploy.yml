@@ -40,6 +40,9 @@ jobs:
       - name: Limpar cache de imagens antigas
         run: docker builder prune -a -f
 
+      - name: Build backend (Maven)
+        run: mvn -f ChargeUnity/backend/pom.xml clean package
+
       - name: Subir serviços com Docker Compose
         run: docker compose --env-file .env -f ChargeUnity/docker-compose.yml up -d --build
 
