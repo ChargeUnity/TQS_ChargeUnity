@@ -66,7 +66,8 @@ class BookingControllerIT {
         mockMvc
             .perform(post("/bookings").contentType(MediaType.APPLICATION_JSON).content(json))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.charger.id").value(charger.getId()))
+			.andExpect(jsonPath("$.id").isNumber())
+            .andExpect(jsonPath("$.status").value("WAITING"))
             .andReturn()
             .getResponse()
             .getContentAsString();
