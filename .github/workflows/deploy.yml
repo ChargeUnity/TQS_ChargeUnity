@@ -19,15 +19,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Parar containers anteriores
-        working-directory: ../ 
+        working-directory: ${{ github.workspace }}
         run: docker compose down
 
       - name: Limpar cache de imagens antigas
         run: docker builder prune -a -f
 
       - name: Subir serviços com Docker Compose
-        working-directory: ../
+        working-directory: ${{ github.workspace }}
         run: docker compose up -d --build
+        
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
