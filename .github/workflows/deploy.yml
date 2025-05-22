@@ -19,6 +19,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Criar ficheiro .env com secrets
+        working-directory: ChargeUnity
         run: |
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
           echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
@@ -31,11 +32,9 @@ jobs:
           echo "DB_EMAIL=${{ secrets.DB_EMAIL }}" >> .env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
 
-      - name: Verificar diretório atual (debug)
-        run: pwd && ls -l
-
       - name: Parar containers anteriores
-        run: docker compose --env-file .env -f ChargeUnity/docker-compose.yml down
+        working-directory: ChargeUnity
+        run: docker compose --env-file .env -f docker-compose.yml down
 
       - name: Limpar cache de imagens antigas
         run: docker builder prune -a -f
@@ -44,7 +43,8 @@ jobs:
         run: mvn -f ChargeUnity/backend/pom.xml clean package
 
       - name: Subir serviços com Docker Compose
-        run: docker compose --env-file .env -f ChargeUnity/docker-compose.yml up -d --build
+        working-directory: ChargeUnity
+        run: docker compose --env-file .env -f docker-compose.yml up -d --build
 
       - name: Verificar healthcheck do backend
         run: curl --fail http://localhost:8080/actuator/health
