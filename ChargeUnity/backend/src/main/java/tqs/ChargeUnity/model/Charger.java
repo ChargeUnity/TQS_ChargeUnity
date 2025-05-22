@@ -34,12 +34,13 @@ public class Charger {
 
   @ManyToOne
   @JoinColumn(name = "station_id")
-  @JsonBackReference
+  @JsonBackReference(value = "station-chargers")
   private Station station;
 
   @OneToMany(mappedBy = "charger")
-  @JsonBackReference
+  @JsonBackReference(value = "charger-bookings")
   private List<Booking> bookings = new ArrayList<>();
+
 
   @Enumerated(EnumType.STRING)
   private ChargerStatus status;
