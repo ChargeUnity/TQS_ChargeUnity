@@ -12,7 +12,7 @@ import tqs.ChargeUnity.repository.ChargerRepository;
 import tqs.ChargeUnity.repository.StationRepository;
 
 @RestController
-@RequestMapping("/api/v1/charger")
+@RequestMapping("/api/v1/{stationId}/charger")
 public class ChargerController {
 
   private final StationRepository stationRepository;
