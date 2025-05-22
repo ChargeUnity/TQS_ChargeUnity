@@ -18,18 +18,16 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: Verificar diretório atual
-        run: pwd && ls -l
+      
 
       - name: Parar containers anteriores
-        run: docker compose -f ChargeUnity/docker-compose.yml down
-
+        run: docker compose -f ChargeUnity/docker-compose.yml --env-file ChargeUnity/.env down
 
       - name: Limpar cache de imagens antigas
         run: docker builder prune -a -f
 
       - name: Subir serviços com Docker Compose
-        run: docker compose -f ${{ github.workspace }}/docker-compose.yml up -d --build
+        run: docker compose -f ChargeUnity/docker-compose.yml --env-file ChargeUnity/.env up -d --build
 
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
