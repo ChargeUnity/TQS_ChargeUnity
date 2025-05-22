@@ -19,13 +19,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Parar containers anteriores
-        run: docker compose -f docker-compose.prod.yml down
+        run: docker compose down
+
 
       - name: Limpar cache de imagens antigas
         run: docker builder prune -a -f
 
       - name: Subir serviços com Docker Compose
-        run: docker compose -f docker-compose.prod.yml up -d --build
+        run: docker compose up -d --build
+
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
