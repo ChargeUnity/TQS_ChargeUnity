@@ -18,6 +18,9 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v4
 
+      - name: Verificar diretório atual
+        run: pwd && ls -l
+        
       - name: Parar containers anteriores
         working-directory: ${{ github.workspace }}
         run: docker compose down
@@ -28,7 +31,7 @@ jobs:
       - name: Subir serviços com Docker Compose
         working-directory: ${{ github.workspace }}
         run: docker compose up -d --build
-        
+
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
