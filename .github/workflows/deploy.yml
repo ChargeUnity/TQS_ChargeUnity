@@ -1,0 +1,44 @@
+name: CD - Deploy ChargeUnity (teste na CH-88)
+
+on:
+  push:
+    branches:
+      - CH-88-Create-draft-CD-pipeline
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: ChargeUnity Deploy
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Parar containers anteriores
+        run: docker compose -f docker-compose.prod.yml down
+
+      - name: Limpar cache de imagens antigas
+        run: docker builder prune -a -f
+
+      - name: Subir serviços com Docker Compose
+        run: docker compose -f docker-compose.prod.yml up -d --build
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          APP_PORT: "8080:8080"
+          FRONTEND_PORT_VITE: "5173:5173"
+          VITE_APP_API_URL: "http://localhost:8080"
+          DB_EMAIL: ${{ secrets.DB_EMAIL }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      - name: Verificar healthcheck do backend
+        run: curl --fail http://localhost:8080/actuator/health
+
+      - name: Verificar healthcheck do frontend
+        run: curl --fail http://localhost:5173
