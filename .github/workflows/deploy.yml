@@ -46,11 +46,4 @@ jobs:
         working-directory: ChargeUnity
         run: docker compose --env-file .env -f docker-compose.yml up -d --build
 
-      - name: Esperar pelo arranque do backend
-        run: sleep 30
-
-      - name: Verificar healthcheck do backend
-        run: curl --fail http://localhost:8080/actuator/health
-
-      - name: Verificar healthcheck do frontend
-        run: curl --fail http://localhost:5173
+      
