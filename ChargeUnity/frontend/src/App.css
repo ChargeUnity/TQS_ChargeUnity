@@ -41,7 +41,7 @@
   font-size: 1rem;
   font-weight: 600;
   color: #ffffff;
-  background-color: #007bff;
+  background-color: #fc6100;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
@@ -49,7 +49,7 @@
 }
 
 .navbar-button:hover {
-  background-color: #0056b3;
+  background-color: #ff9100;
 }
 
 .app-content {
@@ -87,21 +87,21 @@
 }
 
 .driver-button {
-  background-color: #007bff;
-  color: #ffffff;
+  background-color: #fc6100;
+  color: #000000;
 }
 
 .driver-button:hover {
-  background-color: #0056b3;
+  background-color: #c57200;
 }
 
 .operator-button {
-  background-color: #28a745;
+  background-color: #000000;
   color: #ffffff;
 }
 
 .operator-button:hover {
-  background-color: #1e7e34;
+  background-color: #706363;
 }
 
 .card-list {
@@ -131,4 +131,24 @@
   font-size: 1rem;
   color: #555555;
   line-height: 1.5;
+}
+.notification-box {
+  padding: 12px 20px;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.notification-success {
+  background-color: #000000; /* operador-button bg */
+  color: #ffffff;
+  border: 1px solid #000000;
+}
+
+.notification-error {
+  background-color: #ff4c4c; /* vermelho de erro */
+  color: #fff;
+  border: 1px solid #ff4c4c;
 }
