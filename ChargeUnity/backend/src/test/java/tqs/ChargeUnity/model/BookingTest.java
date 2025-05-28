@@ -1,6 +1,8 @@
 package tqs.ChargeUnity.model;
 
 import org.junit.jupiter.api.Test;
+
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
 import tqs.ChargeUnity.enums.BookingStatus;
 
 import java.time.LocalDateTime;
@@ -10,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BookingTest {
 
   @Test
+  @Requirement("CH-29")
   void testBookingToString() {
     Driver driver = new Driver();
     driver.setId(1);
@@ -44,6 +47,7 @@ class BookingTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testSetStartTimeValidation() {
     Booking booking = new Booking();
     booking.setEndTime(LocalDateTime.of(2023, 10, 1, 10, 0));
@@ -59,6 +63,7 @@ class BookingTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testSetEndTimeValidation() {
     Booking booking = new Booking();
     booking.setStartTime(LocalDateTime.of(2023, 10, 1, 10, 0));
