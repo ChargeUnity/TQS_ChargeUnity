@@ -487,7 +487,6 @@
                                 <include>**/*Test.java</include>
                                 <include>**/*Tests.java</include>
                             </includes>
-                            <!-- Generate JUnit XML reports -->
                             <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                         </configuration>
                     </plugin>
@@ -495,22 +494,23 @@
                         <groupId>app.getxray</groupId>
                         <artifactId>xray-maven-plugin</artifactId>
                         <version>${xray-maven-plugin.version}</version>
+                        <configuration>
+                            <cloud>true</cloud>
+                            <projectKey>CH</projectKey>
+                            <reportFormat>junit</reportFormat>
+                            <!-- Use a specific file instead of pattern -->
+                            <reportFile>${project.build.directory}/surefire-reports</reportFile>
+                            <!-- These will be overridden by command line -->
+                            <clientId>${xray.clientId}</clientId>
+                            <clientSecret>${xray.clientSecret}</clientSecret>
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>import-xray-unit-results</id>
+                                <id>import-results</id>
                                 <phase>verify</phase>
                                 <goals>
                                     <goal>import-results</goal>
                                 </goals>
-                                <configuration>
-                                    <cloud>true</cloud>
-                                    <clientId>${xray.clientId}</clientId>
-                                    <clientSecret>${xray.clientSecret}</clientSecret>
-                                    <reportFormat>junit</reportFormat>
-                                    <!-- Use the correct report location -->
-                                    <reportFile>target/surefire-reports/TEST-*.xml</reportFile>
-                                    <projectKey>CH</projectKey>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
