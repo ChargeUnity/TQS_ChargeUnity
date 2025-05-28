@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
+
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
 import tqs.ChargeUnity.enums.BookingStatus;
 import tqs.ChargeUnity.model.Booking;
 import tqs.ChargeUnity.model.Charger;
@@ -40,6 +42,7 @@ class BookingServiceTest {
 
   // tests related to booking creation
   @Test
+  @Requirement("CH-29")
   void testCreateBooking() {
     Driver driver = new Driver();
     driver.setId(1);
@@ -63,6 +66,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testCreateBookingDuplicate() {
     Driver driver = new Driver();
     driver.setId(1);
@@ -96,6 +100,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testCreateBookingTimeSlotNotAvailable() {
     Driver driver = new Driver();
     driver.setId(1);
@@ -126,6 +131,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testCreateBookingDriverNotFound() {
     when(driverRepository.findById(1)).thenReturn(Optional.empty());
 
@@ -143,6 +149,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testCreateBookingChargerNotFound() {
     Driver driver = new Driver();
     driver.setId(1);
@@ -165,6 +172,7 @@ class BookingServiceTest {
 
   // tests related to time slot availability
   @Test
+  @Requirement("CH-29")
   void testIsTimeSlotAvailableTrue() {
     when(bookingRepository.findByChargerId(1)).thenReturn(new ArrayList<>());
     LocalDateTime startTime = LocalDateTime.now().plusHours(1);
@@ -175,6 +183,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testIsTimeSlotAvailableFalse() {
     Booking booking = new Booking();
     LocalDateTime startTime = LocalDateTime.now().plusHours(1);
@@ -191,6 +200,7 @@ class BookingServiceTest {
 
   // tests related to booking retrieval
   @Test
+  @Requirement("CH-29")
   void testGetBookingsByDriver() {
     Booking booking = new Booking();
     when(bookingRepository.findByDriverId(1)).thenReturn(List.of(booking));
@@ -201,6 +211,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testGetBookingByIdFound() {
     Booking booking = new Booking();
     when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
@@ -211,6 +222,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testGetBookingByIdNotFound() {
     when(bookingRepository.findById(1)).thenReturn(Optional.empty());
 
@@ -220,6 +232,7 @@ class BookingServiceTest {
 
   // tests related to booking cancellation
   @Test
+  @Requirement("CH-29")
   void testCancelBookingSuccess() {
     Driver driver = new Driver();
     driver.setId(1);
@@ -237,6 +250,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testCancelBookingNotFound() {
     when(bookingRepository.findById(1)).thenReturn(Optional.empty());
 
@@ -251,6 +265,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testCancelBookingUnauthorized() {
     Driver driver = new Driver();
     driver.setId(2);

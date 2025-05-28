@@ -16,6 +16,8 @@ import tqs.ChargeUnity.repository.OperatorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.*;
 
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
+
 public class OperatorServiceTest {
   @Mock private OperatorRepository operatorRepository;
 
@@ -42,6 +44,7 @@ public class OperatorServiceTest {
   }
 
   @Test
+  @Requirement("CH-33")
   void testFindById() {
     when(operatorRepository.findById(1)).thenReturn(Optional.of(sampleOperator));
     Optional<Operator> result = operatorService.findById(1);
@@ -50,6 +53,7 @@ public class OperatorServiceTest {
   }
 
   @Test
+  @Requirement("CH-33")
   void testFindByName() {
     when(operatorRepository.findByName("Galp")).thenReturn(Optional.of(sampleOperator));
     Optional<Operator> result = operatorService.findByName("Galp");
@@ -57,6 +61,7 @@ public class OperatorServiceTest {
   }
 
   @Test
+  @Requirement("CH-33")
   void testSave() {
     when(operatorRepository.save(any(Operator.class))).thenReturn(sampleOperator);
     Optional<Operator> result = Optional.ofNullable(operatorService.save(sampleOperator));
@@ -65,6 +70,7 @@ public class OperatorServiceTest {
   }
 
   @Test
+  @Requirement("CH-33")
   void testUpdate() {
     Operator updated = new Operator();
     updated.setId(1);
@@ -92,6 +98,7 @@ public class OperatorServiceTest {
   }
 
   @Test
+  @Requirement("CH-33")
   public void testDeleteById() {
     when(operatorRepository.existsById(1)).thenReturn(true);
     doNothing().when(operatorRepository).deleteById(1);

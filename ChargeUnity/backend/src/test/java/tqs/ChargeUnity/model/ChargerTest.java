@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ChargerTest {
 
   @Test
-  @Requirement("CH-28")
+  @Requirement("CH-28,CH-29")
   void testChargerToString() {
     Station station = new Station();
     station.setId(1);
@@ -31,7 +31,7 @@ class ChargerTest {
   }
 
   @Test
-  @Requirement("CH-28")
+  @Requirement("CH-28,CH-29")
   void testPricePerKWhBounds() {
     Charger charger = new Charger();
 
