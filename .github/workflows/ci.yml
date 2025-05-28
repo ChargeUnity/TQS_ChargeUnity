@@ -167,7 +167,6 @@ jobs:
         run:
           working-directory: ChargeUnity/backend
       env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
         XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
       steps:
