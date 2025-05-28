@@ -11,7 +11,7 @@ function BookingList() {
     useEffect(() => {
         const fetchBookings = async () => {
             try {
-                const res = await fetch(`http://localhost:8080/bookings/driver/${id}`);
+                const res = await fetch(`${config.API_URL}/bookings/driver/${id}`);
                 if (!res.ok) throw new Error('Failed to fetch bookings.');
                 const data = await res.json();
                 setBookings(data);
@@ -27,7 +27,7 @@ function BookingList() {
 
     const startCharging = async (bookingId) => {
         try {
-            const res = await fetch(`http://localhost:8080/bookings/${bookingId}/start`, {
+            const res = await fetch(`${config.API_URL}/bookings/${bookingId}/start`, {
                 method: 'PATCH',
             });
             if (!res.ok) throw new Error('Failed to start charging.');
