@@ -15,7 +15,7 @@ import tqs.ChargeUnity.service.BookingService;
 import tqs.ChargeUnity.dto.BookingRequestDTO;
 
 @RestController
-@RequestMapping("/bookings")
+@RequestMapping("api/v1/bookings")
 public class BookingController {
 
   private final BookingService bookingService;

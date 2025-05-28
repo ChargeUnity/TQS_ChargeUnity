@@ -45,6 +45,11 @@ public class BookingService {
       throw new RuntimeException("Time slot not available");
     }
 
+    // verify if charger status is Available
+    if (charger.getStatus() != tqs.ChargeUnity.enums.ChargerStatus.AVAILABLE) {
+      throw new RuntimeException("Charger is not available for booking");
+    }
+
     List<Booking> driverBookings =
         bookingRepository.findOverlapingBookingsOfUser(driverId, startTime, endTime);
     if (!driverBookings.isEmpty()) {
