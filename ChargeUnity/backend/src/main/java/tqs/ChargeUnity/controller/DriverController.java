@@ -68,7 +68,7 @@ public class DriverController {
     }
   }
 
-  @GetMapping("/bookings")
+  @GetMapping("/{id}/bookings")
   public ResponseEntity<List<Booking>> getBookingsByDriver(@RequestParam int driverId) {
     List<Booking> bookings = bookingService.getBookingsByDriver(driverId);
 

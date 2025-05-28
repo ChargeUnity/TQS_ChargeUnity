@@ -8,7 +8,8 @@ import Operator from './Operator';
 import OperatorDetail from "./OperatorDetail.jsx";
 import ChargersList from "./ChargerList.jsx";
 import ChargerStatus from "./ChargerStatus.jsx";
-
+import BookingList from "./BookingList.jsx";
+import DriverPage from "./DriverPage.jsx";
 
 function App() {
   return (
@@ -21,6 +22,9 @@ function App() {
         <Route path="/operators/:id" element={<OperatorDetail />} />
         <Route path="/stations/:stationId/chargers" element={<ChargersList />} />
         <Route path="/chargers/:chargerId/edit" element={<ChargerStatus />} />
+        <Route path="/driver/:id" element={<DriverPage />} />
+        <Route path="/driver/:id/bookings" element={<BookingList />} />
+
       </Routes>
     </>
   );
