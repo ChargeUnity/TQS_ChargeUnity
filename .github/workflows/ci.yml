@@ -184,6 +184,21 @@ jobs:
             name: build-artifact
             path: ChargeUnity/backend/target/
 
+        - name: Debug Xray Authentication
+          run: |
+            # Don't print the actual secret, just check if it exists
+            if [ -z "${{ secrets.XRAY_CLIENT_ID }}" ]; then
+              echo "XRAY_CLIENT_ID is not set"
+            else
+              echo "XRAY_CLIENT_ID is set (length: ${#XRAY_CLIENT_ID})"
+            fi
+            
+            if [ -z "${{ secrets.XRAY_CLIENT_SECRET }}" ]; then
+              echo "XRAY_CLIENT_SECRET is not set"
+            else
+              echo "XRAY_CLIENT_SECRET is set"
+            fi
+
         - name: Run Xray Integration
           run: |
             mvn verify -Punit-tests,xray-unit \
