@@ -53,7 +53,7 @@ class BookingControllerIT {
     charger = new Charger();
     charger.setPricePerKWh(0.5);
     charger = chargerRepository.save(charger);
-	charger.setStatus(ChargerStatus.AVAILABLE);
+    charger.setStatus(ChargerStatus.AVAILABLE);
   }
 
   @Test
