@@ -91,6 +91,8 @@
         <flyway.version>11.8.0</flyway.version>
         <mysql-connector-java.version>8.0.33</mysql-connector-java.version>
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
+        <xray-junit-extensions.version>0.10.0</xray-junit-extensions.version>
+        <xray-maven-plugin.version>0.9.0</xray-maven-plugin.version>
 
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
 
@@ -432,6 +434,19 @@
             <version>${hibernate-validator.version}</version>
         </dependency>
 
+        <!-- Xray (slides) -->
+        <dependency>
+            <groupId>app.getxray</groupId>
+            <artifactId>xray-junit-extensions</artifactId>
+            <version>${xray-junit-extensions.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>app.getxray</groupId>
+            <artifactId>xray-maven-plugin</artifactId>
+            <version>${xray-maven-plugin.version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>

@@ -1,6 +1,8 @@
 package tqs.ChargeUnity.model;
 
 import org.junit.jupiter.api.Test;
+
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
 import tqs.ChargeUnity.enums.ChargerStatus;
 import tqs.ChargeUnity.enums.ChargerType;
 
@@ -9,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ChargerTest {
 
   @Test
+  @Requirement("CH-28")
   void testChargerToString() {
     Station station = new Station();
     station.setId(1);
@@ -28,6 +31,7 @@ class ChargerTest {
   }
 
   @Test
+  @Requirement("CH-28")
   void testPricePerKWhBounds() {
     Charger charger = new Charger();
 
