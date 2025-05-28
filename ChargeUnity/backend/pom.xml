@@ -495,7 +495,7 @@
                                     <clientSecret>${xray.clientSecret}</clientSecret>
                                     <reportFormat>junit</reportFormat>
                                     <reportFile>target/TEST-junit-jupiter.xml</reportFile>
-                                    <projectKey>ET</projectKey>
+                                    <projectKey>CH</projectKey>
                                 </configuration>
                             </execution>
                         </executions>
@@ -567,7 +567,29 @@
                     </goals>
                 </execution>
             </executions>
-        </plugin>
+            </plugin>
+            <plugin>
+                <groupId>app.getxray</groupId>
+                <artifactId>xray-maven-plugin</artifactId>
+                <version>${xray-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>import-xray-unit-results</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>import-results</goal>
+                        </goals>
+                        <configuration>
+                            <cloud>true</cloud>
+                            <clientId>${xray.clientId}</clientId>
+                            <clientSecret>${xray.clientSecret}</clientSecret>
+                            <projectKey>CH</projectKey>
+                            <reportFormat>junit</reportFormat>
+                            <reportFile>target/TEST-junit-jupiter.xml</reportFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 </project>
