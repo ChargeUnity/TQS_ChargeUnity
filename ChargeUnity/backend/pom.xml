@@ -479,6 +479,19 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*Test.java</include>
+                                <include>**/*Tests.java</include>
+                            </includes>
+                            <!-- Generate JUnit XML reports -->
+                            <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                        </configuration>
+                    </plugin>
+                    <plugin>
                         <groupId>app.getxray</groupId>
                         <artifactId>xray-maven-plugin</artifactId>
                         <version>${xray-maven-plugin.version}</version>
@@ -494,7 +507,8 @@
                                     <clientId>${xray.clientId}</clientId>
                                     <clientSecret>${xray.clientSecret}</clientSecret>
                                     <reportFormat>junit</reportFormat>
-                                    <reportFile>target/TEST-junit-jupiter.xml</reportFile>
+                                    <!-- Use the correct report location -->
+                                    <reportFile>target/surefire-reports/TEST-*.xml</reportFile>
                                     <projectKey>CH</projectKey>
                                 </configuration>
                             </execution>
@@ -569,26 +583,21 @@
             </executions>
             </plugin>
             <plugin>
-                <groupId>app.getxray</groupId>
-                <artifactId>xray-maven-plugin</artifactId>
-                <version>${xray-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>import-xray-unit-results</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>import-results</goal>
-                        </goals>
-                        <configuration>
-                            <cloud>true</cloud>
-                            <clientId>${xray.clientId}</clientId>
-                            <clientSecret>${xray.clientSecret}</clientSecret>
-                            <projectKey>CH</projectKey>
-                            <reportFormat>junit</reportFormat>
-                            <reportFile>target/TEST-junit-jupiter.xml</reportFile>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                    </includes>
+                    <reportsDirectory>${project.build.directory}</reportsDirectory>
+                    <statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+                        <usePhrasedFileName>false</usePhrasedFileName>
+                        <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+                        <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+                    </statelessTestsetReporter>
+                </configuration>
             </plugin>
 		</plugins>
 	</build>
