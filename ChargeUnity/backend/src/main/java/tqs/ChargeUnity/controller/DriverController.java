@@ -69,8 +69,8 @@ public class DriverController {
   }
 
   @GetMapping("/{id}/bookings")
-  public ResponseEntity<List<Booking>> getBookingsByDriver(@RequestParam int driverId) {
-    List<Booking> bookings = bookingService.getBookingsByDriver(driverId);
+  public ResponseEntity<List<Booking>> getBookingsByDriver(@PathVariable int id) {
+    List<Booking> bookings = bookingService.getBookingsByDriver(id);
 
     return Optional.ofNullable(bookings)
         .filter(list -> !list.isEmpty())
