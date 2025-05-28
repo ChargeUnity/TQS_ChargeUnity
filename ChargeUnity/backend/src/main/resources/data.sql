@@ -72,3 +72,28 @@ ON DUPLICATE KEY UPDATE
     end_time = VALUES(end_time), 
     price = VALUES(price), 
     status = VALUES(status);
+
+-- Trip
+INSERT INTO trip (id, driver_id, start_coordinates, end_coordinates, start_time, duration_seconds, distance, price) VALUES
+(2, 3, '38.736946,-9.142685', '41.14961,-8.61099', '2025-06-06 10:00:00', 7200, 313.0, 40.0)
+ON DUPLICATE KEY UPDATE 
+    driver_id = VALUES(driver_id), 
+    start_coordinates = VALUES(start_coordinates), 
+    end_coordinates = VALUES(end_coordinates), 
+    start_time = VALUES(start_time), 
+    duration_seconds = VALUES(duration_seconds), 
+    distance = VALUES(distance), 
+    price = VALUES(price);
+
+-- Booking
+INSERT INTO booking (id, trip_id, driver_id, charger_id, car_id, start_time, end_time, price, status) VALUES
+(2, 2, 3, 2, 1, '2025-06-06 10:00:00', '2025-06-06 12:00:00', 20.0, 'WAITING')
+ON DUPLICATE KEY UPDATE 
+    trip_id = VALUES(trip_id), 
+    driver_id = VALUES(driver_id), 
+    charger_id = VALUES(charger_id), 
+    car_id = VALUES(car_id), 
+    start_time = VALUES(start_time), 
+    end_time = VALUES(end_time), 
+    price = VALUES(price), 
+    status = VALUES(status);
