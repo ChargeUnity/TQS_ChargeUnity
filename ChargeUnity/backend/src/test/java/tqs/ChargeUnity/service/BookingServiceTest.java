@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 
 import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
 import tqs.ChargeUnity.enums.BookingStatus;
+import tqs.ChargeUnity.enums.ChargerStatus;
 import tqs.ChargeUnity.model.Booking;
 import tqs.ChargeUnity.model.Charger;
 import tqs.ChargeUnity.model.Driver;
@@ -48,6 +49,7 @@ class BookingServiceTest {
     driver.setId(1);
     Charger charger = new Charger();
     charger.setId(1);
+    charger.setStatus(ChargerStatus.AVAILABLE);
     charger.setPricePerKWh(0.5);
 
     LocalDateTime startTime = LocalDateTime.now().plusHours(1);
@@ -71,6 +73,7 @@ class BookingServiceTest {
     Driver driver = new Driver();
     driver.setId(1);
     Charger charger = new Charger();
+    charger.setStatus(ChargerStatus.AVAILABLE);
     charger.setId(1);
     charger.setPricePerKWh(0.5);
 
