@@ -155,3 +155,38 @@ jobs:
 
       - name: Run integration tests
         run: ./mvnw test -Dtest=*IT
+
+  xray-integration:
+      if: |
+        !(github.event.pull_request.draft == true &&
+          contains(join(github.event.pull_request.labels.*.name, ','), 'ci:skip'))
+      name: Xray Integration
+      runs-on: ubuntu-latest
+      needs: integration-test
+      defaults:
+        run:
+          working-directory: ChargeUnity/backend
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
+        XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Set up Java
+          uses: actions/setup-java@v4
+          with:
+            distribution: 'temurin'
+            java-version: '21'
+
+        - name: Download build artifact
+          uses: actions/download-artifact@v4
+          with:
+            name: build-artifact
+            path: ChargeUnity/backend/target/
+
+        - name: Run Xray Integration
+          run: |
+            mvn verify -Punit-tests,xray-unit \
+              -Dxray.clientId=${{ env.XRAY_CLIENT_ID }} \
+              -Dxray.clientSecret=${{ env.XRAY_CLIENT_SECRET }}
