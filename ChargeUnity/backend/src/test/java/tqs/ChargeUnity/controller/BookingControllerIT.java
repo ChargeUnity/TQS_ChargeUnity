@@ -1,6 +1,9 @@
 package tqs.ChargeUnity.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +55,7 @@ class BookingControllerIT {
   }
 
   @Test
+  @Requirement("CH-29")
   void createBooking_andGetByDriver_andGetStatus() throws Exception {
     BookingRequestDTO dto =
         new BookingRequestDTO(
@@ -92,6 +96,7 @@ class BookingControllerIT {
   }
 
   @Test
+  @Requirement("CH-29")
   void startStopCancelBooking() throws Exception {
     Booking booking = new Booking();
     booking.setDriver(driver);
