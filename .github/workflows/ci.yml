@@ -199,7 +199,7 @@ jobs:
               echo "Response body: $body"
               exit 1
             else
-              echo "Authentication successful!"
+              echo "Authentication successful! "
             fi
 
         - name: Run tests and upload to Xray
