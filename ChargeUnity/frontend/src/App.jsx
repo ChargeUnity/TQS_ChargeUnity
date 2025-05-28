@@ -10,7 +10,7 @@ import ChargersList from "./ChargerList.jsx";
 import ChargerStatus from "./ChargerStatus.jsx";
 import BookingList from "./BookingList.jsx";
 import DriverPage from "./DriverPage.jsx";
-
+import RegisterStation from "./RegisterStation.jsx";
 function App() {
   return (
     <>
@@ -24,6 +24,8 @@ function App() {
         <Route path="/chargers/:chargerId/edit" element={<ChargerStatus />} />
         <Route path="/driver/:id" element={<DriverPage />} />
         <Route path="/driver/:id/bookings" element={<BookingList />} />
+        <Route path="/operators/:id/stations/new" element={<RegisterStation />} />
+
 
       </Routes>
     </>

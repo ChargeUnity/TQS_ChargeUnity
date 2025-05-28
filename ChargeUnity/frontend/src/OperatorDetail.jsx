@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import config from '../config';
 
 function OperatorDetail() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [stations, setStations] = useState([]);
     const [operatorName, setOperatorName] = useState('');
     const [loading, setLoading] = useState(true);
@@ -31,12 +32,19 @@ function OperatorDetail() {
         fetchOperatorData();
     }, [id]);
 
+    const handleRegisterStation = () => {
+        navigate(`/operators/${id}/stations/new`);
+    };
+
     if (loading) return <div className="app-container"><h1>Loading...</h1></div>;
     if (error) return <div className="app-container"><h1>Error: {error}</h1></div>;
 
     return (
         <div className="app-container">
             <h1>{operatorName} - Stations</h1>
+            <button onClick={handleRegisterStation} className="btn">
+                Register New Station
+            </button>
             {stations.length === 0 ? (
                 <p>No stations available for this operator.</p>
             ) : (
