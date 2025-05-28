@@ -15,6 +15,8 @@ import tqs.ChargeUnity.repository.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.*;
 
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
+
 public class StationServiceTest {
 
   @Mock private StationRepository stationRepository;
@@ -47,6 +49,7 @@ public class StationServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-33")
   public void testGetAllStations() {
     when(stationRepository.findAll()).thenReturn(List.of(sampleStation));
     List<Station> result = stationService.getAllStations();
@@ -55,6 +58,7 @@ public class StationServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-33")
   public void testGetStationById() {
     when(stationRepository.findById(1)).thenReturn(Optional.of(sampleStation));
     Optional<Station> result = stationService.getStationById(1);
@@ -63,6 +67,7 @@ public class StationServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-33")
   public void testAddStation() {
     when(stationRepository.save(any(Station.class))).thenReturn(sampleStation);
     Station result = stationService.addStation(sampleStation);
@@ -71,6 +76,7 @@ public class StationServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-33")
   public void testDeleteStation() {
     when(stationRepository.existsById(1)).thenReturn(true);
     doNothing().when(stationRepository).deleteById(1);
@@ -80,6 +86,7 @@ public class StationServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-33")
   public void testDeleteStationThrowsExceptionWhenNotFound() {
     when(stationRepository.existsById(1)).thenReturn(false);
     RuntimeException exception =
@@ -88,6 +95,7 @@ public class StationServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-33")
   public void testUpdateStation() {
     Station updatedStation = new Station();
     updatedStation.setName("Updated Station");
@@ -106,6 +114,7 @@ public class StationServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-33")
   public void testUpdateStationThrowsExceptionWhenNotFound() {
     when(stationRepository.findById(1)).thenReturn(Optional.empty());
     RuntimeException exception =
@@ -114,6 +123,7 @@ public class StationServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-33")
   public void testGetStationsByCity() {
     when(stationRepository.findByCityIgnoreCase("New York")).thenReturn(List.of(sampleStation));
     List<Station> result = stationService.getStationsByCity("New York");
@@ -122,6 +132,7 @@ public class StationServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-33")
   public void testGetStationsByOperator() {
     when(stationRepository.findByOperator_Id(1)).thenReturn(List.of(sampleStation));
     List<Station> result = stationService.getStationsByOperator(1);
@@ -130,6 +141,7 @@ public class StationServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-33")
   public void testGetStationsByLocation() {
     Station stationWithinRadius = new Station();
     stationWithinRadius.setId(1);
