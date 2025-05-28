@@ -286,4 +286,166 @@ class BookingServiceTest {
 
     assertTrue(exception.getMessage().contains("Unauthorized"));
   }
+
+  // tests related to charging operations
+  @Test
+  @Requirement("CH-93")
+  void testStartChargingSuccess() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.WAITING);
+    
+	when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
+    
+	Booking result = bookingService.startCharging(1);
+    assertEquals(BookingStatus.CHARGING, result.getStatus());
+    verify(bookingRepository).save(booking);
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testStartChargingNotWaiting() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.COMPLETED);
+    
+	when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    
+	RuntimeException ex = assertThrows(RuntimeException.class, () -> bookingService.startCharging(1));
+    assertEquals("Booking is not ready to start.", ex.getMessage());
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testGetChargingStatus() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.CHARGING);
+    
+	when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    
+	BookingStatus status = bookingService.getChargingStatus(1);
+    assertEquals(BookingStatus.CHARGING, status);
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testGetChargingStatusNotFound() {
+    when(bookingRepository.findById(1)).thenReturn(Optional.empty());
+    
+	RuntimeException ex = assertThrows(RuntimeException.class, () -> bookingService.getChargingStatus(1));
+    assertEquals("Booking not found", ex.getMessage());
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testStopChargingSuccess() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.CHARGING);
+    
+	when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
+    
+	Booking result = bookingService.stopCharging(1);
+    assertEquals(BookingStatus.COMPLETED, result.getStatus());
+    verify(bookingRepository).save(booking);
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testStopChargingNotCharging() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.WAITING);
+    
+	when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    
+	RuntimeException ex = assertThrows(RuntimeException.class, () -> bookingService.stopCharging(1));
+    assertEquals("Booking is not currently charging.", ex.getMessage());
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testGetBookingsByCharger() {
+    Booking booking = new Booking();
+    
+	when(bookingRepository.findByChargerId(1)).thenReturn(List.of(booking));
+    
+	List<Booking> bookings = bookingService.getBookingsByCharger(1);
+    assertEquals(1, bookings.size());
+    assertSame(booking, bookings.get(0));
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testGetBookingsByChargerAndDate() {
+    Booking booking = new Booking();
+    LocalDateTime start = LocalDateTime.now();
+    LocalDateTime end = start.plusHours(2);
+    
+	when(bookingRepository.findByChargerIdAndStartTimeBetween(1, start, end)).thenReturn(List.of(booking));
+    
+	List<Booking> bookings = bookingService.getBookingsByChargerAndDate(1, start, end);
+    assertEquals(1, bookings.size());
+    assertSame(booking, bookings.get(0));
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testGetOverlappingBookings() {
+    Booking booking = new Booking();
+    LocalDateTime start = LocalDateTime.now();
+    LocalDateTime end = start.plusHours(2);
+    
+	when(bookingRepository.findOverlappingBookings(1, start, end)).thenReturn(List.of(booking));
+    
+	List<Booking> bookings = bookingService.getOverlappingBookings(1, start, end);
+    assertEquals(1, bookings.size());
+    assertSame(booking, bookings.get(0));
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testCancelBookingByIdSuccess() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.WAITING);
+    
+	when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
+    
+	Booking result = bookingService.cancelBooking(1);
+    assertEquals(BookingStatus.CANCELLED, result.getStatus());
+    verify(bookingRepository).save(booking);
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testCancelBookingByIdAlreadyCancelled() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.CANCELLED);
+    
+	when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    
+	RuntimeException ex = assertThrows(RuntimeException.class, () -> bookingService.cancelBooking(1));
+    assertEquals("Booking is already cancelled.", ex.getMessage());
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testCancelBookingByIdAlreadyCompleted() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.COMPLETED);
+    
+	when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    
+	RuntimeException ex = assertThrows(RuntimeException.class, () -> bookingService.cancelBooking(1));
+    assertEquals("Booking is already completed.", ex.getMessage());
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testCancelBookingByIdNotFound() {
+    
+	when(bookingRepository.findById(1)).thenReturn(Optional.empty());
+    
+	RuntimeException ex = assertThrows(RuntimeException.class, () -> bookingService.cancelBooking(1));
+    assertEquals("Booking not found", ex.getMessage());
+  }
 }
