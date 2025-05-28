@@ -449,6 +449,62 @@
         </dependency>
 	</dependencies>
 
+    <profiles>
+        <!-- Profile for Unit Tests -->
+        <profile>
+            <id>unit-tests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*Test.java</include>
+                                <include>**/*Tests.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile for Xray Unit Integration -->
+        <profile>
+            <id>xray-unit</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>app.getxray</groupId>
+                        <artifactId>xray-maven-plugin</artifactId>
+                        <version>${xray-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>import-xray-unit-results</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>import-results</goal>
+                                </goals>
+                                <configuration>
+                                    <cloud>true</cloud>
+                                    <clientId>${xray.clientId}</clientId>
+                                    <clientSecret>${xray.clientSecret}</clientSecret>
+                                    <reportFormat>junit</reportFormat>
+                                    <reportFile>target/TEST-junit-jupiter.xml</reportFile>
+                                    <projectKey>ET</projectKey>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 	<build>
 		<plugins>
 			<plugin>
