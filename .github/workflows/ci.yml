@@ -70,7 +70,7 @@ jobs:
           java-version: '21'
 
       - name: Run tests and generate coverage
-        run: mvn test jacoco:report -T 4
+        run: mvn test jacoco:report -T 4 -Dtest='*UnitTest,*IT,*ControllerTest'
 
       - name: Upload JaCoCo report
         uses: actions/upload-artifact@v4
@@ -185,7 +185,8 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Start containers
-        run: docker compose -f docker-compose.yml up -d --build
+        run:  cd ..
+              docker compose -f docker-compose.yml up -d --build
               sleep 30 # Wait for services to start (in the future this should be replaced with a health check)
 
       - name: Run functional tests (Firefox)
