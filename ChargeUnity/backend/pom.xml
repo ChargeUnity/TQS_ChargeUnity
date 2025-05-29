@@ -65,7 +65,7 @@
         <junit-jupiter.version>5.12.0</junit-jupiter.version>
         <mockito-junit-jupiter.version>5.15.2</mockito-junit-jupiter.version>
 
-        <selenium.version>4.29.0</selenium.version>
+        <selenium.version>4.33.0</selenium.version>
         <selenium-jupiter.version>6.1.0</selenium-jupiter.version>
         <assertj.version>3.27.3</assertj.version>
 
@@ -478,6 +478,28 @@
                                 <include>**/*Test.java</include>
                                 <include>**/*Tests.java</include>
                             </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile for Functional Tests -->
+        <profile>
+            <id>functional-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/functional/**/*Test.java</include>
+                                <include>**/functional/**/*Steps.java</include>
+                                <include>**/functional/**/*CucumberTest.java</include>
+                            </includes>
+                            <reportsDirectory>${project.build.directory}/surefire-reports-functional</reportsDirectory>
                         </configuration>
                     </plugin>
                 </plugins>
