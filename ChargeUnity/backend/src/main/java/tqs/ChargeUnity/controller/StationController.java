@@ -29,23 +29,18 @@ public class StationController {
   public ResponseEntity<?> createStation(@RequestBody Map<String, Object> payload) {
     int operatorId = (int) payload.get("operatorId");
     Optional<Operator> operatorOpt = operatorService.findById(operatorId);
-
     if (operatorOpt.isEmpty()) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Operator not found");
     }
-
     Station station = new Station();
     station.setName((String) payload.get("name"));
     station.setCity((String) payload.get("city"));
     station.setAddress((String) payload.get("address"));
     station.setLatitude(String.valueOf(payload.get("latitude")));
     station.setLongitude(String.valueOf(payload.get("longitude")));
-
     Operator operator = operatorOpt.get();
     station.setOperator(operator);
-
     Station createdStation = stationService.addStation(station);
-
     return new ResponseEntity<>(createdStation, HttpStatus.CREATED);
   }
 
@@ -70,7 +65,8 @@ public class StationController {
       Station station = stationService.updateStation(id, updated);
       return ResponseEntity.ok(station);
     } catch (RuntimeException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+          .body("Station not found");
     }
   }
 
@@ -80,7 +76,8 @@ public class StationController {
       stationService.deleteStation(id);
       return ResponseEntity.ok("Station deleted successfully");
     } catch (RuntimeException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+          .body("Station not found");
     }
   }
 

@@ -69,13 +69,11 @@ class StationControllerIT {
 
     int stationId = objectMapper.readTree(response).get("id").asInt();
 
-    // Get by ID
     mockMvc
         .perform(get("/api/v1/station/" + stationId))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name").value("Test Station"));
 
-    // Get all
     mockMvc
         .perform(get("/api/v1/station"))
         .andExpect(status().isOk())
@@ -134,7 +132,7 @@ class StationControllerIT {
     mockMvc
         .perform(put("/api/v1/station/9999").contentType(MediaType.APPLICATION_JSON).content(json))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("Station with ID 9999 not found"));
+        .andExpect(content().string("Station not found"));
   }
 
   @Test
