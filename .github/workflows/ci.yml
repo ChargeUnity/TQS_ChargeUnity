@@ -170,8 +170,35 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Run functional tests
-        run: mvn verify -Dspring.profiles.active=test
+      - name: Install Firefox and GeckoDriver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y firefox wget unzip jq
+          
+          GECKO_URL=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r '.assets[] | select(.name | test("linux64\\.tar\\.gz$")) | .browser_download_url')
+          wget "$GECKO_URL" -O geckodriver.tar.gz
+          tar -xzf geckodriver.tar.gz
+          sudo mv geckodriver /usr/bin/geckodriver
+          sudo chmod +x /usr/bin/geckodriver
+
+      - name: Build backend
+        working-directory: ./backend
+        run: mvn clean package -DskipTests
+
+      - name: Start containers
+        run: docker compose -f docker-compose.yml up -d --build
+              sleep 30 # Wait for services to start (in the future this should be replaced with a health check)
+
+      - name: Run functional tests (Firefox)
+        working-directory: ./backend
+        run: |
+          mvn test -Pcucumber-tests -Dskip.xray.unit=true -Dskip.xray.cucumber=false \
+            -Dcucumber.filter.tags="@firefox" \
+            -Dxray.clientId=${{ secrets.XRAY_CLIENT_ID }} \
+            -Dxray.clientSecret=${{ secrets.XRAY_CLIENT_SECRET }}
+
+      - name: Stop containers
+        run: docker compose -f docker-compose.yml down
 
   xray-integration:
     if: |
