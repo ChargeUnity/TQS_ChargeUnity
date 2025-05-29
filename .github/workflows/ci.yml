@@ -206,12 +206,25 @@ jobs:
       - name: Run functional tests (Firefox)
         working-directory: ChargeUnity/backend
         run: |
-          mvn test -Pcucumber-tests -Dskip.xray.unit=true -Dskip.xray.cucumber=false \
+          mvn test -Pfunctional-tests -Dskip.xray.unit=true -Dskip.xray.cucumber=false \
             -Dcucumber.filter.tags="@firefox" \
             -Dxray.clientId=${{ secrets.XRAY_CLIENT_ID }} \
             -Dxray.clientSecret=${{ secrets.XRAY_CLIENT_SECRET }}
 
       - name: Stop containers
+        env:
+          MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          APP_PORT: ${{ secrets.APP_PORT }}
+          DB_EMAIL: ${{ secrets.DB_EMAIL }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          VITE_APP_API_URL: ${{ secrets.VITE_APP_API_URL }}
+          FRONTEND_PORT_VITE: ${{ secrets.FRONTEND_PORT_VITE }}
+          GF_SECURITY_ADMIN_USER: ${{ secrets.GF_SECURITY_ADMIN_USER }}
+          GF_SECURITY_ADMIN_PASSWORD: ${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
         run: cd .. && docker compose -f docker-compose.yml down
 
   xray-integration:
