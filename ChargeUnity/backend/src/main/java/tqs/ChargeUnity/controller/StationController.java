@@ -65,8 +65,7 @@ public class StationController {
       Station station = stationService.updateStation(id, updated);
       return ResponseEntity.ok(station);
     } catch (RuntimeException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
-          .body("Station not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Station not found");
     }
   }
 
@@ -76,8 +75,7 @@ public class StationController {
       stationService.deleteStation(id);
       return ResponseEntity.ok("Station deleted successfully");
     } catch (RuntimeException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
-          .body("Station not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Station not found");
     }
   }
 
