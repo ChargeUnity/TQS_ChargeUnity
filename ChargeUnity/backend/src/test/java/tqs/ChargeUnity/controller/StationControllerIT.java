@@ -134,7 +134,7 @@ class StationControllerIT {
     mockMvc
         .perform(put("/api/v1/station/9999").contentType(MediaType.APPLICATION_JSON).content(json))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("Station not found"));
+        .andExpect(content().string("Station with ID 9999 not found"));
   }
 
   @Test

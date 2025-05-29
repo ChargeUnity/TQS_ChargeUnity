@@ -12,7 +12,6 @@ import tqs.ChargeUnity.service.StationService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/v1/station")
@@ -95,9 +94,6 @@ public class StationController {
   @GetMapping("/city/{city}")
   public ResponseEntity<?> getStationsByCity(@PathVariable String city) {
     List<Station> stations = stationService.getStationsByCity(city);
-    if (stations.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No stations found in this city");
-    }
     return ResponseEntity.ok(stations);
   }
 }
