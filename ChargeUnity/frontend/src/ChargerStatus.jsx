@@ -10,7 +10,7 @@ function ChargerStatus() {
     const [status, setStatus] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [notification, setNotification] = useState(null); // For messages
+    const [notification, setNotification] = useState(null);
 
     useEffect(() => {
         const fetchCharger = async () => {
@@ -99,6 +99,7 @@ function ChargerStatus() {
                     </label>
 
                     <button
+                        id="update-status-button"
                         className="operator-button"
                         type="submit"
                         style={{ padding: '0.7rem 1.5rem', fontSize: '1rem', alignSelf: 'center', width: '100%' }}

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import config from '../config';
 
 function RegisterStation() {
-    const { id } = useParams(); // Operator ID
+    const { id } = useParams();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -121,7 +121,7 @@ function RegisterStation() {
                         />
                     </div>
 
-                    <button type="submit" className="btn-primary">Create Station</button>
+                    <button type="submit" id="create-station-button" className="btn-primary">Create Station</button>
                 </form>
             </div>
         </div>
