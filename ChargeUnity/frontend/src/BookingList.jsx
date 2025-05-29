@@ -42,7 +42,7 @@ function BookingList() {
 
     const stopCharging = async (bookingId) => {
         try {
-            const res = await fetch(`http://localhost:8080/bookings/${bookingId}/stop`, {
+            const res = await fetch(`${config.API_URL}/bookings/${bookingId}/stop`, {
                 method: 'PATCH',
             });
             if (!res.ok) throw new Error('Failed to stop charging.');
