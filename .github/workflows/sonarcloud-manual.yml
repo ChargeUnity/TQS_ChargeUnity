@@ -10,6 +10,10 @@ on:
 jobs:
   sonarcloud_manual:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ChargeUnity/backend
+    
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,6 +25,20 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+      
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven
+      
+      - name: Pre-fetch dependencies
+        run: mvn dependency:go-offline
+
+      - name: Build project
+        run: mvn clean install -DskipTests
 
       - name: Run SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
