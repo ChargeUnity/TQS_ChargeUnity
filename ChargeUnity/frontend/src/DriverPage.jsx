@@ -31,7 +31,7 @@ function DriverPage() {
 
     return (
         <div className="app-container">
-            <h1 className="app-title">Hello, {driver.name}!</h1>
+            <h1 className="app-title" id="driver-name">Hello, {driver.name}!</h1>
             <p>Balance: {driver.balance}€</p>
             <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                 <button id="my-cars-button" onClick={() => navigate(`/driver/${id}/cars`)}>My cars</button>
