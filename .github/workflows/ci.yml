@@ -199,7 +199,7 @@ jobs:
           GF_SECURITY_ADMIN_USER: ${{ secrets.GF_SECURITY_ADMIN_USER }}
           GF_SECURITY_ADMIN_PASSWORD: ${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
         run: |
-          cd .. &&
+          cd .. && 
           docker compose -f docker-compose.yml up -d --build
           sleep 30 # Wait for services to start
 
