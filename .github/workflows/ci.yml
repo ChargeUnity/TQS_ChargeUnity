@@ -78,11 +78,11 @@ jobs:
           name: jacoco-report
           path: ChargeUnity/backend/target/site/jacoco/
 
-  sonar:
+  quality-gate:
     if: |
       !(github.event.pull_request.draft == true &&
         contains(join(github.event.pull_request.labels.*.name, ','), 'ci:skip'))
-    name: SonarQube Analysis
+    name: Quality Gate
     runs-on: ubuntu-latest
     needs: test
     defaults:
@@ -120,7 +120,23 @@ jobs:
             -Dsonar.projectKey=ChargeUnity_TQS_ChargeUnity \
             -Dsonar.java.binaries=target/classes \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
-  
+
+      - name: Wait for analysis to finish
+        run: sleep 20  # adjust if needed for large projects
+
+      - name: Check SonarCloud Quality Gate
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          status=$(curl -s -u "${SONAR_TOKEN}:" \
+            "https://sonarcloud.io/api/qualitygates/project_status?projectKey=ChargeUnity_TQS_ChargeUnity" \
+            | jq -r '.projectStatus.status')
+          echo "SonarCloud Quality Gate status: $status"
+          if [ "$status" != "OK" ]; then
+            echo "::error ::Quality Gate failed ($status)"
+            exit 1
+          fi
+
   integration-test:
     if: |
       !(github.event.pull_request.draft == true &&
@@ -156,7 +172,7 @@ jobs:
           contains(join(github.event.pull_request.labels.*.name, ','), 'ci:skip'))
       name: Xray Integration
       runs-on: ubuntu-latest
-      needs: integration-test
+      needs: build
       defaults:
         run:
           working-directory: ChargeUnity/backend
