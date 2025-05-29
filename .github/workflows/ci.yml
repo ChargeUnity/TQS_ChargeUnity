@@ -225,7 +225,7 @@ jobs:
 
       - name: Start containers
         # Run Docker Compose in the root directory where `docker-compose.yml` and `.env` are located
-        working-directory: ./
+        working-directory: ./ChargeUnity
         run: ls && docker compose --env-file .env -f docker-compose.yml up -d --build
 
       - name: Wait for frontend to be healthy
@@ -251,7 +251,7 @@ jobs:
 
       - name: Stop containers
         # Stop Docker Compose containers in the root directory
-        working-directory: ./
+        working-directory: ./ChargeUnity
         run: docker compose --env-file .env -f docker-compose.yml down
 
   xray-integration:
