@@ -222,7 +222,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Start containers
-        run: docker compose -f docker-compose.yml up -d --build
+        run: docker compose -f ../docker-compose.yml up -d --build
 
       - name: Wait for frontend to be healthy
         run: |
@@ -245,7 +245,7 @@ jobs:
             -Dxray.clientSecret=${{ secrets.XRAY_CLIENT_SECRET }}
 
       - name: Stop containers
-        run: docker compose -f docker-compose.yml down
+        run: docker compose -f ../docker-compose.yml down
 
   xray-integration:
     if: |
