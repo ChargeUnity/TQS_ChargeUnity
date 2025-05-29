@@ -170,6 +170,43 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Write .env file
+        run: |
+          cat <<EOF > .env
+          MYSQL_PORT=${{ secrets.MYSQL_PORT }}
+          MYSQL_USER=${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+          MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
+          APP_PORT=${{ secrets.APP_PORT }}
+          DB_EMAIL=${{ secrets.DB_EMAIL }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          VITE_APP_API_URL=${{ secrets.VITE_APP_API_URL }}
+          FRONTEND_PORT_VITE=${{ secrets.FRONTEND_PORT_VITE }}
+          GF_SECURITY_ADMIN_USER=${{ secrets.GF_SECURITY_ADMIN_USER }}
+          GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
+          EOF
+
+      - name: Write test application.properties
+        run: |
+          mkdir -p src/test/resources
+          cat <<EOF > src/test/resources/application.properties
+          spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+          spring.datasource.driver-class-name=org.h2.Driver
+          spring.datasource.username=sa
+          spring.datasource.password=
+          spring.sql.init.mode=never
+          spring.flyway.enabled=true
+          spring.flyway.locations=classpath:db/migration
+          spring.flyway.clean-disabled=false
+          spring.flyway.baseline-on-migrate=true
+          spring.flyway.check-location=false
+          spring.jpa.hibernate.ddl-auto=none
+          spring.jpa.defer-datasource-initialization=false
+          spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration+
+          spring.security.enabled=false
+          EOF
+
       - name: Install Firefox and GeckoDriver
         run: |
           sudo apt-get update
@@ -185,23 +222,19 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Start containers
-        env:
-          MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-          APP_PORT: ${{ secrets.APP_PORT }}
-          DB_EMAIL: ${{ secrets.DB_EMAIL }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          VITE_APP_API_URL: ${{ secrets.VITE_APP_API_URL }}
-          FRONTEND_PORT_VITE: ${{ secrets.FRONTEND_PORT_VITE }}
-          GF_SECURITY_ADMIN_USER: ${{ secrets.GF_SECURITY_ADMIN_USER }}
-          GF_SECURITY_ADMIN_PASSWORD: ${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
+        run: docker compose -f docker-compose.yml up -d --build
+
+      - name: Wait for frontend to be healthy
         run: |
-          cd .. && 
-          docker compose -f docker-compose.yml up -d --build
-          sleep 30 # Wait for services to start
+          echo "Waiting for frontend to respond..."
+          for i in {1..30}; do
+            if curl -sSf http://localhost:${{ secrets.FRONTEND_PORT_VITE }} > /dev/null; then
+              echo "Frontend is up."
+              break
+            fi
+            echo "Waiting..."
+            sleep 2
+          done
 
       - name: Run functional tests (Firefox)
         working-directory: ChargeUnity/backend
@@ -212,20 +245,7 @@ jobs:
             -Dxray.clientSecret=${{ secrets.XRAY_CLIENT_SECRET }}
 
       - name: Stop containers
-        env:
-          MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-          APP_PORT: ${{ secrets.APP_PORT }}
-          DB_EMAIL: ${{ secrets.DB_EMAIL }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          VITE_APP_API_URL: ${{ secrets.VITE_APP_API_URL }}
-          FRONTEND_PORT_VITE: ${{ secrets.FRONTEND_PORT_VITE }}
-          GF_SECURITY_ADMIN_USER: ${{ secrets.GF_SECURITY_ADMIN_USER }}
-          GF_SECURITY_ADMIN_PASSWORD: ${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
-        run: cd .. && docker compose -f docker-compose.yml down
+        run: docker compose -f docker-compose.yml down
 
   xray-integration:
     if: |
