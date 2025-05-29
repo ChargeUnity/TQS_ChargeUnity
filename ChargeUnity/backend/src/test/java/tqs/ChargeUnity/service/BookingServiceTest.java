@@ -173,6 +173,32 @@ class BookingServiceTest {
     assertEquals("Charger not found", exception.getMessage());
   }
 
+  @Test
+  @Requirement("CH-93")
+  void testCreateBookingChargerNotAvailable() {
+	Driver driver = new Driver();
+	driver.setId(1);
+	
+	Charger charger = new Charger();
+	charger.setId(1);
+	charger.setStatus(ChargerStatus.OUT_OF_SERVICE);
+
+	when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
+	when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
+
+	LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+	LocalDateTime endTime = startTime.plusHours(2);
+
+	RuntimeException exception =
+		assertThrows(
+			RuntimeException.class,
+			() -> {
+			  bookingService.createBooking(1, 1, startTime, endTime);
+			});
+
+	assertEquals("Charger is not available for booking", exception.getMessage());
+  }
+
   // tests related to time slot availability
   @Test
   @Requirement("CH-29")
