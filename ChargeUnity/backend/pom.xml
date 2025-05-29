@@ -495,8 +495,9 @@
                         <version>${maven-surefire-plugin.version}</version>
                         <configuration>
                             <includes>
-                                <include>**/*Steps.java</include>
-                                <include>**/*FunctionalTests.java</include>
+                                <include>**/functional/**/*Test.java</include>
+                                <include>**/functional/**/*Steps.java</include>
+                                <include>**/functional/**/*CucumberTest.java</include>
                             </includes>
                             <reportsDirectory>${project.build.directory}/surefire-reports-functional</reportsDirectory>
                         </configuration>

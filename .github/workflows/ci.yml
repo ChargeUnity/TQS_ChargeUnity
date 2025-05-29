@@ -285,6 +285,6 @@ jobs:
 
       - name: Run tests and upload to Xray
         run: |
-          mvn clean test -Pxray-unit \
+          mvn clean test -Pxray-unit -Dtest='*UnitTest,*IT,*ControllerTest' \
             -Dxray.clientId='${{ secrets.XRAY_CLIENT_ID }}' \
             -Dxray.clientSecret='${{ secrets.XRAY_CLIENT_SECRET }}'
