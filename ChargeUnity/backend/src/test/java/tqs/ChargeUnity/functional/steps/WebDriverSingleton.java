@@ -2,8 +2,8 @@ package tqs.ChargeUnity.functional.steps;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
@@ -13,10 +13,10 @@ public class WebDriverSingleton {
 
   public static void initialize() {
     if (driver == null) {
-      WebDriverManager.chromedriver().setup();
-      ChromeOptions options = new ChromeOptions();
+      WebDriverManager.firefoxdriver().setup();
+      FirefoxOptions options = new FirefoxOptions();
       options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
-      driver = new ChromeDriver(options);
+      driver = new FirefoxDriver(options);
       wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
   }
