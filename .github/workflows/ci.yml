@@ -209,33 +209,16 @@ jobs:
           spring.security.enabled=false
           EOF
 
-      - name: Install Google Chrome and ChromeDriver
+      - name: Install Firefox and GeckoDriver
         run: |
-          # Update package index and install prerequisites
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends wget unzip jq
-
-          # Install Google Chrome
-          wget -q -O google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo apt install -y --no-install-recommends ./google-chrome.deb || {
-            echo "Failed to install Google Chrome. Exiting."; exit 1;
-          }
-
-          # Install ChromeDriver
-          CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9.]+' | head -n1)
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
-          wget -q -O chromedriver_linux64.zip "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/bin/chromedriver
-          sudo chmod +x /usr/bin/chromedriver
-
-          # Verify installations
-          google-chrome --version || {
-            echo "Google Chrome installation verification failed. Exiting."; exit 1;
-          }
-          chromedriver --version || {
-            echo "ChromeDriver installation verification failed. Exiting."; exit 1;
-          }
+          sudo apt-get update
+          sudo apt-get install -y firefox wget unzip jq
+          
+          GECKO_URL=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r '.assets[] | select(.name | test("linux64\\.tar\\.gz$")) | .browser_download_url')
+          wget "$GECKO_URL" -O geckodriver.tar.gz
+          tar -xzf geckodriver.tar.gz
+          sudo mv geckodriver /usr/bin/geckodriver
+          sudo chmod +x /usr/bin/geckodriver
 
       - name: Build backend
         run: mvn clean package -DskipTests
@@ -258,7 +241,7 @@ jobs:
             sleep 2
           done
 
-      - name: Run functional tests (Chrome)
+      - name: Run functional tests (Firefox)
         working-directory: ChargeUnity/backend
         run: |
           docker ps &&
