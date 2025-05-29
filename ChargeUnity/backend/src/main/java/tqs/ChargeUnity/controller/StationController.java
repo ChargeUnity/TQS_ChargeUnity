@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RestController
 @RequestMapping("/api/v1/station")
@@ -102,5 +100,4 @@ public class StationController {
     }
     return ResponseEntity.ok(stations);
   }
-  
 }
