@@ -226,7 +226,7 @@ jobs:
       - name: Start containers
         # Run Docker Compose in the root directory where `docker-compose.yml` and `.env` are located
         working-directory: ../
-        run: docker compose --env-file .env -f docker-compose.yml up -d --build
+        run: ls && docker compose --env-file .env -f docker-compose.yml up -d --build
 
       - name: Wait for frontend to be healthy
         # Use curl to check if the frontend is up and responding
