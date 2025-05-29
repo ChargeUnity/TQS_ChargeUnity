@@ -172,7 +172,7 @@ jobs:
 
       - name: Write .env file
         # Place the .env file in the same directory as `docker-compose.yml`
-        working-directory: ../
+        working-directory: ./ChargeUnity
         run: |
           cat <<EOF > .env
           MYSQL_PORT=${{ secrets.MYSQL_PORT }}
@@ -191,8 +191,8 @@ jobs:
 
       - name: Write test application.properties
         run: |
-          mkdir -p src/test/resources
-          cat <<EOF > src/test/resources/application.properties
+          mkdir -p ./ChargeUnity/backend/src/test/resources
+          cat <<EOF > ./ChargeUnity/backend/src/test/resources/application.properties
           spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
           spring.datasource.driver-class-name=org.h2.Driver
           spring.datasource.username=sa
