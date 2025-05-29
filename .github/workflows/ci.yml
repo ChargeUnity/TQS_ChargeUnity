@@ -204,7 +204,7 @@ jobs:
           sleep 30 # Wait for services to start
 
       - name: Run functional tests (Firefox)
-        working-directory: ./backend
+        working-directory: ChargeUnity/backend
         run: |
           mvn test -Pcucumber-tests -Dskip.xray.unit=true -Dskip.xray.cucumber=false \
             -Dcucumber.filter.tags="@firefox" \
