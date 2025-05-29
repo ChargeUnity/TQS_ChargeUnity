@@ -112,7 +112,36 @@ class StationControllerIT {
   }
 
   @Test
-  void getStationsByLocation() throws Exception {
+  void deletingNonExistentStation() throws Exception {
+    mockMvc
+        .perform(delete("/api/v1/station/9999"))
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("Station not found"));
+  }
+
+  @Test
+  void invalidPutById() throws Exception {
+    Map<String, Object> payload = new HashMap<>();
+    payload.put("name", "Invalid Station");
+    payload.put("city", "Porto");
+    payload.put("address", "Rua Inválida");
+    payload.put("latitude", 41.1496);
+    payload.put("longitude", -8.6109);
+    payload.put("operatorId", operator.getId());
+
+    String json = objectMapper.writeValueAsString(payload);
+
+    mockMvc
+        .perform(
+            put("/api/v1/station/9999")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("Station not found"));
+  }
+
+  @Test
+  void getStationsByCoordinates() throws Exception {
     Station station = new Station();
     station.setName("Nearby Station");
     station.setCity("Porto");
@@ -123,8 +152,33 @@ class StationControllerIT {
     stationRepository.save(station);
 
     mockMvc
-        .perform(get("/api/v1/station/41.15/-8.61/5"))
+        .perform(get("/api/v1/station/coordinates/41.15/-8.61/5"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].name").value("Nearby Station"));
+  }
+
+  @Test
+  void getStationByCity() throws Exception {
+    Station station = new Station();
+    station.setName("City Station");
+    station.setCity("Lisbon");
+    station.setAddress("Rua Central");
+    station.setLatitude("38.7169");
+    station.setLongitude("-9.1399");
+    station.setOperator(operator);
+    stationRepository.save(station);
+
+    mockMvc
+        .perform(get("/api/v1/station/city/Lisbon"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].name").value("City Station"));
+  }
+
+  @Test
+  void getStationByCityEmpty() throws Exception {
+    mockMvc
+        .perform(get("/api/v1/station/city/NonExistentCity"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").isEmpty());
   }
 }

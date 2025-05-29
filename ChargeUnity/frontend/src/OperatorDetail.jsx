@@ -42,7 +42,7 @@ function OperatorDetail() {
     return (
         <div className="app-container">
             <h1>{operatorName} - Stations</h1>
-            <button onClick={handleRegisterStation} className="btn">
+            <button onClick={handleRegisterStation} id="register-new-station-button" className="btn">
                 Register New Station
             </button>
             {stations.length === 0 ? (

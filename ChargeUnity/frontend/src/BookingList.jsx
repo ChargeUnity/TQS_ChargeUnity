@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import config from '../config';
 
 function BookingList() {
-    const { id } = useParams(); // Driver ID from URL
+    const { id } = useParams();
     const [bookings, setBookings] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -73,13 +73,19 @@ function BookingList() {
                             <p><strong>Status:</strong> {booking.status}</p>
 
                             {booking.status === 'WAITING' && (
-                                <button onClick={() => startCharging(booking.id)}>
+                                <button
+                                    id={`start-charging-button-${booking.id}`}
+                                    onClick={() => startCharging(booking.id)}
+                                >
                                     Start Charging
                                 </button>
                             )}
 
                             {booking.status === 'CHARGING' && (
-                                <button onClick={() => stopCharging(booking.id)}>
+                                <button
+                                    id={`stop-charging-button-${booking.id}`}
+                                    onClick={() => stopCharging(booking.id)}
+                                >
                                     Stop Charging
                                 </button>
                             )}
