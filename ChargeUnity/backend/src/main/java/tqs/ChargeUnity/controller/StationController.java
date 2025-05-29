@@ -20,6 +20,8 @@ public class StationController {
   private final StationService stationService;
   private OperatorService operatorService;
 
+  private final String STATION_NOT_FOUND = "Station not found";
+
   public StationController(StationService stationService, OperatorService operatorService) {
     this.stationService = stationService;
     this.operatorService = operatorService;
@@ -55,7 +57,7 @@ public class StationController {
     if (optionalStation.isPresent()) {
       return ResponseEntity.ok(optionalStation.get());
     } else {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Station not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(STATION_NOT_FOUND);
     }
   }
 
@@ -65,7 +67,7 @@ public class StationController {
       Station station = stationService.updateStation(id, updated);
       return ResponseEntity.ok(station);
     } catch (RuntimeException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Station not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(STATION_NOT_FOUND);
     }
   }
 
@@ -75,7 +77,7 @@ public class StationController {
       stationService.deleteStation(id);
       return ResponseEntity.ok("Station deleted successfully");
     } catch (RuntimeException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Station not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(STATION_NOT_FOUND);
     }
   }
 
@@ -87,7 +89,7 @@ public class StationController {
   }
 
   @GetMapping("/city/{city}")
-  public ResponseEntity<?> getStationsByCity(@PathVariable String city) {
+  public ResponseEntity<List<Station>> getStationsByCity(@PathVariable String city) {
     List<Station> stations = stationService.getStationsByCity(city);
     return ResponseEntity.ok(stations);
   }
