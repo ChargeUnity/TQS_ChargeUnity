@@ -171,9 +171,10 @@ jobs:
           java-version: '21'
 
       - name: Write .env file
-        # The .env file will be placed in the root directory where `docker-compose.yml` is located.
+        # Place the .env file in the same directory as `docker-compose.yml`
+        working-directory: ../
         run: |
-          cat <<EOF > ../.env
+          cat <<EOF > .env
           MYSQL_PORT=${{ secrets.MYSQL_PORT }}
           MYSQL_USER=${{ secrets.MYSQL_USER }}
           MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
@@ -189,7 +190,6 @@ jobs:
           EOF
 
       - name: Write test application.properties
-        # Configure the application properties for tests
         run: |
           mkdir -p src/test/resources
           cat <<EOF > src/test/resources/application.properties
@@ -224,7 +224,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Start containers
-        # Move to the root directory to access `docker-compose.yml` and pass the `.env` file explicitly
+        # Run Docker Compose in the root directory where `docker-compose.yml` and `.env` are located
         working-directory: ../
         run: docker compose --env-file .env -f docker-compose.yml up -d --build
 
@@ -250,7 +250,7 @@ jobs:
             -Dxray.clientSecret=${{ secrets.XRAY_CLIENT_SECRET }}
 
       - name: Stop containers
-        # Move to the root directory to stop containers
+        # Stop Docker Compose containers in the root directory
         working-directory: ../
         run: docker compose --env-file .env -f docker-compose.yml down
 
