@@ -156,7 +156,7 @@ jobs:
           contains(join(github.event.pull_request.labels.*.name, ','), 'ci:skip'))
       name: Xray Integration
       runs-on: ubuntu-latest
-      needs: integration-test
+      needs: build
       defaults:
         run:
           working-directory: ChargeUnity/backend
