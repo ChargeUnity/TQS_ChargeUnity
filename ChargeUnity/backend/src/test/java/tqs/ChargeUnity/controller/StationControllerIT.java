@@ -123,7 +123,7 @@ class StationControllerIT {
     stationRepository.save(station);
 
     mockMvc
-        .perform(get("/api/v1/coordinates/station/41.15/-8.61/5"))
+        .perform(get("/api/v1/station/coordinates/41.15/-8.61/5"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].name").value("Nearby Station"));
   }
