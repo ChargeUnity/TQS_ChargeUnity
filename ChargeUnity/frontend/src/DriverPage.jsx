@@ -34,8 +34,9 @@ function DriverPage() {
             <h1 className="app-title" id="driver-name">Hello, {driver.name}!</h1>
             <p>Balance: {driver.balance}€</p>
             <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                <button id="my-cars-button" onClick={() => navigate(`/driver/${id}/cars`)}>My cars</button>
-                <button id="my-bookings-button" onClick={() => navigate(`/driver/${id}/bookings`)}>My bookings</button>
+                <button onClick={() => navigate(`/driver/${id}/cars`)}>My cars</button>
+                <button onClick={() => navigate(`/driver/${id}/bookings`)}>My bookings</button>
+                <button onClick={() => navigate(`/driver/${id}/stations`)}>Search stations</button>
             </div>
         </div>
     );
