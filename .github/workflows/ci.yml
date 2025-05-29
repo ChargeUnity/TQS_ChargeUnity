@@ -170,7 +170,7 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Write .env file
+      - name: Write ../.env file
         run: |
           cat <<EOF > .env
           MYSQL_PORT=${{ secrets.MYSQL_PORT }}
