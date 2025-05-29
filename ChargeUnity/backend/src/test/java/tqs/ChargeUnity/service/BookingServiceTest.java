@@ -176,27 +176,27 @@ class BookingServiceTest {
   @Test
   @Requirement("CH-93")
   void testCreateBookingChargerNotAvailable() {
-	Driver driver = new Driver();
-	driver.setId(1);
-	
-	Charger charger = new Charger();
-	charger.setId(1);
-	charger.setStatus(ChargerStatus.OUT_OF_SERVICE);
+    Driver driver = new Driver();
+    driver.setId(1);
 
-	when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
-	when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
+    Charger charger = new Charger();
+    charger.setId(1);
+    charger.setStatus(ChargerStatus.OUT_OF_SERVICE);
 
-	LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-	LocalDateTime endTime = startTime.plusHours(2);
+    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
+    when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
 
-	RuntimeException exception =
-		assertThrows(
-			RuntimeException.class,
-			() -> {
-			  bookingService.createBooking(1, 1, startTime, endTime);
-			});
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+    LocalDateTime endTime = startTime.plusHours(2);
 
-	assertEquals("Charger is not available for booking", exception.getMessage());
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+              bookingService.createBooking(1, 1, startTime, endTime);
+            });
+
+    assertEquals("Charger is not available for booking", exception.getMessage());
   }
 
   // tests related to time slot availability
