@@ -132,10 +132,7 @@ class StationControllerIT {
     String json = objectMapper.writeValueAsString(payload);
 
     mockMvc
-        .perform(
-            put("/api/v1/station/9999")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
+        .perform(put("/api/v1/station/9999").contentType(MediaType.APPLICATION_JSON).content(json))
         .andExpect(status().isNotFound())
         .andExpect(content().string("Station not found"));
   }
