@@ -182,7 +182,6 @@ jobs:
           sudo chmod +x /usr/bin/geckodriver
 
       - name: Build backend
-        working-directory: ./backend
         run: mvn clean package -DskipTests
 
       - name: Start containers
