@@ -211,12 +211,15 @@ jobs:
 
       - name: Install Google Chrome and ChromeDriver
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget unzip jq
+          # Update package index and install prerequisites
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends wget unzip jq
 
           # Install Google Chrome
           wget -q -O google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo apt install -y ./google-chrome.deb
+          sudo apt install -y --no-install-recommends ./google-chrome.deb || {
+            echo "Failed to install Google Chrome. Exiting."; exit 1;
+          }
 
           # Install ChromeDriver
           CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9.]+' | head -n1)
@@ -227,8 +230,12 @@ jobs:
           sudo chmod +x /usr/bin/chromedriver
 
           # Verify installations
-          google-chrome --version
-          chromedriver --version
+          google-chrome --version || {
+            echo "Google Chrome installation verification failed. Exiting."; exit 1;
+          }
+          chromedriver --version || {
+            echo "ChromeDriver installation verification failed. Exiting."; exit 1;
+          }
 
       - name: Build backend
         run: mvn clean package -DskipTests
@@ -243,7 +250,7 @@ jobs:
         run: |
           echo "Waiting for frontend to respond..."
           for i in {1..30}; do
-            if curl -sSf http://localhost:${{ secrets.FRONTEND_PORT_VITE }} > /dev/null; then
+            if curl -sSf http://localhost:5173 > /dev/null; then
               echo "Frontend is up."
               break
             fi
@@ -251,7 +258,7 @@ jobs:
             sleep 2
           done
 
-      - name: Run functional tests (Firefox)
+      - name: Run functional tests (Chrome)
         working-directory: ChargeUnity/backend
         run: |
           docker ps &&
