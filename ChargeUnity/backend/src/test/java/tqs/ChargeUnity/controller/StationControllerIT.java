@@ -112,7 +112,7 @@ class StationControllerIT {
   }
 
   @Test
-  void getStationsByLocation() throws Exception {
+  void getStationsByCoordinates() throws Exception {
     Station station = new Station();
     station.setName("Nearby Station");
     station.setCity("Porto");
@@ -123,8 +123,25 @@ class StationControllerIT {
     stationRepository.save(station);
 
     mockMvc
-        .perform(get("/api/v1/station/41.15/-8.61/5"))
+        .perform(get("/api/v1/coordinates/station/41.15/-8.61/5"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].name").value("Nearby Station"));
+  }
+
+  @Test
+  void getStationByCity() throws Exception {
+    Station station = new Station();
+    station.setName("City Station");
+    station.setCity("Lisbon");
+    station.setAddress("Rua Central");
+    station.setLatitude("38.7169");
+    station.setLongitude("-9.1399");
+    station.setOperator(operator);
+    stationRepository.save(station);
+
+    mockMvc
+        .perform(get("/api/v1/station/city/Lisbon"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].name").value("City Station"));
   }
 }

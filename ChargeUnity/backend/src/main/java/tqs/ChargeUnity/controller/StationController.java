@@ -12,6 +12,7 @@ import tqs.ChargeUnity.service.StationService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/v1/station")
@@ -84,10 +85,19 @@ public class StationController {
     }
   }
 
-  @GetMapping("/{latitude}/{longitude}/{radius}")
+  @GetMapping("coordinates/{latitude}/{longitude}/{radius}")
   public ResponseEntity<?> getStationsByLocation(
       @PathVariable double latitude, @PathVariable double longitude, @PathVariable double radius) {
     List<Station> stations = stationService.getStationsByLocation(latitude, longitude, radius);
+    return ResponseEntity.ok(stations);
+  }
+
+  @GetMapping("/city/{city}")
+  public ResponseEntity<?> getStationsByCity(@PathVariable String city) {
+    List<Station> stations = stationService.getStationsByCity(city);
+    if (stations.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No stations found in this city");
+    }
     return ResponseEntity.ok(stations);
   }
 }
