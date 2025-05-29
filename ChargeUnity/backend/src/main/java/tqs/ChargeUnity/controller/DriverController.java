@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tqs.ChargeUnity.model.Booking;
@@ -68,9 +67,9 @@ public class DriverController {
     }
   }
 
-  @GetMapping("/bookings")
-  public ResponseEntity<List<Booking>> getBookingsByDriver(@RequestParam int driverId) {
-    List<Booking> bookings = bookingService.getBookingsByDriver(driverId);
+  @GetMapping("/{id}/bookings")
+  public ResponseEntity<List<Booking>> getBookingsByDriver(@PathVariable int id) {
+    List<Booking> bookings = bookingService.getBookingsByDriver(id);
 
     return Optional.ofNullable(bookings)
         .filter(list -> !list.isEmpty())
