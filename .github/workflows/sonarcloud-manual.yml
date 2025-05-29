@@ -1,3 +1,5 @@
+name: Manual SonarCloud Scan
+
 on:
   workflow_dispatch:
     inputs:
