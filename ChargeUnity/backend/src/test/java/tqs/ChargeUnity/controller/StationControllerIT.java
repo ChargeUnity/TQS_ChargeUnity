@@ -118,6 +118,14 @@ class StationControllerIT {
   }
 
   @Test
+  void getStationByIdNotFound() throws Exception {
+    mockMvc
+        .perform(get("/api/v1/station/9999"))
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("Station not found"));
+  }
+
+  @Test
   void invalidPutById() throws Exception {
     Map<String, Object> payload = new HashMap<>();
     payload.put("name", "Invalid Station");
