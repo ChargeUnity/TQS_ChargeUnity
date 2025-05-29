@@ -212,7 +212,7 @@ jobs:
             -Dxray.clientSecret=${{ secrets.XRAY_CLIENT_SECRET }}
 
       - name: Stop containers
-        run: docker compose -f docker-compose.yml down
+        run: cd .. && docker compose -f docker-compose.yml down
 
   xray-integration:
     if: |

@@ -484,6 +484,27 @@
             </build>
         </profile>
 
+        <!-- Profile for Functional Tests -->
+        <profile>
+            <id>functional-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*Steps.java</include>
+                                <include>**/*FunctionalTests.java</include>
+                            </includes>
+                            <reportsDirectory>${project.build.directory}/surefire-reports-functional</reportsDirectory>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <!-- Profile for Xray Unit Integration -->
         <profile>
             <id>xray-unit</id>
