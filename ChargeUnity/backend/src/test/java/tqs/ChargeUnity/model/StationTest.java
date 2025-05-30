@@ -2,11 +2,14 @@ package tqs.ChargeUnity.model;
 
 import org.junit.jupiter.api.Test;
 
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class StationTest {
 
   @Test
+  @Requirement("CH-28")
   void testStationToString() {
     Operator operator = new Operator();
     operator.setId(1);

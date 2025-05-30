@@ -6,7 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
+
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
 import tqs.ChargeUnity.enums.BookingStatus;
+import tqs.ChargeUnity.enums.ChargerStatus;
 import tqs.ChargeUnity.model.Booking;
 import tqs.ChargeUnity.model.Charger;
 import tqs.ChargeUnity.model.Driver;
@@ -40,11 +43,13 @@ class BookingServiceTest {
 
   // tests related to booking creation
   @Test
+  @Requirement("CH-29")
   void testCreateBooking() {
     Driver driver = new Driver();
     driver.setId(1);
     Charger charger = new Charger();
     charger.setId(1);
+    charger.setStatus(ChargerStatus.AVAILABLE);
     charger.setPricePerKWh(0.5);
 
     LocalDateTime startTime = LocalDateTime.now().plusHours(1);
@@ -63,10 +68,12 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testCreateBookingDuplicate() {
     Driver driver = new Driver();
     driver.setId(1);
     Charger charger = new Charger();
+    charger.setStatus(ChargerStatus.AVAILABLE);
     charger.setId(1);
     charger.setPricePerKWh(0.5);
 
@@ -96,6 +103,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testCreateBookingTimeSlotNotAvailable() {
     Driver driver = new Driver();
     driver.setId(1);
@@ -126,6 +134,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testCreateBookingDriverNotFound() {
     when(driverRepository.findById(1)).thenReturn(Optional.empty());
 
@@ -143,6 +152,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testCreateBookingChargerNotFound() {
     Driver driver = new Driver();
     driver.setId(1);
@@ -163,8 +173,35 @@ class BookingServiceTest {
     assertEquals("Charger not found", exception.getMessage());
   }
 
+  @Test
+  @Requirement("CH-93")
+  void testCreateBookingChargerNotAvailable() {
+    Driver driver = new Driver();
+    driver.setId(1);
+
+    Charger charger = new Charger();
+    charger.setId(1);
+    charger.setStatus(ChargerStatus.OUT_OF_SERVICE);
+
+    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
+    when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
+
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+    LocalDateTime endTime = startTime.plusHours(2);
+
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class,
+            () -> {
+              bookingService.createBooking(1, 1, startTime, endTime);
+            });
+
+    assertEquals("Charger is not available for booking", exception.getMessage());
+  }
+
   // tests related to time slot availability
   @Test
+  @Requirement("CH-29")
   void testIsTimeSlotAvailableTrue() {
     when(bookingRepository.findByChargerId(1)).thenReturn(new ArrayList<>());
     LocalDateTime startTime = LocalDateTime.now().plusHours(1);
@@ -175,6 +212,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testIsTimeSlotAvailableFalse() {
     Booking booking = new Booking();
     LocalDateTime startTime = LocalDateTime.now().plusHours(1);
@@ -191,6 +229,7 @@ class BookingServiceTest {
 
   // tests related to booking retrieval
   @Test
+  @Requirement("CH-29")
   void testGetBookingsByDriver() {
     Booking booking = new Booking();
     when(bookingRepository.findByDriverId(1)).thenReturn(List.of(booking));
@@ -201,6 +240,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testGetBookingByIdFound() {
     Booking booking = new Booking();
     when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
@@ -211,6 +251,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testGetBookingByIdNotFound() {
     when(bookingRepository.findById(1)).thenReturn(Optional.empty());
 
@@ -220,6 +261,7 @@ class BookingServiceTest {
 
   // tests related to booking cancellation
   @Test
+  @Requirement("CH-29")
   void testCancelBookingSuccess() {
     Driver driver = new Driver();
     driver.setId(1);
@@ -237,6 +279,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testCancelBookingNotFound() {
     when(bookingRepository.findById(1)).thenReturn(Optional.empty());
 
@@ -251,6 +294,7 @@ class BookingServiceTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testCancelBookingUnauthorized() {
     Driver driver = new Driver();
     driver.setId(2);
@@ -267,5 +311,174 @@ class BookingServiceTest {
             });
 
     assertTrue(exception.getMessage().contains("Unauthorized"));
+  }
+
+  // tests related to charging operations
+  @Test
+  @Requirement("CH-93")
+  void testStartChargingSuccess() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.WAITING);
+
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
+
+    Booking result = bookingService.startCharging(1);
+    assertEquals(BookingStatus.CHARGING, result.getStatus());
+    verify(bookingRepository).save(booking);
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testStartChargingNotWaiting() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.COMPLETED);
+
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+
+    RuntimeException ex =
+        assertThrows(RuntimeException.class, () -> bookingService.startCharging(1));
+    assertEquals("Booking is not ready to start.", ex.getMessage());
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testGetChargingStatus() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.CHARGING);
+
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+
+    BookingStatus status = bookingService.getChargingStatus(1);
+    assertEquals(BookingStatus.CHARGING, status);
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testGetChargingStatusNotFound() {
+    when(bookingRepository.findById(1)).thenReturn(Optional.empty());
+
+    RuntimeException ex =
+        assertThrows(RuntimeException.class, () -> bookingService.getChargingStatus(1));
+    assertEquals("Booking not found", ex.getMessage());
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testStopChargingSuccess() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.CHARGING);
+
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
+
+    Booking result = bookingService.stopCharging(1);
+    assertEquals(BookingStatus.COMPLETED, result.getStatus());
+    verify(bookingRepository).save(booking);
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testStopChargingNotCharging() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.WAITING);
+
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+
+    RuntimeException ex =
+        assertThrows(RuntimeException.class, () -> bookingService.stopCharging(1));
+    assertEquals("Booking is not currently charging.", ex.getMessage());
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testGetBookingsByCharger() {
+    Booking booking = new Booking();
+
+    when(bookingRepository.findByChargerId(1)).thenReturn(List.of(booking));
+
+    List<Booking> bookings = bookingService.getBookingsByCharger(1);
+    assertEquals(1, bookings.size());
+    assertSame(booking, bookings.get(0));
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testGetBookingsByChargerAndDate() {
+    Booking booking = new Booking();
+    LocalDateTime start = LocalDateTime.now();
+    LocalDateTime end = start.plusHours(2);
+
+    when(bookingRepository.findByChargerIdAndStartTimeBetween(1, start, end))
+        .thenReturn(List.of(booking));
+
+    List<Booking> bookings = bookingService.getBookingsByChargerAndDate(1, start, end);
+    assertEquals(1, bookings.size());
+    assertSame(booking, bookings.get(0));
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testGetOverlappingBookings() {
+    Booking booking = new Booking();
+    LocalDateTime start = LocalDateTime.now();
+    LocalDateTime end = start.plusHours(2);
+
+    when(bookingRepository.findOverlappingBookings(1, start, end)).thenReturn(List.of(booking));
+
+    List<Booking> bookings = bookingService.getOverlappingBookings(1, start, end);
+    assertEquals(1, bookings.size());
+    assertSame(booking, bookings.get(0));
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testCancelBookingByIdSuccess() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.WAITING);
+
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
+
+    Booking result = bookingService.cancelBooking(1);
+    assertEquals(BookingStatus.CANCELLED, result.getStatus());
+    verify(bookingRepository).save(booking);
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testCancelBookingByIdAlreadyCancelled() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.CANCELLED);
+
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+
+    RuntimeException ex =
+        assertThrows(RuntimeException.class, () -> bookingService.cancelBooking(1));
+    assertEquals("Booking is already cancelled.", ex.getMessage());
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testCancelBookingByIdAlreadyCompleted() {
+    Booking booking = new Booking();
+    booking.setStatus(BookingStatus.COMPLETED);
+
+    when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+
+    RuntimeException ex =
+        assertThrows(RuntimeException.class, () -> bookingService.cancelBooking(1));
+    assertEquals("Booking is already completed.", ex.getMessage());
+  }
+
+  @Test
+  @Requirement("CH-93")
+  void testCancelBookingByIdNotFound() {
+
+    when(bookingRepository.findById(1)).thenReturn(Optional.empty());
+
+    RuntimeException ex =
+        assertThrows(RuntimeException.class, () -> bookingService.cancelBooking(1));
+    assertEquals("Booking not found", ex.getMessage());
   }
 }

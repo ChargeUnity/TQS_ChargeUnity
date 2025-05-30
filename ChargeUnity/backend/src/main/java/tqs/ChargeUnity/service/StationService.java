@@ -77,4 +77,8 @@ public class StationService {
                     station.getLatitude(), station.getLongitude(), latitude, longitude, radius))
         .toList();
   }
+
+  public boolean existsByName(String name) {
+    return stationRepository.existsByNameIgnoreCase(name);
+  }
 }

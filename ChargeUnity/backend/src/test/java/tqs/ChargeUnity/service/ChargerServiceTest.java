@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
 import tqs.ChargeUnity.enums.ChargerStatus;
 import tqs.ChargeUnity.model.Charger;
 import tqs.ChargeUnity.model.Station;
@@ -30,6 +31,7 @@ class ChargerServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-29")
   void testGetChargerById() {
     Charger charger = new Charger();
     charger.setId(1);
@@ -42,6 +44,7 @@ class ChargerServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-29")
   void testSaveCharger() {
     Charger charger = new Charger();
     when(chargerRepository.save(charger)).thenReturn(charger);
@@ -53,6 +56,7 @@ class ChargerServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-29")
   void testGetAllChargers() {
     List<Charger> chargers = List.of(new Charger(), new Charger());
     when(chargerRepository.findAll()).thenReturn(chargers);
@@ -64,6 +68,7 @@ class ChargerServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-29")
   void testDeleteCharger() {
     int chargerId = 5;
 
@@ -73,6 +78,7 @@ class ChargerServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-29")
   void testGetChargersBySearch() {
     Station station = new Station();
     List<Charger> chargers = List.of(new Charger());
@@ -86,6 +92,7 @@ class ChargerServiceTest {
 
   // tests related to charger status
   @Test
+  @Requirement("CH-28,CH-29")
   void testGetChargersByStatus() {
     ChargerStatus status = ChargerStatus.AVAILABLE;
     List<Charger> chargers = List.of(new Charger());
@@ -98,6 +105,7 @@ class ChargerServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-29")
   void testUpdateChargerStatus_Success() {
     int chargerId = 10;
     ChargerStatus newStatus = ChargerStatus.UNAVAILABLE;
@@ -117,6 +125,7 @@ class ChargerServiceTest {
   }
 
   @Test
+  @Requirement("CH-28,CH-29")
   void testUpdateChargerStatus_ChargerNotFound() {
     int chargerId = 99;
     ChargerStatus newStatus = ChargerStatus.AVAILABLE;

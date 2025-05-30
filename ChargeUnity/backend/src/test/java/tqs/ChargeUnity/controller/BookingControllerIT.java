@@ -1,6 +1,9 @@
 package tqs.ChargeUnity.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import tqs.ChargeUnity.model.Booking;
 import tqs.ChargeUnity.model.Driver;
 import tqs.ChargeUnity.model.Charger;
 import tqs.ChargeUnity.enums.BookingStatus;
+import tqs.ChargeUnity.enums.ChargerStatus;
 import tqs.ChargeUnity.repository.BookingRepository;
 import tqs.ChargeUnity.repository.DriverRepository;
 import tqs.ChargeUnity.repository.ChargerRepository;
@@ -49,9 +53,11 @@ class BookingControllerIT {
     charger = new Charger();
     charger.setPricePerKWh(0.5);
     charger = chargerRepository.save(charger);
+    charger.setStatus(ChargerStatus.AVAILABLE);
   }
 
   @Test
+  @Requirement("CH-29")
   void createBooking_andGetByDriver_andGetStatus() throws Exception {
     BookingRequestDTO dto =
         new BookingRequestDTO(
@@ -64,7 +70,7 @@ class BookingControllerIT {
     // Create booking
     String response =
         mockMvc
-            .perform(post("/bookings").contentType(MediaType.APPLICATION_JSON).content(json))
+            .perform(post("/api/v1/bookings").contentType(MediaType.APPLICATION_JSON).content(json))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").isNumber())
             .andExpect(jsonPath("$.status").value("WAITING"))
@@ -76,14 +82,14 @@ class BookingControllerIT {
 
     // Get bookings by driver
     mockMvc
-        .perform(get("/bookings/driver/" + driver.getId()))
+        .perform(get("/api/v1/bookings/driver/" + driver.getId()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].id").value(bookingId));
 
     // Get status
     String resp =
         mockMvc
-            .perform(get("/bookings/" + bookingId + "/status"))
+            .perform(get("/api/v1/bookings/" + bookingId + "/status"))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
@@ -92,6 +98,7 @@ class BookingControllerIT {
   }
 
   @Test
+  @Requirement("CH-29")
   void startStopCancelBooking() throws Exception {
     Booking booking = new Booking();
     booking.setDriver(driver);
@@ -103,19 +110,19 @@ class BookingControllerIT {
 
     // Start charging
     mockMvc
-        .perform(patch("/bookings/" + booking.getId() + "/start"))
+        .perform(patch("/api/v1/bookings/" + booking.getId() + "/start"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").value("CHARGING"));
 
     // Stop charging
     mockMvc
-        .perform(patch("/bookings/" + booking.getId() + "/stop"))
+        .perform(patch("/api/v1/bookings/" + booking.getId() + "/stop"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").value("COMPLETED"));
 
     // Cancel booking (should fail if already completed, but let's test the endpoint)
     mockMvc
-        .perform(patch("/bookings/" + booking.getId() + "/cancel"))
+        .perform(patch("/api/v1/bookings/" + booking.getId() + "/cancel"))
         .andExpect(status().isBadRequest());
   }
 }

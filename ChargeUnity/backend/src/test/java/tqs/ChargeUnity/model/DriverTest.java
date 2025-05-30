@@ -2,11 +2,14 @@ package tqs.ChargeUnity.model;
 
 import org.junit.jupiter.api.Test;
 
+import app.getxray.xray.junit.customjunitxml.annotations.Requirement;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class DriverTest {
 
   @Test
+  @Requirement("CH-29")
   void testDriverToString() {
     Driver driver = new Driver();
     driver.setId(1);
@@ -18,6 +21,7 @@ class DriverTest {
   }
 
   @Test
+  @Requirement("CH-29")
   void testDriverEquality() {
     Driver driver1 = new Driver();
     driver1.setId(1);
