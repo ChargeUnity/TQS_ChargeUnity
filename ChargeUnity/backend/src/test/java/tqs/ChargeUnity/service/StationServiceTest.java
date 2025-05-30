@@ -176,5 +176,4 @@ public class StationServiceTest {
     exists = stationService.existsByName("Nonexistent Station");
     assertFalse(exists);
   }
-
 }
