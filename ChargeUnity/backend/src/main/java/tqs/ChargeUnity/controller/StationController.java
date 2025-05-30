@@ -36,6 +36,10 @@ public class StationController {
     }
     Station station = new Station();
     station.setName((String) payload.get("name"));
+    // Don't allow duplicate names
+    if (stationService.existsByName(station.getName())) {
+      return ResponseEntity.status(HttpStatus.CONFLICT).body("Station with this name already exists");
+    }
     station.setCity((String) payload.get("city"));
     station.setAddress((String) payload.get("address"));
     station.setLatitude(String.valueOf(payload.get("latitude")));
