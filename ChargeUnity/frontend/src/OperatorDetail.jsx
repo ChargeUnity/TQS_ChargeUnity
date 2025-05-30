@@ -50,7 +50,7 @@ function OperatorDetail() {
             ) : (
                 <ul className="station-list">
                     {stations.map((station) => (
-                        <li key={station.id}>
+                        <li key={station.id} id={`station-list-item-${station.id}`}>
                             <Link to={`/stations/${station.id}/chargers`}>
                                 <strong>{station.name}</strong>
                             </Link><br />
