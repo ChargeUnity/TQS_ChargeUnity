@@ -1,0 +1,53 @@
+name: Manual SonarCloud Scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to analyze'
+        default: 'main'
+
+jobs:
+  sonarcloud_manual:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ChargeUnity/backend
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven
+      
+      - name: Pre-fetch dependencies
+        run: mvn dependency:go-offline
+
+      - name: Build project
+        run: mvn clean install -DskipTests
+
+      - name: Run SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: ChargeUnity/backend
+          args: >
+            -Dsonar.projectKey=ChargeUnity_TQS_ChargeUnity
+            -Dsonar.organization=chargeunity
+            -Dsonar.java.binaries=target/classes
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
