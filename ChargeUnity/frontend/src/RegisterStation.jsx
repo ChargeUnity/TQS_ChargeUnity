@@ -68,6 +68,7 @@ function RegisterStation() {
                             onChange={handleChange}
                             required
                             className="input-field"
+                            id="station-name-input"
                         />
                     </div>
 
@@ -80,6 +81,7 @@ function RegisterStation() {
                             onChange={handleChange}
                             required
                             className="input-field"
+                            id="station-city-input"
                         />
                     </div>
 
@@ -92,6 +94,7 @@ function RegisterStation() {
                             onChange={handleChange}
                             required
                             className="input-field"
+                            id="station-address-input"
                         />
                     </div>
 
@@ -105,6 +108,7 @@ function RegisterStation() {
                             required
                             className="input-field"
                             step="any"
+                            id="station-latitude-input"
                         />
                     </div>
 
@@ -118,6 +122,7 @@ function RegisterStation() {
                             required
                             className="input-field"
                             step="any"
+                            id="station-longitude-input"
                         />
                     </div>
 

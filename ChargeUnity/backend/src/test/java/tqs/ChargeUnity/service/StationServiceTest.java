@@ -164,4 +164,16 @@ public class StationServiceTest {
     assertEquals("Station Within Radius", result.get(0).getName());
     assertEquals(1, result.get(0).getId());
   }
+
+  @Test
+  @Requirement("CH-33")
+  public void testExistsByName() {
+    when(stationRepository.existsByNameIgnoreCase("Main Station")).thenReturn(true);
+    boolean exists = stationService.existsByName("Main Station");
+    assertTrue(exists);
+
+    when(stationRepository.existsByNameIgnoreCase("Nonexistent Station")).thenReturn(false);
+    exists = stationService.existsByName("Nonexistent Station");
+    assertFalse(exists);
+  }
 }
