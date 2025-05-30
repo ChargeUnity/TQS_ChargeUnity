@@ -80,4 +80,56 @@ public class RegisterStationSteps {
         assertTrue(found, "New station 'UA Station' should be present in the station list");
     }
 
+    // Scenario: Register a duplicate station
+    /*
+    Given that a station with the same name already exists
+    When I try to register a duplicate
+    Then the system shows an error preventing duplication.
+     */
+    @Given("that a station with the same name already exists")
+    public void that_a_station_with_the_same_name_already_exists() {
+        // Previous scenario handles this, but let's test it
+        driver.get("http://localhost:5173/operators/1");
+
+        WebElement stationList = wait.until(
+            ExpectedConditions.presenceOfElementLocated(By.className("station-list"))
+        );
+        boolean found = stationList.getText().contains("UA Station");
+        assertTrue(found, "Station 'UA Station' should already exist in the station list");
+    }
+
+    @When("I try to register a duplicate")
+    public void i_try_to_register_a_duplicate() {
+        WebElement registerStationButton =
+                wait.until(ExpectedConditions.elementToBeClickable(By.id("register-new-station-button")));
+        registerStationButton.click();
+
+        WebElement nameInput = wait.until(ExpectedConditions.elementToBeClickable(By.id("station-name-input")));
+        nameInput.sendKeys("UA Station");
+
+        WebElement cityInput = driver.findElement(By.id("station-city-input"));
+        cityInput.sendKeys("Aveiro");
+
+        WebElement addressInput = driver.findElement(By.id("station-address-input"));
+        addressInput.sendKeys("Rua da Universidade de Aveiro");
+
+        WebElement latitudeInput = driver.findElement(By.id("station-latitude-input"));
+        latitudeInput.sendKeys("40.633132");
+
+        WebElement longitudeInput = driver.findElement(By.id("station-longitude-input"));
+        longitudeInput.sendKeys("-8.659052");
+
+        WebElement submitButton = driver.findElement(By.id("create-station-button"));
+        submitButton.click();
+    }
+
+    @Then("the system shows an error preventing duplication")
+    public void the_system_shows_an_error_preventing_duplication() {
+        WebElement errorMessage = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.className("error-message"))
+        );
+        assertTrue(errorMessage.getText().equals("Error: Station with this name already exists"));
+    }
+
+
 }
