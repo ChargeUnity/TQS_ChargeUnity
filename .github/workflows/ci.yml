@@ -154,7 +154,7 @@ jobs:
             ${{ runner.os }}-maven
 
       - name: Run integration tests
-        run: mvn verify -Pintegration-tests
+        run: mvn clean verify -Pintegration-tests,xray -Dxray.clientId=${{ secrets.XRAY_CLIENT_ID }} -Dxray.clientSecret=${{ secrets.XRAY_CLIENT_SECRET }}
       
       - name: Upload integration test results
         uses: actions/upload-artifact@v4
@@ -259,7 +259,7 @@ jobs:
           exit 1
 
       - name: Run functional tests
-        run: mvn test -Pfunctional-tests
+        run: mvn test -Pfunctional-tests,xray -Dxray.clientId=${{ secrets.XRAY_CLIENT_ID }} -Dxray.clientSecret=${{ secrets.XRAY_CLIENT_SECRET }}
         working-directory: ./ChargeUnity/backend
 
       - name: Upload functional test results

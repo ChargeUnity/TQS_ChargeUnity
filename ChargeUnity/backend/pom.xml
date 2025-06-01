@@ -441,6 +441,13 @@
             <version>${xray-maven-plugin.version}</version>
         </dependency>
 
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit-jupiter.version}</version> <!-- match your JUnit version -->
+			<scope>test</scope>
+		</dependency>
+
         <!-- Overview stuff -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -506,6 +513,30 @@
                             <reportsDirectory>${project.build.directory}/surefire-reports-functional</reportsDirectory>
                         </configuration>
                     </plugin>
+
+                    <!-- Xray Maven Plugin to import functional test results -->
+                    <plugin>
+                        <groupId>app.getxray</groupId>
+                        <artifactId>xray-maven-plugin</artifactId>
+                        <version>${xray-maven-plugin.version}</version>
+                        <configuration>
+                            <cloud>true</cloud>
+                            <projectKey>CH</projectKey>
+                            <reportFormat>junit</reportFormat>
+                            <reportFile>${project.build.directory}/surefire-reports-functional/*.xml</reportFile>
+                            <clientId>${xray.clientId}</clientId>
+                            <clientSecret>${xray.clientSecret}</clientSecret>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>import-results</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>import-results</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -536,7 +567,7 @@
                             <projectKey>CH</projectKey>
                             <reportFormat>junit</reportFormat>
                             <!-- Use a specific file instead of pattern -->
-                            <reportFile>${project.build.directory}/surefire-reports</reportFile>
+                            <reportFile>${project.build.directory}/failsafe-reports-integration/*.xml</reportFile>
                             <!-- These will be overridden by command line -->
                             <clientId>${xray.clientId}</clientId>
                             <clientSecret>${xray.clientSecret}</clientSecret>
@@ -569,6 +600,7 @@
                             <skipTests>true</skipTests>
                         </configuration>
                     </plugin>
+
                     <!-- Enable Failsafe for ITs only -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -593,6 +625,37 @@
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile for Xray Tests -->
+        <profile>
+            <id>xray</id>
+            <build>
+                <plugins>
+                <plugin>
+                    <groupId>app.getxray</groupId>
+                    <artifactId>xray-maven-plugin</artifactId>
+                    <version>${xray-maven-plugin.version}</version>
+                    <configuration>
+                    <cloud>true</cloud>
+                    <projectKey>CH</projectKey>
+                    <reportFormat>junit</reportFormat>
+                    <reportFile>${project.build.directory}/failsafe-reports-integration</reportFile> <!-- or surefire report dir as needed -->
+                    <clientId>${xray.clientId}</clientId>
+                    <clientSecret>${xray.clientSecret}</clientSecret>
+                    </configuration>
+                    <executions>
+                    <execution>
+                        <id>import-results</id>
+                        <phase>verify</phase>
+                        <goals>
+                        <goal>import-results</goal>
+                        </goals>
+                    </execution>
+                    </executions>
+                </plugin>
                 </plugins>
             </build>
         </profile>
