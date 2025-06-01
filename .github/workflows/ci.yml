@@ -159,7 +159,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: integration-test-results
-          path: ChargeUnity/backend/target/failsafe-reports/
+          path: ChargeUnity/backend/target/failsafe-reports-integration/
 
   functional-tests:
     name: Functional Tests
@@ -285,7 +285,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: integration-test-results
-          path: backend/target/failsafe-reports/
+          path: backend/target/failsafe-reports-integration/
 
       - name: Download functional test results
         uses: actions/download-artifact@v4
@@ -307,7 +307,7 @@ jobs:
           username: ${{ secrets.XRAY_CLIENT_ID }}
           password: ${{ secrets.XRAY_CLIENT_SECRET }}
           testPaths: |
-            backend/target/failsafe-reports/*.xml
+            backend/target/failsafe-reports-integration/TEST-*.xml
             backend/target/surefire-reports-functional/*.xml
           testFormat: junit
           testMerge: true
