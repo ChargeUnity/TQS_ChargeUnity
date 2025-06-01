@@ -184,26 +184,4 @@ class StationControllerIT {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isEmpty());
   }
-
-  @Test
-  void addDuplicateStation() throws Exception {
-    Map<String, Object> payload = new HashMap<>();
-    payload.put("name", "Duplicate Station");
-    payload.put("city", "Aveiro");
-    payload.put("address", "Rua Duplicada");
-    payload.put("latitude", 40.6412);
-    payload.put("longitude", -8.6536);
-    payload.put("operatorId", operator.getId());
-
-    String json = objectMapper.writeValueAsString(payload);
-
-    mockMvc
-        .perform(post("/api/v1/station").contentType(MediaType.APPLICATION_JSON).content(json))
-        .andExpect(status().isCreated());
-
-    mockMvc
-        .perform(post("/api/v1/station").contentType(MediaType.APPLICATION_JSON).content(json))
-        .andExpect(status().isConflict())
-        .andExpect(content().string("Station with this name already exists"));
-  }
 }

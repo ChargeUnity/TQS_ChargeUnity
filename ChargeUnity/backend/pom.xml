@@ -415,19 +415,12 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${spring-docs.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson</groupId>
-            <artifactId>jackson-bom</artifactId>
-            <version>${jackson.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql-connector-java.version}</version>
-            <scope>runtime</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>${mysql-connector-java.version}</version>
+			<scope>runtime</scope>
+		</dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -459,6 +452,18 @@
         </dependency>
 
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.fasterxml.jackson</groupId>
+				<artifactId>jackson-bom</artifactId>
+				<version>${jackson.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
     <profiles>
         <!-- Profile for Unit Tests -->
@@ -495,9 +500,8 @@
                         <version>${maven-surefire-plugin.version}</version>
                         <configuration>
                             <includes>
-                                <include>**/functional/**/*Test.java</include>
                                 <include>**/functional/**/*Steps.java</include>
-                                <include>**/functional/**/*CucumberTest.java</include>
+                                <include>**/functional/**/*CucumberTF.java</include>
                             </includes>
                             <reportsDirectory>${project.build.directory}/surefire-reports-functional</reportsDirectory>
                         </configuration>
@@ -550,6 +554,48 @@
                 </plugins>
             </build>
         </profile>
+
+        <!-- Profile for Integration Tests -->
+        <profile>
+            <id>integration-tests</id>
+            <build>
+                <plugins>
+                    <!-- Disable Surefire (unit tests) -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <skipTests>true</skipTests>
+                        </configuration>
+                    </plugin>
+                    <!-- Enable Failsafe for ITs only -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/*Test.java</exclude>
+                                <exclude>**/*Tests.java</exclude>
+                            </excludes>
+                            <reportsDirectory>${project.build.directory}/failsafe-reports-integration</reportsDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
 	<build>
@@ -578,19 +624,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <properties>
-                        <property>
-                            <name>listener</name>
-                            <value>io.qameta.allure.junit5.AllureJunit5</value>
-                        </property>
-                    </properties>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
@@ -616,22 +649,49 @@
             </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <includes>
-                        <include>**/*Test.java</include>
-                        <include>**/*Tests.java</include>
-                    </includes>
-                    <reportsDirectory>${project.build.directory}</reportsDirectory>
-                    <statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
-                        <usePhrasedFileName>false</usePhrasedFileName>
-                        <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
-                        <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
-                    </statelessTestsetReporter>
-                </configuration>
-            </plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<configuration>
+					<properties>
+					<property>
+						<name>listener</name>
+						<value>io.qameta.allure.junit5.AllureJunit5</value>
+					</property>
+					</properties>
+					
+					<includes>
+					<include>**/*Test.java</include>
+					<include>**/*Tests.java</include>
+					</includes>
+
+					<reportsDirectory>${project.build.directory}</reportsDirectory>
+
+					<statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+					<usePhrasedFileName>false</usePhrasedFileName>
+					<usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+					<usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+					</statelessTestsetReporter>
+				</configuration>
+			</plugin>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<includes>
+						<include>**/*IT.java</include>
+					</includes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
