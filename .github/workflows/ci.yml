@@ -310,7 +310,7 @@ jobs:
             backend/target/failsafe-reports-integration/TEST-*.xml
             backend/target/surefire-reports-functional/*.xml
           testFormat: junit
-          testMerge: true
+          testMerge: false
           combineInSingleTestExec: false
           failOnImportError: false
           continueOnImportError: true
