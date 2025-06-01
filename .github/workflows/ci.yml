@@ -9,6 +9,7 @@ on:
       - main
       - develop
     types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled]
+  workflow_dispatch:  # <-- Add this line to allow manual trigger
 
 jobs:
   build:
