@@ -65,7 +65,7 @@
         <junit-jupiter.version>5.12.0</junit-jupiter.version>
         <mockito-junit-jupiter.version>5.15.2</mockito-junit-jupiter.version>
 
-        <selenium.version>4.29.0</selenium.version>
+        <selenium.version>4.33.0</selenium.version>
         <selenium-jupiter.version>6.1.0</selenium-jupiter.version>
         <assertj.version>3.27.3</assertj.version>
 
@@ -91,6 +91,8 @@
         <flyway.version>11.8.0</flyway.version>
         <mysql-connector-java.version>8.0.33</mysql-connector-java.version>
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
+        <xray-junit-extensions.version>0.10.0</xray-junit-extensions.version>
+        <xray-maven-plugin.version>0.9.0</xray-maven-plugin.version>
 
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
 
@@ -413,26 +415,251 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${spring-docs.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson</groupId>
-            <artifactId>jackson-bom</artifactId>
-            <version>${jackson.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql-connector-java.version}</version>
-            <scope>runtime</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>${mysql-connector-java.version}</version>
+			<scope>runtime</scope>
+		</dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate-validator.version}</version>
         </dependency>
 
+        <!-- Xray (slides) -->
+        <dependency>
+            <groupId>app.getxray</groupId>
+            <artifactId>xray-junit-extensions</artifactId>
+            <version>${xray-junit-extensions.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>app.getxray</groupId>
+            <artifactId>xray-maven-plugin</artifactId>
+            <version>${xray-maven-plugin.version}</version>
+        </dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit-jupiter.version}</version> <!-- match your JUnit version -->
+			<scope>test</scope>
+		</dependency>
+
+        <!-- Overview stuff -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.fasterxml.jackson</groupId>
+				<artifactId>jackson-bom</artifactId>
+				<version>${jackson.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+    <profiles>
+        <!-- Profile for Unit Tests -->
+        <profile>
+            <id>unit-tests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*Test.java</include>
+                                <include>**/*Tests.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile for Functional Tests -->
+        <profile>
+            <id>functional-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/functional/**/*Steps.java</include>
+                                <include>**/functional/**/*CucumberTF.java</include>
+                            </includes>
+                            <reportsDirectory>${project.build.directory}/surefire-reports-functional</reportsDirectory>
+                        </configuration>
+                    </plugin>
+
+                    <!-- Xray Maven Plugin to import functional test results -->
+                    <plugin>
+                        <groupId>app.getxray</groupId>
+                        <artifactId>xray-maven-plugin</artifactId>
+                        <version>${xray-maven-plugin.version}</version>
+                        <configuration>
+                            <cloud>true</cloud>
+                            <projectKey>CH</projectKey>
+                            <reportFormat>junit</reportFormat>
+                            <reportFile>${project.build.directory}/surefire-reports-functional/*.xml</reportFile>
+                            <clientId>${xray.clientId}</clientId>
+                            <clientSecret>${xray.clientSecret}</clientSecret>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>import-results</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>import-results</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile for Xray Unit Integration -->
+        <profile>
+            <id>xray-unit</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*Test.java</include>
+                                <include>**/*Tests.java</include>
+                            </includes>
+                            <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>app.getxray</groupId>
+                        <artifactId>xray-maven-plugin</artifactId>
+                        <version>${xray-maven-plugin.version}</version>
+                        <configuration>
+                            <cloud>true</cloud>
+                            <projectKey>CH</projectKey>
+                            <reportFormat>junit</reportFormat>
+                            <!-- Use a specific file instead of pattern -->
+                            <reportFile>${project.build.directory}/failsafe-reports-integration/*.xml</reportFile>
+                            <!-- These will be overridden by command line -->
+                            <clientId>${xray.clientId}</clientId>
+                            <clientSecret>${xray.clientSecret}</clientSecret>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>import-results</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>import-results</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile for Integration Tests -->
+        <profile>
+            <id>integration-tests</id>
+            <build>
+                <plugins>
+                    <!-- Disable Surefire (unit tests) -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <skipTests>true</skipTests>
+                        </configuration>
+                    </plugin>
+
+                    <!-- Enable Failsafe for ITs only -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/*Test.java</exclude>
+                                <exclude>**/*Tests.java</exclude>
+                            </excludes>
+                            <reportsDirectory>${project.build.directory}/failsafe-reports-integration</reportsDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile for Xray Tests -->
+        <profile>
+            <id>xray</id>
+            <build>
+                <plugins>
+                <plugin>
+                    <groupId>app.getxray</groupId>
+                    <artifactId>xray-maven-plugin</artifactId>
+                    <version>${xray-maven-plugin.version}</version>
+                    <configuration>
+                    <cloud>true</cloud>
+                    <projectKey>CH</projectKey>
+                    <reportFormat>junit</reportFormat>
+                    <reportFile>${project.build.directory}/failsafe-reports-integration</reportFile> <!-- or surefire report dir as needed -->
+                    <clientId>${xray.clientId}</clientId>
+                    <clientSecret>${xray.clientSecret}</clientSecret>
+                    </configuration>
+                    <executions>
+                    <execution>
+                        <id>import-results</id>
+                        <phase>verify</phase>
+                        <goals>
+                        <goal>import-results</goal>
+                        </goals>
+                    </execution>
+                    </executions>
+                </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 	<build>
 		<plugins>
@@ -460,19 +687,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <properties>
-                        <property>
-                            <name>listener</name>
-                            <value>io.qameta.allure.junit5.AllureJunit5</value>
-                        </property>
-                    </properties>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
@@ -496,7 +710,51 @@
                     </goals>
                 </execution>
             </executions>
-        </plugin>
+            </plugin>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<configuration>
+					<properties>
+					<property>
+						<name>listener</name>
+						<value>io.qameta.allure.junit5.AllureJunit5</value>
+					</property>
+					</properties>
+					
+					<includes>
+					<include>**/*Test.java</include>
+					<include>**/*Tests.java</include>
+					</includes>
+
+					<reportsDirectory>${project.build.directory}</reportsDirectory>
+
+					<statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+					<usePhrasedFileName>false</usePhrasedFileName>
+					<usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+					<usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+					</statelessTestsetReporter>
+				</configuration>
+			</plugin>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<includes>
+						<include>**/*IT.java</include>
+					</includes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>

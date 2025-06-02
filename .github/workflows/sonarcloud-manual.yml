@@ -5,7 +5,7 @@ on:
     inputs:
       branch:
         description: 'Branch to analyze'
-        default: 'main'
+        default: 'develop'
 
 jobs:
   sonarcloud_manual:
@@ -37,8 +37,8 @@ jobs:
       - name: Pre-fetch dependencies
         run: mvn dependency:go-offline
 
-      - name: Build project
-        run: mvn clean install -DskipTests
+      - name: Run tests and generate coverage
+        run: mvn test -Punit-tests jacoco:report -T 4
 
       - name: Run SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
