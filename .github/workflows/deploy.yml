@@ -1,0 +1,49 @@
+name: CD - Deploy ChargeUnity (teste na CH-88)
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: ChargeUnity Deploy
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Criar ficheiro .env com secrets
+        working-directory: ChargeUnity
+        run: |
+          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+          echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
+          echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
+          echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
+          echo "MYSQL_PORT=3307:3306" >> .env
+          echo "APP_PORT=8080:8080" >> .env
+          echo "FRONTEND_PORT_VITE=5173:5173" >> .env
+          echo "VITE_APP_API_URL=http://localhost:8080" >> .env
+          echo "DB_EMAIL=${{ secrets.DB_EMAIL }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+
+      - name: Parar containers anteriores
+        working-directory: ChargeUnity
+        run: docker compose --env-file .env -f docker-compose.yml down
+
+      - name: Limpar cache de imagens antigas
+        run: docker builder prune -a -f
+
+      - name: Build backend (Maven)
+        run: mvn -f ChargeUnity/backend/pom.xml clean package
+
+      - name: Subir serviços com Docker Compose
+        working-directory: ChargeUnity
+        run: docker compose --env-file .env -f docker-compose.yml up -d --build
+
+      
