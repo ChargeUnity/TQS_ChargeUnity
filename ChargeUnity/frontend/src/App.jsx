@@ -12,6 +12,7 @@ import BookingList from './BookingList.jsx';
 import DriverPage from './DriverPage.jsx';
 import RegisterStation from './RegisterStation.jsx';
 import DriverStations from './DriverStations.jsx';
+import RegisterCharger from "./RegisterCharger.jsx";
 
 function App() {
     return (
@@ -28,6 +29,7 @@ function App() {
                 <Route path="/driver/:id/bookings" element={<BookingList />} />
                 <Route path="/driver/:id/stations" element={<DriverStations />} />
                 <Route path="/operators/:id/stations/new" element={<RegisterStation />} />
+                <Route path="/stations/:stationId/chargers/new" element={<RegisterCharger />} />
             </Routes>
         </>
     );
