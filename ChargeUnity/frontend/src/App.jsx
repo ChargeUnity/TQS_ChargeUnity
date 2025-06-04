@@ -13,6 +13,7 @@ import DriverPage from './DriverPage.jsx';
 import RegisterStation from './RegisterStation.jsx';
 import DriverStations from './DriverStations.jsx';
 import RegisterCharger from "./RegisterCharger.jsx";
+import 'leaflet/dist/leaflet.css';
 
 function App() {
     return (
