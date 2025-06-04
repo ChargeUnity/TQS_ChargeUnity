@@ -26,10 +26,11 @@ function AddCharger() {
     }
 
     const chargerData = {
-      status,
-      type,
-      pricePerKWh: parsedPrice
-    };
+    stationId,
+    status,
+    chargerType: type,
+    pricePerKWh: parsedPrice
+  };
 
     try {
       const res = await fetch(`${config.API_URL}/charger`, {

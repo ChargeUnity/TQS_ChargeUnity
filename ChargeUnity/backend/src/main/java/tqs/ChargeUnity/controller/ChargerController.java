@@ -41,8 +41,14 @@ public class ChargerController {
     charger.setStation(station);
     charger.setStatus(ChargerStatus.valueOf((String) requestBody.get("status")));
     charger.setType(ChargerType.valueOf((String) requestBody.get("chargerType")));
-    charger.setPricePerKWh(
-        Double.parseDouble((String) requestBody.get("pricePerKWh")));
+    Object priceObj = requestBody.get("pricePerKWh");
+    if (priceObj instanceof Number) {
+        charger.setPricePerKWh(((Number) priceObj).doubleValue());
+    } else if (priceObj instanceof String) {
+        charger.setPricePerKWh(Double.parseDouble((String) priceObj));
+    } else {
+        throw new RuntimeException("Invalid pricePerKWh type: " + priceObj);
+    }
 
 
     return ResponseEntity.status(HttpStatus.CREATED).body(chargerRepository.save(charger));
