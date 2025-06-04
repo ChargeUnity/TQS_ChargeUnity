@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import config from '../config';
 
-function ChargersList() {
+function ChargersListUser() {
     const { stationId } = useParams();
     const [chargers, setChargers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -38,7 +38,7 @@ function ChargersList() {
                     {chargers.map(charger => (
                         <li key={charger.id}>
                             <Link
-								to={`/chargers/${charger.id}/edit`}
+								to={`./${charger.id}/book`}
                                 id={`edit-charger-link-${charger.id}`}
                             >
                                 Charger #{charger.id} - Status: {charger.status}
@@ -51,4 +51,4 @@ function ChargersList() {
     );
 }
 
-export default ChargersList;
+export default ChargersListUser;

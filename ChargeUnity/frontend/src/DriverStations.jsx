@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import config from '../config';
 import './DriverStations.css';
 
@@ -183,11 +184,23 @@ function DriverStations() {
                         <h2 id="results-title">Results</h2>
                         <ul className="driverstations-list" id="station-results-list">
                             {stations.map(station => (
-                                <li key={station.id} className="driverstations-station-card" id={`station-card-${station.id}`}>
-                                    <strong id={`station-name-${station.id}`}>{station.name}</strong><br />
-                                    <span id={`station-city-${station.id}`}>City: {station.city}</span><br />
-                                    <span id={`station-address-${station.id}`}>Address: {station.address}</span><br />
-                                    <span id={`station-coords-${station.id}`}>Coordinates: {station.latitude}, {station.longitude}</span>
+                                <li
+                                    key={station.id}
+                                    className="driverstations-station-card"
+                                    id={`station-card-${station.id}`}
+                                    style={{ cursor: 'pointer' }}
+                                    tabIndex={0}
+                                >
+                                    <Link
+                                        to={`./${station.id}/chargers`}
+                                        id={`station-link-${station.id}`}
+                                        style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+                                    >
+                                        <strong id={`station-name-${station.id}`}>{station.name}</strong><br />
+                                        <span id={`station-city-${station.id}`}>City: {station.city}</span><br />
+                                        <span id={`station-address-${station.id}`}>Address: {station.address}</span><br />
+                                        <span id={`station-coords-${station.id}`}>Coordinates: {station.latitude}, {station.longitude}</span>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
