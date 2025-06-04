@@ -16,15 +16,15 @@ import lombok.Data;
 public class Driver extends User {
 
   @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JsonManagedReference
+  @JsonManagedReference("driver-cars")
   private List<Car> cars = new ArrayList<>();
 
   @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JsonManagedReference
+  @JsonManagedReference("driver-bookings")
   private List<Booking> bookings = new ArrayList<>();
 
   @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JsonManagedReference
+  @JsonManagedReference("driver-trips")
   private List<Trip> trips = new ArrayList<>();
 
   private Double balance;

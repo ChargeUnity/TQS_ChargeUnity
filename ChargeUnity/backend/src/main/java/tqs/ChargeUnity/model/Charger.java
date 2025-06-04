@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,7 +39,7 @@ public class Charger {
   private Station station;
 
   @OneToMany(mappedBy = "charger")
-  @JsonBackReference
+  @JsonManagedReference("booking-charger")
   private List<Booking> bookings = new ArrayList<>();
 
   @Enumerated(EnumType.STRING)
