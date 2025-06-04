@@ -10,14 +10,14 @@ import tqs.ChargeUnity.enums.ChargerStatus;
 import tqs.ChargeUnity.enums.ChargerType; 
 import tqs.ChargeUnity.service.ChargerService;
 import tqs.ChargeUnity.repository.ChargerRepository;
-import tqs.ChargeUnity.repository.StationRepository;
 import java.util.Map;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/v1/charger")
 public class ChargerController {
 
   private final ChargerRepository chargerRepository;
-
   private final ChargerService chargerService;
 
   public ChargerController(
@@ -28,54 +28,92 @@ public class ChargerController {
   }
 
   @PostMapping
-  public ResponseEntity<?> createCharger(
-      @RequestBody Map<String, Object> requestBody) {
-
+  public ResponseEntity<?> createCharger(@RequestBody Map<String, Object> requestBody) {
     Charger charger = new Charger();
 
-    String stationId = (String) requestBody.get("stationId");
-    Station station =
-        chargerService
-            .getStationById(Integer.parseInt(stationId))
-            .orElseThrow(() -> new RuntimeException("Station not found"));
-    charger.setStation(station);
-    charger.setStatus(ChargerStatus.valueOf((String) requestBody.get("status")));
-    charger.setType(ChargerType.valueOf((String) requestBody.get("chargerType")));
-    Object priceObj = requestBody.get("pricePerKWh");
-    if (priceObj instanceof Number) {
-        charger.setPricePerKWh(((Number) priceObj).doubleValue());
-    } else if (priceObj instanceof String) {
-        charger.setPricePerKWh(Double.parseDouble((String) priceObj));
+    Object stationIdRaw = requestBody.get("stationId");
+    if (stationIdRaw == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing stationId");
+    }
+    int stationId;
+    if (stationIdRaw instanceof Integer) {
+      stationId = (Integer) stationIdRaw;
+    } else if (stationIdRaw instanceof String) {
+      stationId = Integer.parseInt((String) stationIdRaw);
     } else {
-        throw new RuntimeException("Invalid pricePerKWh type: " + priceObj);
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid stationId type");
     }
 
+    Optional<Station> stationOpt = chargerService.getStationById(stationId);
+    if (stationOpt.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Station not found");
+    }
+    charger.setStation(stationOpt.get());
+
+    String statusStr = (String) requestBody.get("status");
+    if (statusStr == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing status");
+    }
+    charger.setStatus(ChargerStatus.valueOf(statusStr));
+
+    String chargerTypeStr = (String) requestBody.get("chargerType");
+    if (chargerTypeStr == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing chargerType");
+    }
+    charger.setType(ChargerType.valueOf(chargerTypeStr));
+
+    Object priceObj = requestBody.get("pricePerKWh");
+    if (priceObj == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing pricePerKWh");
+    }
+    double price;
+    if (priceObj instanceof Number) {
+      price = ((Number) priceObj).doubleValue();
+    } else if (priceObj instanceof String) {
+      price = Double.parseDouble((String) priceObj);
+    } else {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid pricePerKWh type");
+    }
+    charger.setPricePerKWh(price);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(chargerRepository.save(charger));
-}
-
+  }
 
   @GetMapping
   public ResponseEntity<?> getAllChargers() {
     return ResponseEntity.ok(chargerRepository.findAll());
   }
 
+  @GetMapping("/available")
+  public ResponseEntity<?> getAvailableChargers() {
+    return ResponseEntity.ok(chargerRepository.findByStatus(ChargerStatus.AVAILABLE));
+  }
+
+  @GetMapping("/filter")
+  public ResponseEntity<?> filterChargers(@RequestParam(required = false) Double power,
+                                          @RequestParam(required = false) String status) {
+    // only supports status for now
+    if (status != null) {
+      return ResponseEntity.ok(chargerRepository.findByStatus(ChargerStatus.valueOf(status)));
+    }
+    return ResponseEntity.badRequest().body("No supported filter provided");
+  }
+
   @GetMapping("/{id}")
-  public ResponseEntity<Charger> getChargerById(@PathVariable int id) {
+  public ResponseEntity<?> getChargerById(@PathVariable int id) {
     return chargerRepository
         .findById(id)
-        .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        .<ResponseEntity<?>>map(ResponseEntity::ok)
+        .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Charger not found"));
   }
 
   @GetMapping("/station/{stationId}")
   public ResponseEntity<?> getChargersByStation(@PathVariable int stationId) {
-    Station station =
-        chargerService
-            .getStationById(stationId)
-            .orElseThrow(() -> new RuntimeException("Station not found"));
-
-    return ResponseEntity.ok(chargerRepository.findByStationId(station.getId()));
+    Optional<Station> stationOpt = chargerService.getStationById(stationId);
+    if (stationOpt.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Station not found");
+    }
+    return ResponseEntity.ok(chargerRepository.findByStationId(stationId));
   }
 
   @PatchMapping("/{chargerId}/status")
