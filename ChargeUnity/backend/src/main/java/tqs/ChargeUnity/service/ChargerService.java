@@ -13,9 +13,11 @@ import java.util.Optional;
 public class ChargerService {
 
   private final ChargerRepository chargerRepository;
+  private final StationService stationService;
 
-  public ChargerService(ChargerRepository chargerRepository) {
+  public ChargerService(ChargerRepository chargerRepository, StationService stationService) {
     this.chargerRepository = chargerRepository;
+    this.stationService = stationService;
   }
 
   public List<Charger> getAllChargers() {
@@ -56,5 +58,9 @@ public class ChargerService {
   public Object getChargersByStation(int stationId) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getChargersByStation'");
+  }
+
+  public Optional<Station> getStationById(int stationId) {
+    return stationService.getStationById(stationId);
   }
 }
