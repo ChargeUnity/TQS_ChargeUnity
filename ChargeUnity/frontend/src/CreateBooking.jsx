@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom'; // <-- Add this import
 
 export default function BookingPage() {
+  const { id: driverId, chargerId } = useParams(); // <-- Get params from URL
+
   const [startDate, setStartDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -205,29 +208,29 @@ export default function BookingPage() {
     }
   };
 
-  const getDuration = () => {
-    if (startDate && startTime && endDate && endTime) {
-      const startDateTime = new Date(`${startDate}T${startTime}`);
-      const endDateTime = new Date(`${endDate}T${endTime}`);
-      const duration = (endDateTime - startDateTime) / (1000 * 60 * 60);
-      const days = Math.floor(duration / 24);
-      const hours = Math.floor(duration % 24);
-
-      let durationText = '';
-      if (days > 0) {
-        durationText = `${days} day${days > 1 ? 's' : ''}`;
-        if (hours > 0) {
-          durationText += ` and ${hours} hour${hours > 1 ? 's' : ''}`;
-        }
-      } else {
-        durationText = `${hours} hour${hours > 1 ? 's' : ''}`;
+  // Helper to format duration
+  const formatDuration = (days, hours) => {
+    if (days > 0) {
+      let text = `${days} day${days > 1 ? 's' : ''}`;
+      if (hours > 0) {
+        text += ` and ${hours} hour${hours > 1 ? 's' : ''}`;
       }
-      return durationText;
+      return text;
     }
-    return '';
+    return `${hours} hour${hours > 1 ? 's' : ''}`;
   };
 
-  const handleSubmit = () => {
+  const getDuration = () => {
+    if (!(startDate && startTime && endDate && endTime)) return '';
+    const startDateTime = new Date(`${startDate}T${startTime}`);
+    const endDateTime = new Date(`${endDate}T${endTime}`);
+    const duration = (endDateTime - startDateTime) / (1000 * 60 * 60);
+    const days = Math.floor(duration / 24);
+    const hours = Math.floor(duration % 24);
+    return formatDuration(days, hours);
+  };
+
+  const handleSubmit = async () => {
     // Validation
     if (!startDate || !startTime || !endDate || !endTime) {
       alert('Please fill in all fields');
@@ -242,17 +245,28 @@ export default function BookingPage() {
       return;
     }
 
-    // Process booking (you can add your API call here)
-    console.log({
-      startDate,
-      startTime,
-      endDate,
-      endTime,
-      startDateTime,
-      endDateTime
-    });
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          driverId: Number(driverId),
+          chargerId: Number(chargerId),
+          startTime: startDateTime.toISOString(),
+          endTime: endDateTime.toISOString(),
+        }),
+      });
 
-    setIsSubmitted(true);
+      if (!response.ok) {
+        throw new Error('Failed to create booking');
+      }
+
+      setIsSubmitted(true);
+    } catch (error) {
+      alert('Error creating booking: ' + error.message);
+    }
   };
 
   const resetForm = () => {
@@ -290,7 +304,15 @@ export default function BookingPage() {
                 e.target.style.background = 'linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%)';
                 e.target.style.transform = 'translateY(-1px)';
               }}
+              onFocus={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%)';
+                e.target.style.transform = 'translateY(-1px)';
+              }}
               onMouseOut={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)';
+                e.target.style.transform = 'translateY(0)';
+              }}
+              onBlur={(e) => {
                 e.target.style.background = 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)';
                 e.target.style.transform = 'translateY(0)';
               }}
@@ -323,8 +345,9 @@ export default function BookingPage() {
             
             <div style={styles.inputGroup}>
               <div style={styles.inputField}>
-                <label style={styles.label}>Date</label>
+                <label style={styles.label} htmlFor="start-date-input">Date</label>
                 <input
+                  id="start-date-input"
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
@@ -337,8 +360,9 @@ export default function BookingPage() {
               </div>
               
               <div style={styles.inputField}>
-                <label style={styles.label}>Time</label>
+                <label style={styles.label} htmlFor="start-time-input">Time</label>
                 <select
+                  id="start-time-input"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
                   style={styles.input}
@@ -368,8 +392,9 @@ export default function BookingPage() {
             
             <div style={styles.inputGroup}>
               <div style={styles.inputField}>
-                <label style={styles.label}>Date</label>
+                <label style={styles.label} htmlFor="end-date-input">Date</label>
                 <input
+                  id="end-date-input"
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
@@ -382,8 +407,9 @@ export default function BookingPage() {
               </div>
               
               <div style={styles.inputField}>
-                <label style={styles.label}>Time</label>
+                <label style={styles.label} htmlFor="end-time-input">Time</label>
                 <select
+                  id="end-time-input"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
                   style={styles.input}
@@ -428,7 +454,15 @@ export default function BookingPage() {
             e.target.style.background = 'linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%)';
             e.target.style.transform = 'translateY(-1px)';
           }}
+          onFocus={(e) => {
+            e.target.style.background = 'linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%)';
+            e.target.style.transform = 'translateY(-1px)';
+            }}
           onMouseOut={(e) => {
+            e.target.style.background = 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)';
+            e.target.style.transform = 'translateY(0)';
+          }}
+          onBlur={(e) => {
             e.target.style.background = 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)';
             e.target.style.transform = 'translateY(0)';
           }}
