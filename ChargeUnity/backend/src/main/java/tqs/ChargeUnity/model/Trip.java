@@ -28,11 +28,11 @@ public class Trip {
 
   @ManyToOne
   @JoinColumn(name = "driver_id")
-  @JsonBackReference
+  @JsonBackReference("driver-trips")
   private Driver driver;
 
   @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JsonManagedReference
+  @JsonManagedReference("booking-trip")
   private List<Booking> bookings = new ArrayList<>();
 
   private String startCoordinates;

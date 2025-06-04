@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import config from '../config';
 import './DriverStations.css';
+import StationMap from './StationMap'; 
+
 
 function DriverStations() {
     const [mode, setMode] = useState('coordinates');
@@ -200,6 +202,7 @@ function DriverStations() {
                                         <span id={`station-city-${station.id}`}>City: {station.city}</span><br />
                                         <span id={`station-address-${station.id}`}>Address: {station.address}</span><br />
                                         <span id={`station-coords-${station.id}`}>Coordinates: {station.latitude}, {station.longitude}</span>
+										<StationMap lat={station.latitude} lng={station.longitude} />
                                     </Link>
                                 </li>
                             ))}

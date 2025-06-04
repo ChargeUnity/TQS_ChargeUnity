@@ -14,4 +14,6 @@ public interface ChargerRepository extends JpaRepository<Charger, Integer> {
   List<Charger> findByStation(Station station);
 
   List<Charger> findByStatus(ChargerStatus status);
+
+  List<Charger> findByStationId(int stationId);
 }
