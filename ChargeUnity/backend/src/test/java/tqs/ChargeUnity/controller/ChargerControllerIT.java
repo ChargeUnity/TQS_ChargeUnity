@@ -140,7 +140,7 @@ class ChargerControllerIT {
     }
 
     @Test
-    void getChargersByStation() throws Exception {
+        void getChargersByStation() throws Exception {
         Station anotherStation = new Station();
         anotherStation.setName("Another Station");
         anotherStation.setCity("Porto");
@@ -167,8 +167,8 @@ class ChargerControllerIT {
                 .perform(get("/api/v1/charger/station/" + anotherStation.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].station.id").value(anotherStation.getId()));
-    }
+                .andExpect(jsonPath("$[0].id").value(c1.getId()));
+        }
 
     @Test
     void getAvailableChargers() throws Exception {
