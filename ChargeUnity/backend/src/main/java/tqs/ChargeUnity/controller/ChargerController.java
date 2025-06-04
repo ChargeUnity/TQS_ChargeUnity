@@ -16,30 +16,34 @@ import java.util.Map;
 @RequestMapping("/api/v1/charger")
 public class ChargerController {
 
-  private final StationRepository stationRepository;
   private final ChargerRepository chargerRepository;
 
   private final ChargerService chargerService;
 
   public ChargerController(
-      StationRepository stationRepository,
       ChargerRepository chargerRepository,
       ChargerService chargerService) {
-    this.stationRepository = stationRepository;
     this.chargerRepository = chargerRepository;
     this.chargerService = chargerService;
   }
 
-  @PostMapping("/new/{stationId}")
-public ResponseEntity<?> createCharger(@PathVariable int stationId, @RequestBody Map<String, Object> payload) {
-    Station station = stationRepository.findById(stationId)
-        .orElseThrow(() -> new RuntimeException("Station not found"));
+  @PostMapping
+  public ResponseEntity<?> createCharger(
+      @RequestBody Map<String, Object> requestBody) {
 
     Charger charger = new Charger();
+
+    String stationId = (String) requestBody.get("stationId");
+    Station station =
+        chargerService
+            .getStationById(Integer.parseInt(stationId))
+            .orElseThrow(() -> new RuntimeException("Station not found"));
     charger.setStation(station);
-    charger.setStatus(ChargerStatus.fromString((String) payload.get("status")));
-    charger.setType(ChargerType.fromString((String) payload.get("type")));
-    charger.setPricePerKWh(Double.parseDouble(payload.get("pricePerKWh").toString()));
+    charger.setStatus(ChargerStatus.valueOf((String) requestBody.get("status")));
+    charger.setType(ChargerType.valueOf((String) requestBody.get("chargerType")));
+    charger.setPricePerKWh(
+        Double.parseDouble((String) requestBody.get("pricePerKWh")));
+
 
     return ResponseEntity.status(HttpStatus.CREATED).body(chargerRepository.save(charger));
 }
@@ -61,11 +65,11 @@ public ResponseEntity<?> createCharger(@PathVariable int stationId, @RequestBody
   @GetMapping("/station/{stationId}")
   public ResponseEntity<?> getChargersByStation(@PathVariable int stationId) {
     Station station =
-        stationRepository
-            .findById(stationId)
+        chargerService
+            .getStationById(stationId)
             .orElseThrow(() -> new RuntimeException("Station not found"));
 
-    return ResponseEntity.ok(chargerRepository.findByStation(station));
+    return ResponseEntity.ok(chargerRepository.findByStationId(station.getId()));
   }
 
   @PatchMapping("/{chargerId}/status")

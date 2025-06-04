@@ -32,7 +32,7 @@ function AddCharger() {
     };
 
     try {
-      const res = await fetch(`${config.API_URL}/charger/new/${stationId}`, {
+      const res = await fetch(`${config.API_URL}/charger`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
