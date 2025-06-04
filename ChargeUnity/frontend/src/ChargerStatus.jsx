@@ -79,6 +79,7 @@ function ChargerStatus() {
                     <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', fontWeight: '600' }}>
                         Status:
                         <select
+                            id="status-dropdown"
                             value={status}
                             onChange={e => setStatus(e.target.value)}
                             style={{

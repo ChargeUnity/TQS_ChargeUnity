@@ -51,7 +51,10 @@ function OperatorDetail() {
                 <ul className="station-list">
                     {stations.map((station) => (
                         <li key={station.id} id={`station-list-item-${station.id}`}>
-                            <Link to={`/stations/${station.id}/chargers`}>
+                            <Link
+                                to={`/stations/${station.id}/chargers`}
+                                id={`station-link-${station.name.replace(/\s+/g, '-').toLowerCase()}`}
+                            >
                                 <strong>{station.name}</strong>
                             </Link><br />
                             City: {station.city}<br />
