@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import tqs.ChargeUnity.model.Charger;
 import tqs.ChargeUnity.model.Station;
 import tqs.ChargeUnity.enums.ChargerStatus;
-import tqs.ChargeUnity.enums.ChargerType; 
+import tqs.ChargeUnity.enums.ChargerType;
 import tqs.ChargeUnity.service.ChargerService;
 import tqs.ChargeUnity.repository.ChargerRepository;
 import java.util.Map;
@@ -20,9 +20,7 @@ public class ChargerController {
   private final ChargerRepository chargerRepository;
   private final ChargerService chargerService;
 
-  public ChargerController(
-      ChargerRepository chargerRepository,
-      ChargerService chargerService) {
+  public ChargerController(ChargerRepository chargerRepository, ChargerService chargerService) {
     this.chargerRepository = chargerRepository;
     this.chargerService = chargerService;
   }
@@ -90,8 +88,8 @@ public class ChargerController {
   }
 
   @GetMapping("/filter")
-  public ResponseEntity<?> filterChargers(@RequestParam(required = false) Double power,
-                                          @RequestParam(required = false) String status) {
+  public ResponseEntity<?> filterChargers(
+      @RequestParam(required = false) Double power, @RequestParam(required = false) String status) {
     // only supports status for now
     if (status != null) {
       return ResponseEntity.ok(chargerRepository.findByStatus(ChargerStatus.valueOf(status)));

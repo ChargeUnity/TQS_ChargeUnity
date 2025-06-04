@@ -15,9 +15,7 @@ public class StationService {
   private final StationRepository stationRepository;
   private final OperatorService operatorService;
 
-  public StationService(
-      StationRepository stationRepository,
-      OperatorService operatorService) {
+  public StationService(StationRepository stationRepository, OperatorService operatorService) {
     this.stationRepository = stationRepository;
     this.operatorService = operatorService;
   }

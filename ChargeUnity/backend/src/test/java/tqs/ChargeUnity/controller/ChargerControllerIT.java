@@ -34,187 +34,184 @@ import tqs.ChargeUnity.enums.ChargerType;
 @Transactional
 class ChargerControllerIT {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper objectMapper;
-    @Autowired private ChargerRepository chargerRepository;
-    @Autowired private StationRepository stationRepository;
+  @Autowired private MockMvc mockMvc;
+  @Autowired private ObjectMapper objectMapper;
+  @Autowired private ChargerRepository chargerRepository;
+  @Autowired private StationRepository stationRepository;
 
-    private Station station;
+  private Station station;
 
-    @BeforeEach
-    void setup() {
-        station = new Station();
-        station.setName("Main Station");
-        station.setCity("Lisbon");
-        station.setAddress("Rua Central");
-        station.setLatitude("38.72");
-        station.setLongitude("-9.13");
-        station = stationRepository.save(station);
-    }
+  @BeforeEach
+  void setup() {
+    station = new Station();
+    station.setName("Main Station");
+    station.setCity("Lisbon");
+    station.setAddress("Rua Central");
+    station.setLatitude("38.72");
+    station.setLongitude("-9.13");
+    station = stationRepository.save(station);
+  }
 
-    @Test
-    void createAndGetCharger() throws Exception {
-        Map<String, Object> chargerDto = new HashMap<>();
-        chargerDto.put("stationId", station.getId());
-        chargerDto.put("chargerType", "ECONOMY");
-        chargerDto.put("status", "AVAILABLE");
-        chargerDto.put("pricePerKWh", 0.22);
+  @Test
+  void createAndGetCharger() throws Exception {
+    Map<String, Object> chargerDto = new HashMap<>();
+    chargerDto.put("stationId", station.getId());
+    chargerDto.put("chargerType", "ECONOMY");
+    chargerDto.put("status", "AVAILABLE");
+    chargerDto.put("pricePerKWh", 0.22);
 
-        String json = objectMapper.writeValueAsString(chargerDto);
+    String json = objectMapper.writeValueAsString(chargerDto);
 
-        String response = mockMvc
-                .perform(post("/api/v1/charger")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.type").value("ECONOMY"))
-                .andExpect(jsonPath("$.status").value("AVAILABLE"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        int id = objectMapper.readTree(response).get("id").asInt();
-
+    String response =
         mockMvc
-                .perform(get("/api/v1/charger/" + id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.type").value("ECONOMY"))
-                .andExpect(jsonPath("$.pricePerKWh").value(0.22));
-    }
+            .perform(post("/api/v1/charger").contentType(MediaType.APPLICATION_JSON).content(json))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.type").value("ECONOMY"))
+            .andExpect(jsonPath("$.status").value("AVAILABLE"))
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
 
-    @Test
-    void getAllChargers() throws Exception {
-        Charger c1 = new Charger();
-        c1.setType(ChargerType.STANDARD);
-        c1.setStatus(ChargerStatus.UNDER_MAINTENANCE);
-        c1.setPricePerKWh(0.50);
-        c1.setStation(station);
+    int id = objectMapper.readTree(response).get("id").asInt();
 
-        Charger c2 = new Charger();
-        c2.setType(ChargerType.STANDARD);
-        c2.setStatus(ChargerStatus.AVAILABLE);
-        c2.setPricePerKWh(0.22);
-        c2.setStation(station);
+    mockMvc
+        .perform(get("/api/v1/charger/" + id))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.type").value("ECONOMY"))
+        .andExpect(jsonPath("$.pricePerKWh").value(0.22));
+  }
 
-        chargerRepository.saveAll(List.of(c1, c2));
+  @Test
+  void getAllChargers() throws Exception {
+    Charger c1 = new Charger();
+    c1.setType(ChargerType.STANDARD);
+    c1.setStatus(ChargerStatus.UNDER_MAINTENANCE);
+    c1.setPricePerKWh(0.50);
+    c1.setStation(station);
 
-        mockMvc
-                .perform(get("/api/v1/charger"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
-    }
+    Charger c2 = new Charger();
+    c2.setType(ChargerType.STANDARD);
+    c2.setStatus(ChargerStatus.AVAILABLE);
+    c2.setPricePerKWh(0.22);
+    c2.setStation(station);
 
-    @Test
-    void getChargerByInvalidId() throws Exception {
-        mockMvc
-                .perform(get("/api/v1/charger/9999"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("Charger not found"));
-    }
+    chargerRepository.saveAll(List.of(c1, c2));
 
-    @Test
-    void updateChargerStatus() throws Exception {
-        Charger charger = new Charger();
-        charger.setType(ChargerType.STANDARD);
-        charger.setStatus(ChargerStatus.AVAILABLE);
-        charger.setPricePerKWh(0.07);
-        charger.setStation(station);
-        charger = chargerRepository.save(charger);
+    mockMvc
+        .perform(get("/api/v1/charger"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(2));
+  }
 
-        mockMvc
-                .perform(patch("/api/v1/charger/" + charger.getId() + "/status")
-                        .param("status", "UNDER_MAINTENANCE"))
-                .andExpect(status().isOk());
+  @Test
+  void getChargerByInvalidId() throws Exception {
+    mockMvc
+        .perform(get("/api/v1/charger/9999"))
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("Charger not found"));
+  }
 
-        Charger updated = chargerRepository.findById(charger.getId()).orElseThrow();
-        assertThat(updated.getStatus()).isEqualTo(ChargerStatus.UNDER_MAINTENANCE);
-    }
+  @Test
+  void updateChargerStatus() throws Exception {
+    Charger charger = new Charger();
+    charger.setType(ChargerType.STANDARD);
+    charger.setStatus(ChargerStatus.AVAILABLE);
+    charger.setPricePerKWh(0.07);
+    charger.setStation(station);
+    charger = chargerRepository.save(charger);
 
-    @Test
-    void updateChargerStatusInvalidId() throws Exception {
-        mockMvc
-                .perform(patch("/api/v1/charger/9999/status")
-                        .param("status", "AVAILABLE"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Charger not found with id: 9999"));
-    }
+    mockMvc
+        .perform(
+            patch("/api/v1/charger/" + charger.getId() + "/status")
+                .param("status", "UNDER_MAINTENANCE"))
+        .andExpect(status().isOk());
 
-    @Test
-        void getChargersByStation() throws Exception {
-        Station anotherStation = new Station();
-        anotherStation.setName("Another Station");
-        anotherStation.setCity("Porto");
-        anotherStation.setAddress("Rua X");
-        anotherStation.setLatitude("41.15");
-        anotherStation.setLongitude("-8.61");
-        anotherStation = stationRepository.save(anotherStation);
+    Charger updated = chargerRepository.findById(charger.getId()).orElseThrow();
+    assertThat(updated.getStatus()).isEqualTo(ChargerStatus.UNDER_MAINTENANCE);
+  }
 
-        Charger c1 = new Charger();
-        c1.setType(ChargerType.STANDARD);
-        c1.setStatus(ChargerStatus.UNDER_MAINTENANCE);
-        c1.setPricePerKWh(0.50);
-        c1.setStation(anotherStation);
+  @Test
+  void updateChargerStatusInvalidId() throws Exception {
+    mockMvc
+        .perform(patch("/api/v1/charger/9999/status").param("status", "AVAILABLE"))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string("Charger not found with id: 9999"));
+  }
 
-        Charger c2 = new Charger();
-        c2.setType(ChargerType.STANDARD);
-        c2.setStatus(ChargerStatus.AVAILABLE);
-        c2.setPricePerKWh(0.22);
-        c2.setStation(station);
+  @Test
+  void getChargersByStation() throws Exception {
+    Station anotherStation = new Station();
+    anotherStation.setName("Another Station");
+    anotherStation.setCity("Porto");
+    anotherStation.setAddress("Rua X");
+    anotherStation.setLatitude("41.15");
+    anotherStation.setLongitude("-8.61");
+    anotherStation = stationRepository.save(anotherStation);
 
-        chargerRepository.saveAll(List.of(c1, c2));
+    Charger c1 = new Charger();
+    c1.setType(ChargerType.STANDARD);
+    c1.setStatus(ChargerStatus.UNDER_MAINTENANCE);
+    c1.setPricePerKWh(0.50);
+    c1.setStation(anotherStation);
 
-        mockMvc
-                .perform(get("/api/v1/charger/station/" + anotherStation.getId()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].id").value(c1.getId()));
-        }
+    Charger c2 = new Charger();
+    c2.setType(ChargerType.STANDARD);
+    c2.setStatus(ChargerStatus.AVAILABLE);
+    c2.setPricePerKWh(0.22);
+    c2.setStation(station);
 
-    @Test
-    void getAvailableChargers() throws Exception {
-        Charger c1 = new Charger();
-        c1.setType(ChargerType.STANDARD);
-        c1.setStatus(ChargerStatus.UNDER_MAINTENANCE);
-        c1.setPricePerKWh(0.50);
-        c1.setStation(station);
+    chargerRepository.saveAll(List.of(c1, c2));
 
-        Charger c2 = new Charger();
-        c2.setType(ChargerType.STANDARD);
-        c2.setStatus(ChargerStatus.AVAILABLE);
-        c2.setPricePerKWh(0.22);
-        c2.setStation(station);
+    mockMvc
+        .perform(get("/api/v1/charger/station/" + anotherStation.getId()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].id").value(c1.getId()));
+  }
 
-        chargerRepository.saveAll(List.of(c1, c2));
+  @Test
+  void getAvailableChargers() throws Exception {
+    Charger c1 = new Charger();
+    c1.setType(ChargerType.STANDARD);
+    c1.setStatus(ChargerStatus.UNDER_MAINTENANCE);
+    c1.setPricePerKWh(0.50);
+    c1.setStation(station);
 
-        mockMvc
-                .perform(get("/api/v1/charger/available"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].status").value("AVAILABLE"));
-    }
+    Charger c2 = new Charger();
+    c2.setType(ChargerType.STANDARD);
+    c2.setStatus(ChargerStatus.AVAILABLE);
+    c2.setPricePerKWh(0.22);
+    c2.setStation(station);
 
-    @Test
-    void filterChargersByPowerAndStatus() throws Exception {
-        Charger c1 = new Charger();
-        c1.setType(ChargerType.FAST);
-        c1.setStatus(ChargerStatus.AVAILABLE);
-        c1.setPricePerKWh(0.22);
-        c1.setStation(station);
+    chargerRepository.saveAll(List.of(c1, c2));
 
-        Charger c2 = new Charger();
-        c2.setType(ChargerType.STANDARD);
-        c2.setStatus(ChargerStatus.UNDER_MAINTENANCE);
-        c2.setPricePerKWh(0.50);
-        c2.setStation(station);
+    mockMvc
+        .perform(get("/api/v1/charger/available"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].status").value("AVAILABLE"));
+  }
 
-        chargerRepository.saveAll(List.of(c1, c2));
+  @Test
+  void filterChargersByPowerAndStatus() throws Exception {
+    Charger c1 = new Charger();
+    c1.setType(ChargerType.FAST);
+    c1.setStatus(ChargerStatus.AVAILABLE);
+    c1.setPricePerKWh(0.22);
+    c1.setStation(station);
 
-        mockMvc
-                .perform(get("/api/v1/charger/filter")
-                        .param("power", "0.22")
-                        .param("status", "AVAILABLE"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].status").value("AVAILABLE"));
-    }
+    Charger c2 = new Charger();
+    c2.setType(ChargerType.STANDARD);
+    c2.setStatus(ChargerStatus.UNDER_MAINTENANCE);
+    c2.setPricePerKWh(0.50);
+    c2.setStation(station);
+
+    chargerRepository.saveAll(List.of(c1, c2));
+
+    mockMvc
+        .perform(get("/api/v1/charger/filter").param("power", "0.22").param("status", "AVAILABLE"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].status").value("AVAILABLE"));
+  }
 }
