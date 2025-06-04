@@ -38,7 +38,7 @@ function ChargersList() {
                     {chargers.map(charger => (
                         <li key={charger.id}>
                             <Link
-                                to={`/chargers/${charger.id}/edit`}
+                                to={`./${charger.id}/edit`}
                                 id={`edit-charger-link-${charger.id}`}
                             >
                                 Charger #{charger.id} - Status: {charger.status}
