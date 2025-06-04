@@ -265,7 +265,7 @@ export default function BookingPage() {
 
       setIsSubmitted(true);
     } catch (error) {
-      alert('Error creating booking: ' + error.message);
+      alert('You already have a booking at this time.');
     }
   };
 
@@ -286,7 +286,7 @@ export default function BookingPage() {
             <svg style={styles.successIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            <h2 style={styles.successTitle}>Booking Confirmed!</h2>
+            <h2 style={styles.successTitle} id="booking-confirm-message" >Booking Confirmed!</h2>
             <div style={styles.bookingDetails}>
               <div style={styles.detailItem}>
                 <span style={styles.detailLabel}>Start:</span>
@@ -448,6 +448,7 @@ export default function BookingPage() {
         )}
 
         <button
+          id="submit-btn"
           style={styles.submitBtn}
           onClick={handleSubmit}
           onMouseOver={(e) => {
