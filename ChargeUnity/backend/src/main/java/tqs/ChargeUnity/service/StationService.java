@@ -13,15 +13,10 @@ import java.util.Optional;
 public class StationService {
 
   private final StationRepository stationRepository;
-  private final ChargerService chargerService;
   private final OperatorService operatorService;
 
-  public StationService(
-      StationRepository stationRepository,
-      ChargerService chargerService,
-      OperatorService operatorService) {
+  public StationService(StationRepository stationRepository, OperatorService operatorService) {
     this.stationRepository = stationRepository;
-    this.chargerService = chargerService;
     this.operatorService = operatorService;
   }
 

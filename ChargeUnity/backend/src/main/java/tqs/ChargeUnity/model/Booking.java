@@ -26,22 +26,22 @@ public class Booking {
 
   @ManyToOne
   @JoinColumn(name = "trip_id")
-  @JsonBackReference
+  @JsonBackReference("booking-trip")
   private Trip trip;
 
   @ManyToOne
   @JoinColumn(name = "driver_id")
-  @JsonBackReference
+  @JsonBackReference("driver-bookings")
   private Driver driver;
 
   @ManyToOne
   @JoinColumn(name = "charger_id")
-  @JsonBackReference
+  @JsonBackReference("booking-charger")
   private Charger charger;
 
   @ManyToOne
   @JoinColumn(name = "car_id")
-  @JsonBackReference
+  @JsonBackReference("booking-car")
   private Car car;
 
   private LocalDateTime startTime;

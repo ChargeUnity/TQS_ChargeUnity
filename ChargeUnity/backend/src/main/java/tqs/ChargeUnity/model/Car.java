@@ -20,7 +20,7 @@ public class Car {
 
   @ManyToOne
   @JoinColumn(name = "driver_id")
-  @JsonBackReference
+  @JsonBackReference("driver-cars")
   private Driver driver;
 
   private String brand;

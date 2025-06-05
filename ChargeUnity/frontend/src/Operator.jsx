@@ -56,7 +56,7 @@ function Operator() {
                 {operators.map((operator) => (
                     <div
                         key={operator.id}
-                        id={`operator-card-${operator.id}`}
+                        id={`operator-card-${operator.name.replace(/\s+/g, '-').toLowerCase()}`}
                         className="card"
                         onClick={() => navigate(`/operators/${operator.id}`)}
                         style={{ cursor: 'pointer' }}

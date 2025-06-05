@@ -44,6 +44,7 @@ public class BookingController {
 
   @PostMapping
   public ResponseEntity<Booking> createBooking(@RequestBody BookingRequestDTO dto) {
+	System.out.println("Received booking request: " + dto);
     try {
       Booking created =
           bookingService.createBooking(
