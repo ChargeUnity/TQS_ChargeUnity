@@ -72,7 +72,7 @@ jobs:
           echo "spring.jpa.defer-datasource-initialization=true" >> application.properties
       
           echo "server.port=8080" >> application.properties
-          echo "app.cors.allowed-origin=http://172.18.13.232:5173" >> application.properties
+          echo "app.cors.allowed-origin=http://${{ steps.host_ip.outputs.ip }}:5173" >> application.properties
       
           echo "logging.level.org.hibernate.SQL=DEBUG" >> application.properties
           echo "logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE" >> application.properties
