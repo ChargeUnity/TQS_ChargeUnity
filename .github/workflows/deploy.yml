@@ -18,6 +18,10 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v4
 
+      - name: Get Host IP
+        id: host_ip
+        run: echo "::set-output name=ip::$(hostname -I | awk '{print $1}')"
+
       - name: Criar ficheiro .env com secrets
         working-directory: ChargeUnity
         run: |
@@ -28,7 +32,7 @@ jobs:
           echo "MYSQL_PORT=3307:3306" >> .env
           echo "APP_PORT=8080:8080" >> .env
           echo "FRONTEND_PORT_VITE=5173:5173" >> .env
-          echo "VITE_APP_API_URL=http://172.18.13.232:8080" >> .env
+          echo "VITE_APP_API_URL=http://${{ steps.host_ip.outputs.ip }}:8080" >> .env
           echo "DB_EMAIL=${{ secrets.DB_EMAIL }}" >> .env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
 
@@ -86,4 +90,4 @@ jobs:
         working-directory: ChargeUnity
         run: docker compose --env-file .env -f docker-compose.yml up -d --build
 
-      
+
