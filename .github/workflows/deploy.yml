@@ -74,7 +74,7 @@ jobs:
 
       - name: Parar containers anteriores
         working-directory: ChargeUnity
-        run: docker compose --env-file .env -f docker-compose.yml down
+        run: docker compose --env-file .env -f docker-compose.yml down -v
 
       - name: Limpar cache de imagens antigas
         run: docker builder prune -a -f
