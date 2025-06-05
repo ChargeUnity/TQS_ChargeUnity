@@ -1,10 +1,9 @@
-const hostname = window.location.hostname;
+const isDevelopment = window.location.hostname === 'localhost';
 
-// Dynamically determine the API URL
 const CONFIG = {
-  API_URL: hostname === 'localhost'
-    ? 'http://localhost:8080/api/v1'
-    : __API_URL__ || `http://${hostname}:8080/api/v1`,
+    API_URL: isDevelopment 
+        ? 'http://localhost:8080/api/v1'
+        : 'http://172.18.13.232:8080/api/v1'
 };
 
 export default CONFIG;
