@@ -28,7 +28,7 @@ jobs:
           echo "MYSQL_PORT=3307:3306" >> .env
           echo "APP_PORT=8080:8080" >> .env
           echo "FRONTEND_PORT_VITE=5173:5173" >> .env
-          echo "VITE_APP_API_URL=http://deti-tqs-08.ua.pt:8080" >> .env
+          echo "VITE_APP_API_URL=http://172.18.13.232:8080" >> .env
           echo "DB_EMAIL=${{ secrets.DB_EMAIL }}" >> .env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
 
@@ -62,7 +62,7 @@ jobs:
           echo "spring.jpa.defer-datasource-initialization=true" >> application.properties
       
           echo "server.port=8080" >> application.properties
-          echo "app.cors.allowed-origin=http://deti-tqs-08.ua.pt:5173" >> application.properties
+          echo "app.cors.allowed-origin=http://172.18.13.232:5173" >> application.properties
       
           echo "logging.level.org.hibernate.SQL=DEBUG" >> application.properties
           echo "logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE" >> application.properties
