@@ -1,6 +1,12 @@
 name: CD - Deploy ChargeUnity (teste na CH-88)
 
 on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        default: 'main'
+  
   push:
     branches:
       - main
