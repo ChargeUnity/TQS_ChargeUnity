@@ -1,7 +1,14 @@
 # ChargeUnity
 Repository for the TQS project ChargeUnity
 
-<img src="resources/ChargeUnityLogo.png" alt="ChargeUnityLogo" width="400"/>
+## Badges
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ChargeUnity_TQS_ChargeUnity&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ChargeUnity_TQS_ChargeUnity)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ChargeUnity_TQS_ChargeUnity&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ChargeUnity_TQS_ChargeUnity)
+[![CI Pipeline](https://github.com/ChargeUnity/TQS_ChargeUnity/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ChargeUnity/TQS_ChargeUnity/actions/workflows/ci.yml)
+[![CD](https://github.com/ChargeUnity/TQS_ChargeUnity/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/ChargeUnity/TQS_ChargeUnity/actions/workflows/deploy.yml)
+
+<img src="resources/logos//ChargeUnityLogo.png" alt="ChargeUnityLogo" width="400"/>
 
 | Student         | Roles         | Nmec   | Effort |
 | --------------- | ------------- | ------ | ------ |
@@ -35,4 +42,4 @@ Repository for the TQS project ChargeUnity
 ```
 
 # Architecture
-![Architecture](resources/arquitechture/ArchitectureChargeUnity.jpg)
+<img src="/resources/architecture/ArchitectureChargeUnity.jpg" alt="Architecture"/>
