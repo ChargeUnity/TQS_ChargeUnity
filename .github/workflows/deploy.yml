@@ -63,7 +63,6 @@ jobs:
           echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> application.properties
       
           echo "spring.jpa.hibernate.ddl-auto=create" >> application.properties
-          echo "spring.jpa.show-sql=true" >> application.properties
           echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect" >> application.properties
           echo "spring.jpa.properties.hibernate.format_sql=true" >> application.properties
       
@@ -73,11 +72,8 @@ jobs:
       
           echo "server.port=8080" >> application.properties
           echo "app.cors.allowed-origin=http://${{ steps.host_ip.outputs.ip }}:5173" >> application.properties
-      
-          echo "logging.level.org.hibernate.SQL=DEBUG" >> application.properties
-          echo "logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE" >> application.properties
           echo "logging.level.org.springframework=INFO" >> application.properties
-          echo "logging.level.tqs.ChargeUnity=DEBUG" >> application.properties
+          echo "logging.level.tqs.ChargeUnity=WARN" >> application.properties
       
           echo "spring.validation.beanvalidation.enabled=true" >> application.properties
           echo "spring.jpa.open-in-view=false" >> application.properties
