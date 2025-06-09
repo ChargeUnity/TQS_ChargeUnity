@@ -44,7 +44,7 @@ public class ChargerController {
 
     Optional<Station> stationOpt = chargerService.getStationById(stationId);
     if (stationOpt.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Station not found");
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Station not found");
     }
     charger.setStation(stationOpt.get());
 
