@@ -38,7 +38,7 @@ class BookingServiceTest {
     MockitoAnnotations.openMocks(this);
   }
 
-  // Combined tests related to booking creation
+  // tests related to booking creation
   @Test
   @Requirement("CH-29")
   void testCreateBookingScenarios() {
@@ -94,7 +94,31 @@ class BookingServiceTest {
     assertEquals("Time slot not available", timeSlotException.getMessage());
   }
 
-  // Combined tests related to booking retrieval
+  @Test
+  @Requirement("CH-29")
+  void testCreateBookingWithTooLong() {
+    Driver driver = new Driver();
+    driver.setId(1);
+    Charger charger = new Charger();
+    charger.setId(1);
+    charger.setStatus(ChargerStatus.AVAILABLE);
+    charger.setPricePerKWh(0.5);
+
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+    LocalDateTime endTime = startTime.plusDays(2); // Too long booking
+
+    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
+    when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
+
+    RuntimeException tooLongException =
+        assertThrows(
+            RuntimeException.class,
+            () -> bookingService.createBooking(1, 1, startTime, endTime));
+
+    assertEquals("Booking duration cannot exceed 4 hours.", tooLongException.getMessage());
+  }
+
+  // tests related to booking retrieval
   @Test
   @Requirement("CH-29")
   void testGetBookingScenarios() {
@@ -118,7 +142,7 @@ class BookingServiceTest {
     assertFalse(bookingNotFound.isPresent());
   }
 
-  // Combined tests related to booking cancellation
+  // tests related to booking cancellation
   @Test
   @Requirement("CH-29")
   void testCancelBookingScenarios() {
