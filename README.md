@@ -42,7 +42,7 @@ Repository for the TQS project ChargeUnity
 ```
 
 # Architecture
-<<<<<<< HEAD
+
 <img src="/resources/architecture/ArchitectureChargeUnity.jpg" alt="Architecture"/>
 =======
 ![Architecture](resources/architecture/ArchitectureChargeUnity.jpg)
@@ -55,4 +55,5 @@ Repository for the TQS project ChargeUnity
 
 ## Changes after presentation
 Deployment process was fixed and website can now be accessed at [ChargeUnity](http://192.168.160.8:5173/).
->>>>>>> cffe98c7114fc0935f2c2cb9a24c77578be1e119
+Performed load testing with 500 virtual users (K6), confirming application stability and consistent performance under load.
+
