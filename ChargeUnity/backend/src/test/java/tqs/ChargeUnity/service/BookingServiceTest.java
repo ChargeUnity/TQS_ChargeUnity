@@ -199,6 +199,30 @@ class BookingServiceTest {
     assertEquals("Charger is not available for booking", exception.getMessage());
   }
 
+  @Test
+  @Requirement("CH-29")
+  void testCreateBookingExceedsDurationLimit() {
+    Driver driver = new Driver();
+    driver.setId(1);
+    Charger charger = new Charger();
+    charger.setId(1);
+    charger.setStatus(ChargerStatus.AVAILABLE);
+    charger.setPricePerKWh(0.5);
+
+    LocalDateTime startTime = LocalDateTime.now();
+    LocalDateTime endTime = startTime.plusHours(5); // Exceeds 4-hour limit
+
+    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
+    when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
+
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class,
+            () -> bookingService.createBooking(1, 1, startTime, endTime));
+
+    assertEquals("Booking duration cannot exceed 4 hours.", exception.getMessage());
+  }
+
   // tests related to time slot availability
   @Test
   @Requirement("CH-29")

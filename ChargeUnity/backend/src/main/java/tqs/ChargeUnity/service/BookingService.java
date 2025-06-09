@@ -32,6 +32,11 @@ public class BookingService {
 
   public Booking createBooking(
       int driverId, int chargerId, LocalDateTime startTime, LocalDateTime endTime) {
+    
+    if (java.time.Duration.between(startTime, endTime).toHours() > 4) {
+      throw new RuntimeException("Booking duration cannot exceed 4 hours.");
+    }
+
     Driver driver =
         driverRepository
             .findById(driverId)
