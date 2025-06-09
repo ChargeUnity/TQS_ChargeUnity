@@ -10,12 +10,12 @@ Repository for the TQS project ChargeUnity
 
 <img src="resources/logos//ChargeUnityLogo.png" alt="ChargeUnityLogo" width="400"/>
 
-| Student         | Roles         | Nmec   | Effort |
-| --------------- | ------------- | ------ | ------ |
-| Pedro Ponte     | Team Manager | 98059  | 25%    |
-| Miguel Soares Francisco | DevOps Master | 108304 | 25%    |
-| Inês Ferreira | Product Owner | 104415 | 25%  |
-| Alexandre Regalado | QA Engineer     | 124572 | 25%    |
+| Student         | Roles         | Nmec   |
+| --------------- | ------------- | ------ |
+| Pedro Ponte     | Team Manager | 98059  |
+| Miguel Soares Francisco | DevOps Master | 108304 |
+| Inês Ferreira | Product Owner | 104415 |
+| Alexandre Regalado | QA Engineer     | 124572 |
 
 # Abstract
 
@@ -42,4 +42,17 @@ Repository for the TQS project ChargeUnity
 ```
 
 # Architecture
+<<<<<<< HEAD
 <img src="/resources/architecture/ArchitectureChargeUnity.jpg" alt="Architecture"/>
+=======
+![Architecture](resources/architecture/ArchitectureChargeUnity.jpg)
+
+# Bookmarks
+1. [Project Specification & QA Manual](https://github.com/ChargeUnity/TQS_ChargeUnity/tree/develop/reports)
+2. [Swagger Documentation](http://192.168.160.8:8080/swagger-ui/index.html)
+3. [Observability Dashboard](http://192.168.160.8:3000/d/49c09bb5-2ca7-41fb-8d48-823069eabca7/jvm-micrometer?orgId=1&from=now-24h&to=now&timezone=browser&var-application=&var-instance=backend:8080&var-jvm_memory_pool_heap=$__all&var-jvm_memory_pool_nonheap=$__all&var-jvm_buffer_pool=$__all&refresh=30s)
+4. [Static analysis](https://sonarcloud.io/summary/new_code?id=ChargeUnity_TQS_ChargeUnity&branch=main)
+
+## Changes after presentation
+Deployment process was fixed and website can now be accessed at [ChargeUnity](http://192.168.160.8:5173/).
+>>>>>>> cffe98c7114fc0935f2c2cb9a24c77578be1e119
