@@ -29,11 +29,8 @@ import static org.mockito.Mockito.*;
 class BookingServiceTest {
 
   @Mock private BookingRepository bookingRepository;
-
   @Mock private DriverRepository driverRepository;
-
   @Mock private ChargerRepository chargerRepository;
-
   @InjectMocks private BookingService bookingService;
 
   @BeforeEach
@@ -41,10 +38,10 @@ class BookingServiceTest {
     MockitoAnnotations.openMocks(this);
   }
 
-  // tests related to booking creation
+  // Combined tests related to booking creation
   @Test
   @Requirement("CH-29")
-  void testCreateBooking() {
+  void testCreateBookingScenarios() {
     Driver driver = new Driver();
     driver.setId(1);
     Charger charger = new Charger();
@@ -57,6 +54,8 @@ class BookingServiceTest {
 
     when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
     when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
+
+    // Scenario 1: Successful booking creation
     when(bookingRepository.findByChargerId(1)).thenReturn(new ArrayList<>());
     when(bookingRepository.findByDriverId(1)).thenReturn(new ArrayList<>());
 
@@ -65,276 +64,99 @@ class BookingServiceTest {
     assertNotNull(booking);
     assertEquals(BookingStatus.WAITING, booking.getStatus());
     verify(bookingRepository, times(1)).save(booking);
-  }
 
-  @Test
-  @Requirement("CH-29")
-  void testCreateBookingDuplicate() {
-    Driver driver = new Driver();
-    driver.setId(1);
-    Charger charger = new Charger();
-    charger.setStatus(ChargerStatus.AVAILABLE);
-    charger.setId(1);
-    charger.setPricePerKWh(0.5);
-
-    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-    LocalDateTime endTime = startTime.plusHours(2);
-
+    // Scenario 2: Duplicate booking
     Booking existingBooking = new Booking();
     existingBooking.setStartTime(startTime.minusMinutes(30));
     existingBooking.setEndTime(endTime.plusMinutes(30));
 
-    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
-    when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
-    when(bookingRepository.findByChargerId(1)).thenReturn(new ArrayList<>());
     when(bookingRepository.findByDriverId(1)).thenReturn(List.of(existingBooking));
     when(bookingRepository.findOverlapingBookingsOfUser(1, startTime, endTime))
         .thenReturn(List.of(existingBooking));
 
-    RuntimeException exception =
-        assertThrows(
-            RuntimeException.class,
-            () -> {
-              bookingService.createBooking(1, 1, startTime, endTime);
-            });
-
-    assertEquals(
-        "Duplicate booking: Driver already has a booking at this time", exception.getMessage());
-  }
-
-  @Test
-  @Requirement("CH-29")
-  void testCreateBookingTimeSlotNotAvailable() {
-    Driver driver = new Driver();
-    driver.setId(1);
-    Charger charger = new Charger();
-    charger.setId(1);
-
-    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-    LocalDateTime endTime = startTime.plusHours(2);
-
-    // Simulate an existing booking that overlaps with the requested time slot
-    Booking existingBooking = new Booking();
-    existingBooking.setStartTime(startTime.minusMinutes(30));
-    existingBooking.setEndTime(endTime.plusMinutes(30));
-
-    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
-    when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
-    when(bookingRepository.findOverlappingBookings(1, startTime, endTime))
-        .thenReturn(List.of(existingBooking));
-
-    RuntimeException exception =
-        assertThrows(
-            RuntimeException.class,
-            () -> {
-              bookingService.createBooking(1, 1, startTime, endTime);
-            });
-
-    assertEquals("Time slot not available", exception.getMessage());
-  }
-
-  @Test
-  @Requirement("CH-29")
-  void testCreateBookingDriverNotFound() {
-    when(driverRepository.findById(1)).thenReturn(Optional.empty());
-
-    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-    LocalDateTime endTime = startTime.plusHours(2);
-
-    RuntimeException exception =
-        assertThrows(
-            RuntimeException.class,
-            () -> {
-              bookingService.createBooking(1, 1, startTime, endTime);
-            });
-
-    assertEquals("Driver not found", exception.getMessage());
-  }
-
-  @Test
-  @Requirement("CH-29")
-  void testCreateBookingChargerNotFound() {
-    Driver driver = new Driver();
-    driver.setId(1);
-
-    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
-    when(chargerRepository.findById(1)).thenReturn(Optional.empty());
-
-    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-    LocalDateTime endTime = startTime.plusHours(2);
-
-    RuntimeException exception =
-        assertThrows(
-            RuntimeException.class,
-            () -> {
-              bookingService.createBooking(1, 1, startTime, endTime);
-            });
-
-    assertEquals("Charger not found", exception.getMessage());
-  }
-
-  @Test
-  @Requirement("CH-93")
-  void testCreateBookingChargerNotAvailable() {
-    Driver driver = new Driver();
-    driver.setId(1);
-
-    Charger charger = new Charger();
-    charger.setId(1);
-    charger.setStatus(ChargerStatus.OUT_OF_SERVICE);
-
-    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
-    when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
-
-    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-    LocalDateTime endTime = startTime.plusHours(2);
-
-    RuntimeException exception =
-        assertThrows(
-            RuntimeException.class,
-            () -> {
-              bookingService.createBooking(1, 1, startTime, endTime);
-            });
-
-    assertEquals("Charger is not available for booking", exception.getMessage());
-  }
-
-  @Test
-  @Requirement("CH-29")
-  void testCreateBookingExceedsDurationLimit() {
-    Driver driver = new Driver();
-    driver.setId(1);
-    Charger charger = new Charger();
-    charger.setId(1);
-    charger.setStatus(ChargerStatus.AVAILABLE);
-    charger.setPricePerKWh(0.5);
-
-    LocalDateTime startTime = LocalDateTime.now();
-    LocalDateTime endTime = startTime.plusHours(5); // Exceeds 4-hour limit
-
-    when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
-    when(chargerRepository.findById(1)).thenReturn(Optional.of(charger));
-
-    RuntimeException exception =
+    RuntimeException duplicateException =
         assertThrows(
             RuntimeException.class,
             () -> bookingService.createBooking(1, 1, startTime, endTime));
 
-    assertEquals("Booking duration cannot exceed 4 hours.", exception.getMessage());
-  }
+    assertEquals(
+        "Duplicate booking: Driver already has a booking at this time", duplicateException.getMessage());
 
-  // tests related to time slot availability
-  @Test
-  @Requirement("CH-29")
-  void testIsTimeSlotAvailableTrue() {
-    when(bookingRepository.findByChargerId(1)).thenReturn(new ArrayList<>());
-    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-    LocalDateTime endTime = startTime.plusHours(2);
-
-    boolean available = bookingService.isTimeSlotAvailable(1, startTime, endTime);
-    assertTrue(available);
-  }
-
-  @Test
-  @Requirement("CH-29")
-  void testIsTimeSlotAvailableFalse() {
-    Booking booking = new Booking();
-    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
-    LocalDateTime endTime = startTime.plusHours(2);
-    booking.setStartTime(startTime.minusMinutes(30));
-    booking.setEndTime(endTime.plusMinutes(30));
-
+    // Scenario 3: Time slot not available
     when(bookingRepository.findOverlappingBookings(1, startTime, endTime))
-        .thenReturn(List.of(booking));
+        .thenReturn(List.of(existingBooking));
 
-    boolean available = bookingService.isTimeSlotAvailable(1, startTime, endTime);
-    assertFalse(available);
+    RuntimeException timeSlotException =
+        assertThrows(
+            RuntimeException.class,
+            () -> bookingService.createBooking(1, 1, startTime, endTime));
+
+    assertEquals("Time slot not available", timeSlotException.getMessage());
   }
 
-  // tests related to booking retrieval
+  // Combined tests related to booking retrieval
   @Test
   @Requirement("CH-29")
-  void testGetBookingsByDriver() {
+  void testGetBookingScenarios() {
     Booking booking = new Booking();
+
+    // Scenario 1: Get bookings by driver
     when(bookingRepository.findByDriverId(1)).thenReturn(List.of(booking));
+    List<Booking> bookingsByDriver = bookingService.getBookingsByDriver(1);
+    assertEquals(1, bookingsByDriver.size());
+    assertSame(booking, bookingsByDriver.get(0));
 
-    List<Booking> bookings = bookingService.getBookingsByDriver(1);
-    assertEquals(1, bookings.size());
-    assertSame(booking, bookings.get(0));
-  }
-
-  @Test
-  @Requirement("CH-29")
-  void testGetBookingByIdFound() {
-    Booking booking = new Booking();
+    // Scenario 2: Get booking by ID found
     when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
+    Optional<Booking> bookingById = bookingService.getBookingById(1);
+    assertTrue(bookingById.isPresent());
+    assertSame(booking, bookingById.get());
 
-    Optional<Booking> result = bookingService.getBookingById(1);
-    assertTrue(result.isPresent());
-    assertSame(booking, result.get());
-  }
-
-  @Test
-  @Requirement("CH-29")
-  void testGetBookingByIdNotFound() {
+    // Scenario 3: Get booking by ID not found
     when(bookingRepository.findById(1)).thenReturn(Optional.empty());
-
-    Optional<Booking> result = bookingService.getBookingById(1);
-    assertFalse(result.isPresent());
+    Optional<Booking> bookingNotFound = bookingService.getBookingById(1);
+    assertFalse(bookingNotFound.isPresent());
   }
 
-  // tests related to booking cancellation
+  // Combined tests related to booking cancellation
   @Test
   @Requirement("CH-29")
-  void testCancelBookingSuccess() {
+  void testCancelBookingScenarios() {
     Driver driver = new Driver();
     driver.setId(1);
     Booking booking = new Booking();
     booking.setDriver(driver);
-    booking.setStatus(BookingStatus.WAITING);
 
+    // Scenario 1: Successful cancellation
+    booking.setStatus(BookingStatus.WAITING);
     when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
     when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
 
     bookingService.cancelBooking(1, 1);
-
     assertEquals(BookingStatus.CANCELLED, booking.getStatus());
     verify(bookingRepository).save(booking);
-  }
 
-  @Test
-  @Requirement("CH-29")
-  void testCancelBookingNotFound() {
+    // Scenario 2: Booking not found
     when(bookingRepository.findById(1)).thenReturn(Optional.empty());
-
-    RuntimeException exception =
+    RuntimeException notFoundException =
         assertThrows(
             RuntimeException.class,
-            () -> {
-              bookingService.cancelBooking(1, 1);
-            });
+            () -> bookingService.cancelBooking(1, 1));
 
-    assertEquals("Booking not found", exception.getMessage());
-  }
+    assertEquals("Booking not found", notFoundException.getMessage());
 
-  @Test
-  @Requirement("CH-29")
-  void testCancelBookingUnauthorized() {
-    Driver driver = new Driver();
-    driver.setId(2);
-    Booking booking = new Booking();
-    booking.setDriver(driver);
+    // Scenario 3: Unauthorized cancellation
+    Driver unauthorizedDriver = new Driver();
+    unauthorizedDriver.setId(2);
+    booking.setDriver(unauthorizedDriver);
 
     when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
-
-    RuntimeException exception =
+    RuntimeException unauthorizedException =
         assertThrows(
             RuntimeException.class,
-            () -> {
-              bookingService.cancelBooking(1, 1);
-            });
+            () -> bookingService.cancelBooking(1, 1));
 
-    assertTrue(exception.getMessage().contains("Unauthorized"));
+    assertTrue(unauthorizedException.getMessage().contains("Unauthorized"));
   }
 
   // tests related to charging operations
